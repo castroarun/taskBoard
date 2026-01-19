@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Board - Pipeline View Mockup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            surface: '#141414',
+            background: '#0a0a0a',
+            border: '#262626',
+            'text-primary': '#fafafa',
+            'text-secondary': '#a1a1aa',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #141414; }
+    ::-webkit-scrollbar-thumb { background: #404040; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #525252; }
+
+    /* Drag preview */
+    .drag-preview { opacity: 0.8; transform: rotate(3deg); }
+  </style>
+</head>
+<body class="bg-background text-text-primary min-h-screen">
+
+  <!-- App Shell -->
+  <div class="flex flex-col h-screen">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between px-6 py-4 border-b border-border bg-surface">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
+        </div>
+        <h1 class="text-xl font-semibold">Task Board</h1>
+      </div>
+
+      <!-- Quick Launch Hint -->
+      <button onclick="openQuickLaunch()" class="flex items-center gap-2 px-3 py-1.5 bg-background border border-border rounded-lg text-text-secondary text-sm hover:border-zinc-500 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <span>Quick Launch</span>
+        <kbd class="px-1.5 py-0.5 bg-zinc-800 rounded text-xs font-mono">⌘K</kbd>
+      </button>
+    </header>
+
+    <!-- Pipeline Content -->
+    <main class="flex-1 overflow-hidden p-6">
+      <div class="flex gap-4 h-full overflow-x-auto">
+
+        <!-- Design Column -->
+        <div class="flex-shrink-0 w-72 flex flex-col bg-surface rounded-xl border border-border">
+          <div class="flex items-center justify-between p-4 border-b border-border">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🎨</span>
+              <h2 class="font-semibold">Design</h2>
+            </div>
+            <span class="px-2 py-0.5 bg-zinc-800 rounded-full text-xs text-text-secondary">1</span>
+          </div>
+          <div class="flex-1 overflow-y-auto p-3 space-y-3">
+            <!-- Project Card -->
+            <div onclick="openProjectModal('tradevoice')" class="p-4 bg-background rounded-lg border border-border hover:border-zinc-600 cursor-pointer transition-all hover:shadow-lg">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-medium">Trade Voice</h3>
+                <span class="px-1.5 py-0.5 bg-orange-500/20 text-orange-400 rounded text-xs font-medium">P1</span>
+              </div>
+              <p class="text-xs text-text-secondary mb-3">Phase: discovery</p>
+              <!-- Progress Bar -->
+              <div class="w-full h-1.5 bg-zinc-800 rounded-full mb-2">
+                <div class="h-full bg-blue-500 rounded-full" style="width: 25%"></div>
+              </div>
+              <div class="flex items-center justify-between text-xs text-text-secondary">
+                <span>Tasks: 3/12</span>
+                <span>5d ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Engineering Column -->
+        <div class="flex-shrink-0 w-72 flex flex-col bg-surface rounded-xl border border-border">
+          <div class="flex items-center justify-between p-4 border-b border-border">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🏗️</span>
+              <h2 class="font-semibold">Engineering</h2>
+            </div>
+            <span class="px-2 py-0.5 bg-zinc-800 rounded-full text-xs text-text-secondary">1</span>
+          </div>
+          <div class="flex-1 overflow-y-auto p-3 space-y-3">
+            <!-- Task Board Card (Current) -->
+            <div onclick="openProjectModal('taskboard')" class="p-4 bg-background rounded-lg border-2 border-blue-500 cursor-pointer transition-all hover:shadow-lg hover:shadow-blue-500/10">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-medium">Task Board</h3>
+                <span class="px-1.5 py-0.5 bg-red-500/20 text-red-400 rounded text-xs font-medium">P0</span>
+              </div>
+              <p class="text-xs text-text-secondary mb-3">Phase: architecture</p>
+              <!-- Progress Bar -->
+              <div class="w-full h-1.5 bg-zinc-800 rounded-full mb-2">
+                <div class="h-full bg-blue-500 rounded-full" style="width: 15%"></div>
+              </div>
+              <div class="flex items-center justify-between text-xs text-text-secondary">
+                <span>Tasks: 0/17</span>
+                <span class="text-blue-400">Just now</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Build Column -->
+        <div class="flex-shrink-0 w-72 flex flex-col bg-surface rounded-xl border border-border">
+          <div class="flex items-center justify-between p-4 border-b border-border">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🔨</span>
+              <h2 class="font-semibold">Build</h2>
+            </div>
+            <span class="px-2 py-0.5 bg-zinc-800 rounded-full text-xs text-text-secondary">2</span>
+          </div>
+          <div class="flex-1 overflow-y-auto p-3 space-y-3">
+            <!-- REPPIT Card -->
+            <div class="p-4 bg-background rounded-lg border border-border hover:border-zinc-600 cursor-pointer transition-all">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-medium">REPPIT</h3>
+                <span class="px-1.5 py-0.5 bg-orange-500/20 text-orange-400 rounded text-xs font-medium">P1</span>
+              </div>
+              <p class="text-xs text-text-secondary mb-3">Phase: testing</p>
+              <div class="w-full h-1.5 bg-zinc-800 rounded-full mb-2">
+                <div class="h-full bg-green-500 rounded-full" style="width: 85%"></div>
+              </div>
+              <div class="flex items-center justify-between text-xs text-text-secondary">
+                <span>Tasks: 28/33</span>
+                <span>1d ago</span>
+              </div>
+            </div>
+
+            <!-- NoteApp Card -->
+            <div class="p-4 bg-background rounded-lg border border-border hover:border-zinc-600 cursor-pointer transition-all">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-medium">NoteApp</h3>
+                <span class="px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded text-xs font-medium">P2</span>
+              </div>
+              <p class="text-xs text-text-secondary mb-3">Phase: development</p>
+              <div class="w-full h-1.5 bg-zinc-800 rounded-full mb-2">
+                <div class="h-full bg-blue-500 rounded-full" style="width: 60%"></div>
+              </div>
+              <div class="flex items-center justify-between text-xs text-text-secondary">
+                <span>Tasks: 18/30</span>
+                <span>3d ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Launch Column -->
+        <div class="flex-shrink-0 w-72 flex flex-col bg-surface rounded-xl border border-border">
+          <div class="flex items-center justify-between p-4 border-b border-border">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🚀</span>
+              <h2 class="font-semibold">Launch</h2>
+            </div>
+            <span class="px-2 py-0.5 bg-zinc-800 rounded-full text-xs text-text-secondary">0</span>
+          </div>
+          <div class="flex-1 overflow-y-auto p-3">
+            <!-- Empty State -->
+            <div class="flex flex-col items-center justify-center h-full text-center py-12">
+              <div class="w-12 h-12 bg-zinc-800 rounded-full flex items-center justify-center mb-3">
+                <svg class="w-6 h-6 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                </svg>
+              </div>
+              <p class="text-sm text-text-secondary">No projects</p>
+              <p class="text-xs text-zinc-600">ready for launch</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Closure Column -->
+        <div class="flex-shrink-0 w-72 flex flex-col bg-surface rounded-xl border border-border">
+          <div class="flex items-center justify-between p-4 border-b border-border">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">✅</span>
+              <h2 class="font-semibold">Closure</h2>
+            </div>
+            <span class="px-2 py-0.5 bg-zinc-800 rounded-full text-xs text-text-secondary">1</span>
+          </div>
+          <div class="flex-1 overflow-y-auto p-3 space-y-3">
+            <!-- Completed Project -->
+            <div class="p-4 bg-background rounded-lg border border-green-500/30 cursor-pointer transition-all opacity-75">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-medium text-text-secondary">Portfolio v2</h3>
+                <span class="px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded text-xs font-medium">Done</span>
+              </div>
+              <p class="text-xs text-text-secondary mb-3">Phase: retrospective</p>
+              <div class="w-full h-1.5 bg-zinc-800 rounded-full mb-2">
+                <div class="h-full bg-green-500 rounded-full" style="width: 100%"></div>
+              </div>
+              <div class="flex items-center justify-between text-xs text-text-secondary">
+                <span>Tasks: 24/24</span>
+                <span>Completed</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Quick Launch Modal (Hidden by default) -->
+  <div id="quickLaunchModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-start justify-center pt-[20vh]">
+    <div class="w-full max-w-xl bg-surface border border-border rounded-xl shadow-2xl overflow-hidden">
+      <!-- Search Input -->
+      <div class="flex items-center gap-3 px-4 py-3 border-b border-border">
+        <svg class="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Type a command or search..."
+          class="flex-1 bg-transparent text-lg outline-none placeholder-text-secondary"
+          oninput="filterResults(this.value)"
+        >
+        <kbd class="px-2 py-1 bg-zinc-800 rounded text-xs font-mono text-text-secondary">ESC</kbd>
+      </div>
+
+      <!-- Results -->
+      <div class="max-h-80 overflow-y-auto" id="searchResults">
+        <!-- Commands Section -->
+        <div class="px-2 py-2">
+          <div class="px-2 py-1 text-xs font-medium text-text-secondary uppercase tracking-wider">Commands</div>
+          <div class="space-y-1">
+            <div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-blue-500/10 border border-blue-500/30 cursor-pointer">
+              <span class="text-lg">📥</span>
+              <div class="flex-1">
+                <div class="font-medium">inbox</div>
+                <div class="text-xs text-text-secondary">Open inbox for quick notes</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-zinc-800 cursor-pointer">
+              <span class="text-lg">📊</span>
+              <div class="flex-1">
+                <div class="font-medium">where</div>
+                <div class="text-xs text-text-secondary">Show all project statuses</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-zinc-800 cursor-pointer">
+              <span class="text-lg">🤖</span>
+              <div class="flex-1">
+                <div class="font-medium">agent work</div>
+                <div class="text-xs text-text-secondary">Start working with Claude</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Projects Section -->
+        <div class="px-2 py-2 border-t border-border">
+          <div class="px-2 py-1 text-xs font-medium text-text-secondary uppercase tracking-wider">Projects</div>
+          <div class="space-y-1">
+            <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-zinc-800 cursor-pointer">
+              <span class="text-lg">📁</span>
+              <div class="flex-1">
+                <div class="font-medium">Task Board</div>
+                <div class="text-xs text-text-secondary">engineering • 15%</div>
+              </div>
+              <span class="px-1.5 py-0.5 bg-red-500/20 text-red-400 rounded text-xs">P0</span>
+            </div>
+            <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-zinc-800 cursor-pointer">
+              <span class="text-lg">📁</span>
+              <div class="flex-1">
+                <div class="font-medium">REPPIT</div>
+                <div class="text-xs text-text-secondary">build • 85%</div>
+              </div>
+              <span class="px-1.5 py-0.5 bg-orange-500/20 text-orange-400 rounded text-xs">P1</span>
+            </div>
+            <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-zinc-800 cursor-pointer">
+              <span class="text-lg">📁</span>
+              <div class="flex-1">
+                <div class="font-medium">Trade Voice</div>
+                <div class="text-xs text-text-secondary">design • 25%</div>
+              </div>
+              <span class="px-1.5 py-0.5 bg-orange-500/20 text-orange-400 rounded text-xs">P1</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tasks Section -->
+        <div class="px-2 py-2 border-t border-border">
+          <div class="px-2 py-1 text-xs font-medium text-text-secondary uppercase tracking-wider">P0 Tasks</div>
+          <div class="space-y-1">
+            <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-zinc-800 cursor-pointer">
+              <span class="w-4 h-4 rounded border border-zinc-600"></span>
+              <div class="flex-1">
+                <div class="font-medium text-sm">Initialize Tauri 2.0 project</div>
+                <div class="text-xs text-text-secondary">taskboard • todo</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-zinc-800 cursor-pointer">
+              <span class="w-4 h-4 rounded border border-zinc-600"></span>
+              <div class="flex-1">
+                <div class="font-medium text-sm">Build Pipeline Kanban view</div>
+                <div class="text-xs text-text-secondary">taskboard • todo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="flex items-center justify-between px-4 py-2 border-t border-border bg-zinc-900/50 text-xs text-text-secondary">
+        <div class="flex items-center gap-4">
+          <span><kbd class="px-1 bg-zinc-800 rounded">↑↓</kbd> Navigate</span>
+          <span><kbd class="px-1 bg-zinc-800 rounded">↵</kbd> Select</span>
+          <span><kbd class="px-1 bg-zinc-800 rounded">ESC</kbd> Close</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project Detail Modal (Hidden by default) -->
+  <div id="projectModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-8">
+    <div class="w-full max-w-2xl bg-surface border border-border rounded-xl shadow-2xl overflow-hidden">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-border">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+            <span class="text-xl">📋</span>
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold">Task Board</h2>
+            <div class="flex items-center gap-2 mt-0.5">
+              <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded text-xs font-medium">engineering</span>
+              <span class="text-xs text-text-secondary">architecture phase</span>
+            </div>
+          </div>
+        </div>
+        <button onclick="closeProjectModal()" class="p-2 hover:bg-zinc-800 rounded-lg transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Content -->
+      <div class="p-6 space-y-6">
+        <!-- Progress -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm text-text-secondary">Progress</span>
+            <span class="text-sm font-medium">15%</span>
+          </div>
+          <div class="w-full h-2 bg-zinc-800 rounded-full">
+            <div class="h-full bg-blue-500 rounded-full transition-all" style="width: 15%"></div>
+          </div>
+        </div>
+
+        <!-- Metadata Grid -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="p-3 bg-background rounded-lg">
+            <div class="text-xs text-text-secondary mb-1">Priority</div>
+            <span class="px-2 py-0.5 bg-red-500/20 text-red-400 rounded text-sm font-medium">P0 - Critical</span>
+          </div>
+          <div class="p-3 bg-background rounded-lg">
+            <div class="text-xs text-text-secondary mb-1">Complexity</div>
+            <span class="text-sm font-medium">Full Effort (F)</span>
+          </div>
+          <div class="p-3 bg-background rounded-lg">
+            <div class="text-xs text-text-secondary mb-1">Target Date</div>
+            <span class="text-sm font-medium">Feb 15, 2026</span>
+          </div>
+          <div class="p-3 bg-background rounded-lg">
+            <div class="text-xs text-text-secondary mb-1">Started</div>
+            <span class="text-sm font-medium">Jan 18, 2026</span>
+          </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <div>
+          <div class="text-xs text-text-secondary mb-2">Tech Stack</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2 py-1 bg-zinc-800 rounded text-sm">Tauri</span>
+            <span class="px-2 py-1 bg-zinc-800 rounded text-sm">React</span>
+            <span class="px-2 py-1 bg-zinc-800 rounded text-sm">TypeScript</span>
+            <span class="px-2 py-1 bg-zinc-800 rounded text-sm">Tailwind</span>
+            <span class="px-2 py-1 bg-zinc-800 rounded text-sm">Zustand</span>
+          </div>
+        </div>
+
+        <!-- Stage History -->
+        <div>
+          <div class="text-xs text-text-secondary mb-3">Stage History</div>
+          <div class="space-y-2">
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span class="text-sm">Design</span>
+              <span class="text-xs text-text-secondary">conception → discovery → requirements</span>
+              <span class="text-xs text-green-400 ml-auto">✓ Complete</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+              <span class="text-sm">Engineering</span>
+              <span class="text-xs text-text-secondary">architecture</span>
+              <span class="text-xs text-blue-400 ml-auto">In Progress</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 bg-zinc-600 rounded-full"></div>
+              <span class="text-sm text-text-secondary">Build</span>
+              <span class="text-xs text-zinc-600 ml-auto">Pending</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task Summary -->
+        <div>
+          <div class="text-xs text-text-secondary mb-3">Tasks</div>
+          <div class="grid grid-cols-4 gap-3">
+            <div class="p-3 bg-background rounded-lg text-center">
+              <div class="text-2xl font-bold">17</div>
+              <div class="text-xs text-text-secondary">Total</div>
+            </div>
+            <div class="p-3 bg-background rounded-lg text-center">
+              <div class="text-2xl font-bold text-zinc-500">0</div>
+              <div class="text-xs text-text-secondary">Done</div>
+            </div>
+            <div class="p-3 bg-background rounded-lg text-center">
+              <div class="text-2xl font-bold text-blue-400">0</div>
+              <div class="text-xs text-text-secondary">In Progress</div>
+            </div>
+            <div class="p-3 bg-background rounded-lg text-center">
+              <div class="text-2xl font-bold text-red-400">0</div>
+              <div class="text-xs text-text-secondary">Blocked</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="flex items-center justify-between px-6 py-4 border-t border-border bg-zinc-900/50">
+        <button class="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+          </svg>
+          <span>Open in VS Code</span>
+        </button>
+        <button class="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors font-medium">
+          <span>Move to Build</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Example -->
+  <div id="toast" class="fixed bottom-6 right-6 hidden">
+    <div class="flex items-center gap-3 px-4 py-3 bg-surface border border-green-500/30 rounded-lg shadow-lg">
+      <div class="w-6 h-6 bg-green-500/20 rounded-full flex items-center justify-center">
+        <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <span class="text-sm">Files updated externally</span>
+      <button onclick="hideToast()" class="text-text-secondary hover:text-white">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Quick Launch
+    function openQuickLaunch() {
+      document.getElementById('quickLaunchModal').classList.remove('hidden');
+      document.getElementById('searchInput').focus();
+    }
+
+    function closeQuickLaunch() {
+      document.getElementById('quickLaunchModal').classList.add('hidden');
+    }
+
+    // Project Modal
+    function openProjectModal(projectId) {
+      document.getElementById('projectModal').classList.remove('hidden');
+    }
+
+    function closeProjectModal() {
+      document.getElementById('projectModal').classList.add('hidden');
+    }
+
+    // Toast
+    function showToast() {
+      document.getElementById('toast').classList.remove('hidden');
+      setTimeout(hideToast, 3000);
+    }
+
+    function hideToast() {
+      document.getElementById('toast').classList.add('hidden');
+    }
+
+    // Filter results (mock)
+    function filterResults(query) {
+      // In real app, this would filter with fuse.js
+      console.log('Searching:', query);
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      // Cmd+K or Ctrl+K
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        openQuickLaunch();
+      }
+      // Escape
+      if (e.key === 'Escape') {
+        closeQuickLaunch();
+        closeProjectModal();
+      }
+    });
+
+    // Close modals on backdrop click
+    document.getElementById('quickLaunchModal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeQuickLaunch();
+    });
+
+    document.getElementById('projectModal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeProjectModal();
+    });
+
+    // Show toast after 2 seconds (demo)
+    setTimeout(showToast, 2000);
+  </script>
+
+</body>
+</html>

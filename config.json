@@ -1,0 +1,42 @@
+{
+  "version": "1.0.0",
+  "created": "2026-01-18T00:00:00Z",
+  "user": {
+    "name": "Arun Prakash",
+    "timezone": "Asia/Singapore",
+    "preferences": {
+      "theme": "dark",
+      "language": "TypeScript",
+      "framework": "Tauri",
+      "styling": "Tailwind",
+      "state": "Zustand"
+    }
+  },
+  "paths": {
+    "projects": "C:/Users/Castro/Documents/Projects",
+    "taskboard": "C:/Users/Castro/arun-task-board",
+    "claudeShared": "C:/Users/Castro/Documents/Projects/_claude-shared"
+  },
+  "agents": {
+    "_comment": "Task Board prompt templates (for Command Center)",
+    "orchestrator": "agents/orchestrator.md",
+    "design": "agents/design-agent.md",
+    "architect": "agents/architect-agent.md",
+    "dev": "agents/dev-agent.md",
+    "git": "agents/git-agent.md",
+    "qa": "agents/qa-agent.md",
+    "docs": "agents/docs-agent.md"
+  },
+  "claudeAgents": {
+    "_comment": "Claude SDK agents (invoked via @agent in Claude)",
+    "designer": "_claude-shared/agents/designer.md",
+    "architect": "_claude-shared/agents/architect.md",
+    "qa": "_claude-shared/agents/qa.md",
+    "walkthrough": "_claude-shared/agents/walkthrough.md"
+  },
+  "settings": {
+    "autoUpdateLaunchpad": true,
+    "logActions": true,
+    "fileWatchDebounce": 500
+  }
+}
