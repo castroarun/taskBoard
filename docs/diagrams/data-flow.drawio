@@ -1,0 +1,152 @@
+<mxfile host="app.diagrams.net" modified="2026-01-22T10:00:00.000Z" agent="Claude" version="21.0.0">
+  <diagram name="Data Flow" id="data-flow">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="How Data Flows Between Apps" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontColor=#1e293b;" vertex="1" parent="1">
+          <mxGeometry x="300" y="30" width="500" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Command Center -->
+        <mxCell id="cc-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#312e81;strokeColor=#6366f1;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="60" y="120" width="200" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cc-icon" value="&#x1f5a5;&#xfe0f;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=40;" vertex="1" parent="1">
+          <mxGeometry x="130" y="130" width="60" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cc-title" value="Command Center" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="80" y="180" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cc-desc" value="Desktop App&#xa;(Tauri + React)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#c7d2fe;" vertex="1" parent="1">
+          <mxGeometry x="80" y="210" width="160" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cc-actions" value="&#x2022; Create projects&#xa;&#x2022; Manage tasks&#xa;&#x2022; Work with AI" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#e0e7ff;" vertex="1" parent="1">
+          <mxGeometry x="80" y="250" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- JSON Files -->
+        <mxCell id="json-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#374151;strokeColor=#6b7280;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="360" y="120" width="180" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="json-icon" value="&#x1f4c4;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=40;" vertex="1" parent="1">
+          <mxGeometry x="420" y="130" width="60" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="json-title" value="Local JSON Files" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="370" y="180" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="json-files" value="projects.json&#xa;tasks.json&#xa;inbox.md&#xa;config.json" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#d1d5db;fontFamily=monospace;" vertex="1" parent="1">
+          <mxGeometry x="370" y="220" width="160" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- GitHub -->
+        <mxCell id="github-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1f2937;strokeColor=#4b5563;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="360" y="380" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="github-icon" value="&#x1f4e6;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=36;" vertex="1" parent="1">
+          <mxGeometry x="420" y="390" width="60" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="github-title" value="GitHub" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="370" y="430" width="160" height="25" as="geometry" />
+        </mxCell>
+
+        <mxCell id="github-desc" value="README.md with&#xa;LAUNCHPAD block" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#9ca3af;" vertex="1" parent="1">
+          <mxGeometry x="370" y="455" width="160" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Launchpad -->
+        <mxCell id="lp-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#064e3b;strokeColor=#10b981;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="640" y="120" width="200" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="lp-icon" value="&#x1f4f1;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=40;" vertex="1" parent="1">
+          <mxGeometry x="710" y="130" width="60" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="lp-title" value="Launchpad" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="660" y="180" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="lp-desc" value="Mobile App&#xa;(React Native)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#a7f3d0;" vertex="1" parent="1">
+          <mxGeometry x="660" y="210" width="160" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="lp-actions" value="&#x2022; View project health&#xa;&#x2022; Get notifications&#xa;&#x2022; Ship projects" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#d1fae5;" vertex="1" parent="1">
+          <mxGeometry x="660" y="250" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Arrows -->
+        <mxCell id="arrow-cc-json" value="writes" style="endArrow=classic;html=1;strokeColor=#6366f1;strokeWidth=3;fontColor=#6366f1;fontSize=12;" edge="1" parent="1">
+          <mxGeometry x="0.1" relative="1" as="geometry">
+            <mxPoint x="260" y="200" as="sourcePoint" />
+            <mxPoint x="360" y="200" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="arrow-json-github" value="syncs" style="endArrow=classic;html=1;strokeColor=#6b7280;strokeWidth=3;fontColor=#6b7280;fontSize=12;" edge="1" parent="1">
+          <mxGeometry x="0.1" relative="1" as="geometry">
+            <mxPoint x="450" y="300" as="sourcePoint" />
+            <mxPoint x="450" y="380" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="arrow-github-lp" value="reads" style="endArrow=classic;html=1;strokeColor=#10b981;strokeWidth=3;fontColor=#10b981;fontSize=12;" edge="1" parent="1">
+          <mxGeometry x="0.1" relative="1" as="geometry">
+            <mxPoint x="540" y="420" as="sourcePoint" />
+            <mxPoint x="740" y="300" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="740" y="420" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Voice Flow (reverse) -->
+        <mxCell id="voice-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#f59e0b;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="380" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="voice-title" value="&#x1f3a4; Voice Instructions" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#92400e;" vertex="1" parent="1">
+          <mxGeometry x="660" y="390" width="160" height="25" as="geometry" />
+        </mxCell>
+
+        <mxCell id="voice-desc" value="Speak from Launchpad&#xa;&#x2193;&#xa;Claude picks up on desktop" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#92400e;" vertex="1" parent="1">
+          <mxGeometry x="660" y="415" width="160" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow-voice" value="" style="endArrow=classic;html=1;strokeColor=#f59e0b;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="640" y="440" as="sourcePoint" />
+            <mxPoint x="260" y="260" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="160" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="voice-label" value="voice flows back" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#f59e0b;" vertex="1" parent="1">
+          <mxGeometry x="60" y="410" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Summary -->
+        <mxCell id="summary" value="&#x1f4a1; Project data flows from desktop to mobile via GitHub. Voice instructions flow back." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#cbd5e1;fontColor=#475569;fontSize=13;align=center;" vertex="1" parent="1">
+          <mxGeometry x="200" y="530" width="500" height="40" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

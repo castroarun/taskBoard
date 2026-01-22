@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feature: Ship Wizard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%); }
+    @keyframes confetti {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100px) rotate(720deg); opacity: 0; }
+    }
+    .confetti {
+      animation: confetti 2s ease-out forwards;
+    }
+    @keyframes checkmark {
+      0% { stroke-dashoffset: 50; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .check-animate {
+      stroke-dasharray: 50;
+      stroke-dashoffset: 50;
+      animation: checkmark 0.5s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-8">
+
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center gap-2 px-4 py-2 bg-pink-200 rounded-full text-pink-700 text-sm mb-4">
+        <span>🚀</span>
+        <span>Launchpad Feature</span>
+      </div>
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">Ship Wizard</h1>
+      <p class="text-gray-600 text-lg max-w-xl mx-auto">
+        Launch with confidence. A guided checklist plus AI-drafted LinkedIn post.
+      </p>
+    </div>
+
+    <!-- Ship Wizard Demo -->
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+
+      <!-- Checklist -->
+      <div class="bg-white rounded-2xl shadow-xl p-6">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="text-3xl">🚀</span>
+          <div>
+            <h3 class="font-bold text-gray-800">Ship Wizard</h3>
+            <p class="text-sm text-gray-500">NoteApp v1.0</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="flex items-center gap-3 p-3 bg-emerald-50 rounded-lg">
+            <div class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path class="check-animate" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <span class="text-gray-800">All tests passing</span>
+          </div>
+
+          <div class="flex items-center gap-3 p-3 bg-emerald-50 rounded-lg">
+            <div class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path class="check-animate" style="animation-delay: 0.2s" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <span class="text-gray-800">README updated</span>
+          </div>
+
+          <div class="flex items-center gap-3 p-3 bg-emerald-50 rounded-lg">
+            <div class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path class="check-animate" style="animation-delay: 0.4s" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <span class="text-gray-800">Screenshot added</span>
+          </div>
+
+          <div class="flex items-center gap-3 p-3 bg-emerald-50 rounded-lg">
+            <div class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path class="check-animate" style="animation-delay: 0.6s" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <span class="text-gray-800">Demo URL set</span>
+          </div>
+
+          <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+              <span class="text-white text-xs">5</span>
+            </div>
+            <span class="text-gray-500">LinkedIn post draft</span>
+            <span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full ml-auto">In progress</span>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+            <div class="bg-emerald-500 h-2 rounded-full" style="width: 80%"></div>
+          </div>
+          <p class="text-sm text-gray-500 text-center">4 of 5 complete</p>
+        </div>
+      </div>
+
+      <!-- LinkedIn Draft -->
+      <div class="bg-white rounded-2xl shadow-xl p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-2xl">💼</span>
+          <h3 class="font-bold text-gray-800">LinkedIn Post Draft</h3>
+        </div>
+
+        <div class="bg-gray-50 rounded-xl p-4 mb-4">
+          <p class="text-gray-700 text-sm leading-relaxed">
+            🚀 <strong>Just shipped: NoteApp!</strong>
+            <br><br>
+            Built a quick notes PWA that works offline and syncs across devices.
+            <br><br>
+            Tech stack: Next.js, TypeScript, IndexedDB
+            <br><br>
+            Key learnings:
+            <br>• Service workers are tricky but powerful
+            <br>• Offline-first requires different thinking
+            <br>• Simple > Feature-bloated
+            <br><br>
+            Try it out: [demo link]
+            <br><br>
+            #buildinpublic #webdev #pwa
+          </p>
+        </div>
+
+        <div class="flex gap-2">
+          <button class="flex-1 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700">
+            Copy to Clipboard
+          </button>
+          <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-sm hover:bg-gray-200">
+            ✏️ Edit
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Ship Button -->
+    <div class="text-center mb-8">
+      <button class="px-12 py-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-2xl text-xl font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105">
+        🎉 Ship It!
+      </button>
+      <p class="text-gray-500 text-sm mt-3">This will mark the project as shipped</p>
+    </div>
+
+    <!-- What happens -->
+    <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
+      <h3 class="font-semibold text-gray-800 mb-4 text-center">What Happens When You Ship</h3>
+      <div class="grid md:grid-cols-4 gap-4">
+        <div class="text-center p-4">
+          <div class="text-3xl mb-2">📍</div>
+          <p class="text-sm text-gray-600">Project moves to "Live" stage</p>
+        </div>
+        <div class="text-center p-4">
+          <div class="text-3xl mb-2">📝</div>
+          <p class="text-sm text-gray-600">README LAUNCHPAD block updated</p>
+        </div>
+        <div class="text-center p-4">
+          <div class="text-3xl mb-2">📋</div>
+          <p class="text-sm text-gray-600">Post draft ready to share</p>
+        </div>
+        <div class="text-center p-4">
+          <div class="text-3xl mb-2">🎊</div>
+          <p class="text-sm text-gray-600">Celebrate your win!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Benefits -->
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-xl p-6 shadow-lg">
+        <div class="text-3xl mb-4">✅</div>
+        <h3 class="font-semibold text-gray-800 mb-2">Quality Gate</h3>
+        <p class="text-gray-600 text-sm">Don't ship half-baked. The checklist ensures you're ready.</p>
+      </div>
+
+      <div class="bg-white rounded-xl p-6 shadow-lg">
+        <div class="text-3xl mb-4">✍️</div>
+        <h3 class="font-semibold text-gray-800 mb-2">AI-Drafted Post</h3>
+        <p class="text-gray-600 text-sm">No blank page anxiety. Get a starting point for your announcement.</p>
+      </div>
+
+      <div class="bg-white rounded-xl p-6 shadow-lg">
+        <div class="text-3xl mb-4">🏆</div>
+        <h3 class="font-semibold text-gray-800 mb-2">Build Momentum</h3>
+        <p class="text-gray-600 text-sm">Each ship builds your portfolio and confidence.</p>
+      </div>
+    </div>
+
+    <!-- Back link -->
+    <div class="mt-8 text-center">
+      <a href="../overview/index.html" class="text-pink-600 hover:text-pink-700">← Back to Overview</a>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Background circle -->
+  <circle cx="60" cy="60" r="56" fill="#0f172a"/>
+
+  <!-- Kanban columns -->
+  <!-- Column 1 - Todo -->
+  <rect x="22" y="28" width="22" height="64" rx="4" fill="#334155"/>
+  <rect x="26" y="36" width="14" height="8" rx="2" fill="#64748b"/>
+  <rect x="26" y="48" width="14" height="8" rx="2" fill="#64748b"/>
+  <rect x="26" y="60" width="14" height="8" rx="2" fill="#64748b"/>
+
+  <!-- Column 2 - In Progress (highlighted) -->
+  <rect x="49" y="28" width="22" height="64" rx="4" fill="#334155"/>
+  <rect x="53" y="36" width="14" height="8" rx="2" fill="#6366f1"/>
+  <rect x="53" y="48" width="14" height="8" rx="2" fill="#6366f1"/>
+
+  <!-- Column 3 - Done -->
+  <rect x="76" y="28" width="22" height="64" rx="4" fill="#334155"/>
+  <rect x="80" y="36" width="14" height="8" rx="2" fill="#10b981"/>
+  <rect x="80" y="48" width="14" height="8" rx="2" fill="#10b981"/>
+  <rect x="80" y="60" width="14" height="8" rx="2" fill="#10b981"/>
+  <rect x="80" y="72" width="14" height="8" rx="2" fill="#10b981"/>
+
+  <!-- Checkmark on done column -->
+  <path d="M84 40l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

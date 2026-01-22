@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=375, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Launchpad - Ship Wizard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: #f5f5f5; }
+    .icon { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; }
+    .icon-sm { width: 16px; height: 16px; }
+    .icon-md { width: 20px; height: 20px; }
+    .icon-lg { width: 24px; height: 24px; }
+    .icon-xl { width: 28px; height: 28px; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen max-w-[430px] mx-auto shadow-2xl">
+
+  <!-- Status Bar Mock -->
+  <div class="bg-white px-6 pt-3 pb-2 flex justify-between items-center text-xs text-gray-500">
+    <span>9:41</span>
+    <div class="flex gap-1.5 items-center">
+      <svg class="icon-sm" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+      <svg class="icon-sm" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14M21 12v4m0 4h.01"/></svg>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="bg-white px-6 py-4 border-b border-gray-100">
+    <div class="flex items-center gap-4">
+      <button class="text-gray-400">
+        <svg class="icon-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+      </button>
+      <div>
+        <h1 class="text-lg font-bold text-gray-900">Ship: Numbers Game</h1>
+        <p class="text-sm text-gray-500 flex items-center gap-1">
+          Almost there!
+          <svg class="icon-sm text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="p-4 space-y-4 pb-32">
+
+    <!-- Progress Indicator -->
+    <div class="flex items-center gap-2">
+      <div class="flex-1 h-2 bg-emerald-500 rounded-full"></div>
+      <div class="flex-1 h-2 bg-emerald-500 rounded-full"></div>
+      <div class="flex-1 h-2 bg-gray-200 rounded-full"></div>
+    </div>
+    <p class="text-sm text-gray-500 text-center">Step 2 of 3: Review Checklist</p>
+
+    <!-- Shipping Checklist -->
+    <section class="bg-white rounded-2xl p-5 shadow-sm">
+      <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <svg class="icon-lg text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>
+        Pre-Flight Checklist
+      </h3>
+
+      <div class="space-y-3">
+        <!-- Checked items -->
+        <label class="flex items-center gap-3 p-3 bg-emerald-50 rounded-xl cursor-pointer">
+          <div class="w-6 h-6 bg-emerald-500 rounded-lg flex items-center justify-center text-white">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </div>
+          <span class="text-gray-900">Code complete</span>
+        </label>
+
+        <label class="flex items-center gap-3 p-3 bg-emerald-50 rounded-xl cursor-pointer">
+          <div class="w-6 h-6 bg-emerald-500 rounded-lg flex items-center justify-center text-white">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </div>
+          <span class="text-gray-900">README with LAUNCHPAD block</span>
+        </label>
+
+        <label class="flex items-center gap-3 p-3 bg-emerald-50 rounded-xl cursor-pointer">
+          <div class="w-6 h-6 bg-emerald-500 rounded-lg flex items-center justify-center text-white">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </div>
+          <span class="text-gray-900">Demo URL working</span>
+        </label>
+
+        <!-- Unchecked items -->
+        <label class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer">
+          <div class="w-6 h-6 border-2 border-gray-300 rounded-lg"></div>
+          <span class="text-gray-600">Screenshots in repo</span>
+        </label>
+
+        <label class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer">
+          <div class="w-6 h-6 border-2 border-gray-300 rounded-lg"></div>
+          <span class="text-gray-600">Production deployed</span>
+        </label>
+      </div>
+
+      <button class="w-full mt-4 py-2 text-emerald-600 font-medium text-sm flex items-center justify-center gap-2">
+        <svg class="icon-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+        Refresh Status
+      </button>
+      <p class="text-xs text-gray-400 text-center mt-1">Auto-verified via GitHub API</p>
+    </section>
+
+    <!-- LinkedIn Post Draft -->
+    <section class="bg-white rounded-2xl p-5 shadow-sm">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="font-semibold text-gray-900 flex items-center gap-2">
+          <svg class="icon-lg text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+          LinkedIn Post
+        </h3>
+        <button class="text-emerald-600 text-sm font-medium flex items-center gap-1">
+          Edit
+          <svg class="icon-sm" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
+        </button>
+      </div>
+      <p class="text-xs text-gray-400 mb-4 flex items-center gap-1">
+        <span class="bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded text-[10px] font-medium">⚡ Groq</span>
+        <span>drafted this from your project info</span>
+      </p>
+
+      <div class="bg-gray-50 rounded-xl p-4 text-sm text-gray-700 leading-relaxed">
+        <p class="mb-3 flex items-start gap-2">
+          <svg class="icon-md text-purple-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 01-.657.643 48.39 48.39 0 01-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 01-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 00-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 01-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 00.657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 01-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 005.427-.63 48.05 48.05 0 00.582-4.717.532.532 0 00-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 00.658-.663 48.422 48.422 0 00-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 01-.61-.58v0z"/></svg>
+          <span>Just shipped: <strong>Numbers Game</strong></span>
+        </p>
+        <p class="mb-3">A mental math challenge I built to sharpen arithmetic skills. Simple, addictive, and surprisingly hard at higher levels.</p>
+        <p class="mb-3">
+          <strong>Tech:</strong> React, Tailwind, Vercel<br>
+          <strong>Time:</strong> 2 weekends
+        </p>
+        <p class="mb-3 flex items-start gap-2">
+          <svg class="icon-md text-blue-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>
+          <span>
+            Try it: <span class="text-blue-600">numbers.castronix.dev</span><br>
+            Source: <span class="text-blue-600">github.com/arun/numbers-game</span>
+          </span>
+        </p>
+        <p class="text-gray-500">#buildinpublic #react #indiedev</p>
+      </div>
+
+      <div class="flex gap-2 mt-4">
+        <button class="flex-1 py-2 bg-gray-100 text-gray-600 rounded-xl text-sm font-medium flex items-center justify-center gap-2">
+          <svg class="icon-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9.75a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"/></svg>
+          Copy Text
+        </button>
+        <button class="flex-1 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium flex items-center justify-center gap-2">
+          <svg class="icon-md" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          Open LinkedIn
+        </button>
+      </div>
+      <p class="text-xs text-gray-400 text-center mt-2">Opens LinkedIn app with text pre-filled</p>
+    </section>
+
+    <!-- Project Summary -->
+    <section class="bg-white rounded-2xl p-5 shadow-sm">
+      <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <svg class="icon-lg text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+        Ship Summary
+      </h3>
+
+      <div class="grid grid-cols-2 gap-4 text-sm">
+        <div class="bg-gray-50 rounded-xl p-3">
+          <p class="text-gray-500">Started</p>
+          <p class="font-semibold text-gray-900">Jan 5, 2026</p>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <p class="text-gray-500">Shipping</p>
+          <p class="font-semibold text-emerald-600">Jan 22, 2026</p>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <p class="text-gray-500">Time</p>
+          <p class="font-semibold text-gray-900">17 days</p>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <p class="text-gray-500">Complexity</p>
+          <p class="font-semibold text-gray-900">Easy (E)</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Fixed Bottom Button -->
+  <div class="fixed bottom-0 left-0 right-0 max-w-[430px] mx-auto bg-white border-t border-gray-200 p-4 pb-8">
+    <button class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-2xl font-semibold text-lg flex items-center justify-center gap-3 shadow-lg shadow-emerald-500/30">
+      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>
+      Mark as Shipped
+    </button>
+    <p class="text-center text-xs text-gray-400 mt-2">This will update your README and notify followers</p>
+  </div>
+
+</body>
+</html>

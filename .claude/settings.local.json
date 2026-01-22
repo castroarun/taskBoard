@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(start \"\" \"C:\\\\Users\\\\Castro\\\\arun-task-board\\\\.taskboard\\\\docs\\\\mockups\\\\pipeline-view.html\")",
+      "Bash(start \"\" \"C:\\\\Users\\\\Castro\\\\arun-task-board\\\\.taskboard\\\\docs\\\\mockups\\\\mobile-view.html\")",
+      "Bash(start \"\" \"C:\\\\Users\\\\Castro\\\\arun-task-board\\\\.taskboard\\\\docs\\\\mockups\\\\pipeline-view-v2.html\")",
+      "Bash(start \"\" \"C:\\\\Users\\\\Castro\\\\arun-task-board\\\\.taskboard\\\\docs\\\\mockups\\\\pipeline-view-v2-dark.html\")",
+      "Bash(start \"\" \"C:\\\\Users\\\\Castro\\\\arun-task-board\\\\.taskboard\\\\docs\\\\mockups\\\\mobile-view-v2.html\")",
+      "Bash(start \"\" \"C:\\\\Users\\\\Castro\\\\arun-task-board\\\\.taskboard\\\\docs\\\\mockups\\\\pipeline-view-v3-dark.html\")",
+      "Bash(start \"\" \"C:\\\\Users\\\\Castro\\\\arun-task-board\\\\.taskboard\\\\docs\\\\mockups\\\\pipeline-view-v2-updated.html\")",
+      "Bash(start \"\" \"C:\\\\Users\\\\Castro\\\\arun-task-board\\\\.taskboard\\\\docs\\\\mockups\\\\mobile-view-v3.html\")",
+      "Bash(findstr:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(git checkout:*)"
+    ]
+  }
+}

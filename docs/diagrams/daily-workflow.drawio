@@ -1,0 +1,184 @@
+<mxfile host="app.diagrams.net" modified="2026-01-22T10:00:00.000Z" agent="Claude" version="21.0.0">
+  <diagram name="Daily Workflow" id="daily-workflow">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="A Typical Day with Your Project Hub" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontColor=#1e293b;" vertex="1" parent="1">
+          <mxGeometry x="300" y="30" width="500" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Morning Section -->
+        <mxCell id="morning-label" value="MORNING" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="80" y="100" width="100" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="morning-icon" value="&#x2600;&#xfe0f;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=40;" vertex="1" parent="1">
+          <mxGeometry x="100" y="130" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="phone-notif" value="Phone buzzes:&#xa;'Numbers Game hasn't&#xa;been touched in 7 days'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#10b981;fontColor=#065f46;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="60" y="200" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="check-launchpad" value="Open Launchpad&#xa;on couch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#10b981;fontColor=#065f46;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="60" y="290" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow1" value="" style="endArrow=classic;html=1;strokeColor=#10b981;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="270" as="sourcePoint" />
+            <mxPoint x="130" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Work Time Section -->
+        <mxCell id="work-label" value="WORK TIME" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="330" y="100" width="100" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="work-icon" value="&#x1f4bb;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=40;" vertex="1" parent="1">
+          <mxGeometry x="350" y="130" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="open-cc" value="Open Command Center&#xa;at your desk" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#6366f1;fontColor=#3730a3;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="310" y="200" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pick-task" value="Pick a task from&#xa;the pipeline" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#6366f1;fontColor=#3730a3;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="310" y="270" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="work-ai" value="Work with Claude&#xa;AI to build it" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#6366f1;fontColor=#3730a3;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="310" y="340" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow2" value="" style="endArrow=classic;html=1;strokeColor=#6366f1;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="250" as="sourcePoint" />
+            <mxPoint x="380" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="arrow3" value="" style="endArrow=classic;html=1;strokeColor=#6366f1;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="320" as="sourcePoint" />
+            <mxPoint x="380" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Break Section -->
+        <mxCell id="break-label" value="ON BREAK" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="580" y="100" width="100" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="break-icon" value="&#x1f3a4;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=40;" vertex="1" parent="1">
+          <mxGeometry x="600" y="130" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="voice-idea" value="Walking? Have an idea?&#xa;Open Launchpad" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#10b981;fontColor=#065f46;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="560" y="200" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="voice-record" value="Tap mic, speak:&#xa;'Add dark mode toggle&#xa;to settings page'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#10b981;fontColor=#065f46;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="560" y="270" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="voice-sync" value="Syncs to desktop&#xa;for later" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#f59e0b;fontColor=#92400e;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="560" y="350" width="140" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow4" value="" style="endArrow=classic;html=1;strokeColor=#10b981;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="630" y="250" as="sourcePoint" />
+            <mxPoint x="630" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="arrow5" value="" style="endArrow=classic;html=1;strokeColor=#f59e0b;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="630" y="330" as="sourcePoint" />
+            <mxPoint x="630" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Ship Section -->
+        <mxCell id="ship-label" value="SHIP IT!" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="830" y="100" width="100" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ship-icon" value="&#x1f680;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=40;" vertex="1" parent="1">
+          <mxGeometry x="850" y="130" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ship-ready" value="Project ready?&#xa;Open Ship Wizard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#10b981;fontColor=#065f46;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="810" y="200" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ship-check" value="Go through checklist&#xa;&#x2705; Tests pass&#xa;&#x2705; README updated" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#10b981;fontColor=#065f46;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="810" y="270" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ship-linkedin" value="Post to LinkedIn&#xa;&#x1f389; Celebrate!" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce7f3;strokeColor=#ec4899;fontColor=#9d174d;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="810" y="350" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow6" value="" style="endArrow=classic;html=1;strokeColor=#10b981;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="250" as="sourcePoint" />
+            <mxPoint x="880" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="arrow7" value="" style="endArrow=classic;html=1;strokeColor=#ec4899;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="330" as="sourcePoint" />
+            <mxPoint x="880" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Horizontal flow arrows -->
+        <mxCell id="flow1" value="" style="endArrow=classic;html=1;strokeColor=#94a3b8;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="200" y="240" as="sourcePoint" />
+            <mxPoint x="310" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="flow2" value="" style="endArrow=classic;html=1;strokeColor=#94a3b8;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="450" y="240" as="sourcePoint" />
+            <mxPoint x="560" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="flow3" value="" style="endArrow=classic;html=1;strokeColor=#94a3b8;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="240" as="sourcePoint" />
+            <mxPoint x="810" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend-title" value="Legend:" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="60" y="440" width="60" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-lp" value="Launchpad (Mobile)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#10b981;fontColor=#065f46;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="130" y="435" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-cc" value="Command Center (Desktop)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#6366f1;fontColor=#3730a3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="260" y="435" width="150" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-sync" value="Data Sync" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#f59e0b;fontColor=#92400e;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="435" width="80" height="30" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,253 +1,182 @@
 <p align="center">
-  <img src=".taskboard/assets/logo.png" alt="Task Board Logo" width="80" height="80">
+  <img src="assets/logo.svg" alt="Taskboard Logo" width="120" height="120">
 </p>
 
-<h1 align="center">Arun's Task Board</h1>
+<h1 align="center">Taskboard</h1>
+
+<h3 align="center">
+  Stop losing track of side projects. <em>Start shipping them.</em>
+</h3>
 
 <p align="center">
-  <strong>File-based project orchestration with a beautiful Command Center</strong>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Tauri-2.0-24C8DB?style=flat-square&logo=tauri&logoColor=white" alt="Tauri">
-  <img src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React">
-  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
-  <img src="https://img.shields.io/badge/Tailwind-3.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind">
-  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License">
+  A unified project tracker that monitors all your GitHub repos,<br/>
+  nudges you when things go stale, and helps you ship with AI assistance.
 </p>
 
 <p align="center">
-  <a href="#features">Features</a> •
-  <a href="#quick-start">Quick Start</a> •
-  <a href="#architecture">Architecture</a> •
-  <a href="#roadmap">Roadmap</a>
+  <img src="https://img.shields.io/badge/Tauri-2.0-24C8DB?style=for-the-badge&logo=tauri&logoColor=white" />
+  <img src="https://img.shields.io/badge/React_Native-0.73-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
+  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Claude-AI_Agent-CC785C?style=for-the-badge&logo=anthropic&logoColor=white" />
 </p>
+
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li><a href="#why-taskboard">Why Taskboard</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li>
+      <a href="#features">Features</a>
+      <ul>
+        <li><a href="#command-center-desktop">Command Center (Desktop)</a></li>
+        <li><a href="#launchpad-mobile">Launchpad (Mobile)</a></li>
+      </ul>
+    </li>
+    <li><a href="#quick-start">Quick Start</a></li>
+    <li><a href="#project-structure">Project Structure</a></li>
+    <li><a href="#the-launchpad-block">The LAUNCHPAD Block</a></li>
+    <li><a href="#specs">Specs</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+  </ol>
+</details>
 
 ---
 
-<!-- LAUNCHPAD:START -->
-```json
-{
-  "stage": "engineering",
-  "progress": 15,
-  "complexity": "F",
-  "lastUpdated": "2026-01-18",
-  "targetDate": "2026-02-15",
-  "nextAction": "Complete QA_PLAN.md",
-  "blocker": null,
-  "demoUrl": null,
-  "techStack": ["Tauri", "React", "TypeScript", "Tailwind", "Zustand"],
-  "shipped": false,
-  "linkedinPosted": false
-}
+## Why Taskboard
+
+You have 12 repos. 3 are "almost done." 5 haven't been touched in months. You keep meaning to finish that one project, but every time you sit down, you're not sure where you left off.
+
+Taskboard solves this by:
+
+- **Tracking project health** — Each repo gets a health score based on README completeness, staleness, and blockers
+- **Surfacing what needs attention** — The dashboard shows exactly which project to work on next
+- **Working with you, not against you** — Desktop app for coding sessions, mobile app for quick check-ins and voice instructions
+
+---
+
+## How It Works
+
 ```
-<!-- LAUNCHPAD:END -->
+┌──────────────────────────────────────────────────────────────────────┐
+│                         YOUR GITHUB REPOS                            │
+│         Each README contains a LAUNCHPAD status block                │
+└──────────────────────────────────────────────────────────────────────┘
+                    ▲                              ▲
+                    │ writes                       │ reads
+                    │                              │
+┌────────────────────────────┐    ┌────────────────────────────────────┐
+│   COMMAND CENTER           │    │   LAUNCHPAD                        │
+│   (Desktop)                │    │   (Mobile)                         │
+│                            │    │                                    │
+│   For deep work sessions:  │    │   For when you're away:            │
+│   • Pipeline kanban view   │    │   • Push notifications             │
+│   • Quick Launch (⌘K)      │    │   • Health monitoring              │
+│   • Claude AI agent        │    │   • Voice instructions             │
+│   • Task breakdown         │    │   • Ship wizard + LinkedIn draft   │
+│                            │    │                                    │
+│   Tauri 2.0 + React        │    │   React Native                     │
+└────────────────────────────┘    └────────────────────────────────────┘
+```
 
----
-
-## The Problem
-
-Managing multiple side projects is chaotic:
-- Scattered across folders with no visibility
-- No single dashboard to see what's in progress
-- Context switching between projects is painful
-- Hard to track where each project is in its lifecycle
-
-## The Solution
-
-**Task Board** is a lightweight desktop app that gives you a **Command Center** for all your projects:
-
-- **5-Stage Pipeline**: Design → Engineering → Build → Launch → Closure
-- **File-Based Storage**: JSON/Markdown files you can edit anywhere
-- **Quick Launch**: Cmd+K to jump to any project instantly
-- **Claude Integration**: Comments sync automatically for AI-assisted development
+**The loop:** You work on desktop → status syncs to GitHub → mobile reads it → reminds you when stale → you record voice instructions → Claude picks them up on desktop.
 
 ---
 
 ## Features
 
+### Command Center (Desktop)
+
 | Feature | Description |
 |---------|-------------|
-| **Pipeline Kanban** | Visual board with 5 lifecycle stages |
-| **Project Cards** | See progress, priority, and status at a glance |
-| **Quick Launch** | Cmd+K command palette with fuzzy search |
-| **File Watching** | Auto-reload when files change externally |
-| **Dark Theme** | Beautiful dark UI inspired by Motion |
-| **VS Code Integration** | One-click to open project in editor |
-| **Claude Comments** | Leave instructions for AI sessions |
+| **Pipeline Kanban** | Drag projects through Idea → Building → Testing → Live stages |
+| **Quick Launch** | ⌘K palette for fast actions: open project, create task, switch context |
+| **Claude Agent** | AI-powered task breakdown, code assistance, and project planning |
+| **Offline-First** | Works without internet, syncs when connected |
+
+### Launchpad (Mobile)
+
+| Feature | Description |
+|---------|-------------|
+| **Health Dashboard** | See all projects at a glance with health scores |
+| **Smart Notifications** | Get nudged when a project goes stale (14+ days) |
+| **Voice Capture** | Record instructions on the go, Groq transcribes, Claude executes |
+| **Ship Wizard** | Pre-flight checklist + auto-generated LinkedIn post draft |
 
 ---
 
 ## Quick Start
 
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) 18+
-- [Rust](https://www.rust-lang.org/tools/install) (for Tauri)
-- [VS Code](https://code.visualstudio.com/) (recommended)
-
-### Installation
-
 ```bash
-# Clone the repository
-git clone https://github.com/aruncastro/task-board.git
-cd task-board
+# Clone and install
+git clone https://github.com/castroarun/Taskboard.git
+cd Taskboard && npm install
 
-# Install dependencies
-npm install
-
-# Run in development mode
+# Command Center (Desktop)
+cd apps/command-center
 npm run tauri dev
 
-# Build for production
-npm run tauri build
-```
-
-### Project Structure
-
-```
-task-board/
-├── src/                    # React frontend
-│   ├── components/         # UI components
-│   ├── stores/             # Zustand stores
-│   ├── services/           # File & API services
-│   └── types/              # TypeScript types
-├── src-tauri/              # Rust backend
-│   └── src/
-│       └── main.rs         # Tauri commands
-├── projects.json           # Project data
-├── tasks.json              # Task data
-├── inbox.md                # Quick instructions
-└── config.json             # App configuration
+# Launchpad (Mobile)
+cd apps/launchpad
+npm run android
 ```
 
 ---
 
-## Architecture
-
-### Data Flow
+## Project Structure
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                   Task Board App                     │
-├─────────────────────────────────────────────────────┤
-│  React UI          Zustand Store       Tauri Backend │
-│  ┌─────────┐      ┌───────────┐      ┌────────────┐ │
-│  │ Pipeline │ ←→  │  Projects │  ←→  │ File Watch │ │
-│  │ Cards    │     │  Tasks    │      │ FS Read    │ │
-│  │ Modals   │     │  Config   │      │ FS Write   │ │
-│  └─────────┘      └───────────┘      └────────────┘ │
-└─────────────────────────────────────────────────────┘
-                          ↓
-┌─────────────────────────────────────────────────────┐
-│               File System (JSON/MD)                  │
-│  projects.json  │  tasks.json  │  inbox.md          │
-└─────────────────────────────────────────────────────┘
+Taskboard/
+├── apps/
+│   ├── command-center/     # Desktop (Tauri 2.0 + React + Zustand)
+│   └── launchpad/          # Mobile (React Native + Expo)
+├── packages/
+│   └── shared/             # Types + LAUNCHPAD block parser
+├── specs/                  # Feature specifications
+├── data/                   # Local JSON (projects, tasks, inbox)
+└── assets/                 # Logo and images
 ```
 
-### Tech Stack
+---
 
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| Frontend | React 18 | UI components |
-| State | Zustand | Global state management |
-| Styling | Tailwind CSS | Utility-first styling |
-| Desktop | Tauri 2.0 | Native app wrapper |
-| Backend | Rust | File operations, watchers |
-| Types | TypeScript | Type safety |
+## The LAUNCHPAD Block
+
+Each project README contains a machine-readable status block:
+
+```json
+<!-- LAUNCHPAD:START -->
+{
+  "stage": "building",
+  "progress": 65,
+  "nextAction": "Add leaderboard feature",
+  "targetDate": "2026-01-30",
+  "blocker": null
+}
+<!-- LAUNCHPAD:END -->
+```
+
+This enables automatic health scoring, notifications, and cross-device sync without a backend.
+
+---
+
+## Specs
+
+- [Command Center Spec](specs/taskboard/TASKBOARD_COMPLETE_SPEC.md) — Desktop app architecture and features
+- [Launchpad Spec](specs/launchpad/launchpad-project-spec.md) — Mobile app and notification system
 
 ---
 
 ## Roadmap
 
-### Phase 1: MVP (Current)
-- [x] Project pipeline view
-- [x] Project cards with progress
-- [ ] Quick Launch command palette
-- [ ] File watching & auto-reload
-- [ ] VS Code integration
-
-### Phase 2: Enhancements
-- [ ] Task management within projects
-- [ ] Drag & drop between stages
-- [ ] Search and filters
-- [ ] Keyboard shortcuts
-
-### Phase 3: Polish
-- [ ] Animations & transitions
-- [ ] System tray integration
-- [ ] Auto-start on boot
-- [ ] Export/import projects
-
----
-
-## Configuration
-
-Edit `config.json` to customize:
-
-```json
-{
-  "projectsRoot": "C:/Users/Castro/Documents/Projects",
-  "theme": "dark",
-  "defaultEditor": "code",
-  "autoReload": true,
-  "reloadDebounceMs": 500
-}
-```
-
----
-
-## Claude Integration
-
-Task Board is designed to work seamlessly with Claude Code sessions.
-
-### Leaving Instructions
-
-**Option 1: inbox.md** (general instructions)
-```markdown
-## Active Instructions
-- [ ] @claude: Focus on Build phase tasks
-- [ ] **Priority**: Complete file service first
-```
-
-**Option 2: Task comments** (task-specific)
-```json
-{
-  "comments": [{
-    "content": "Use Tauri 2.0 stable, not beta",
-    "forClaude": true
-  }]
-}
-```
-
-**Option 3: Project reviews** (project-level)
-```json
-{
-  "reviews": [{
-    "content": "UI mockups approved, proceed with dark theme",
-    "forClaude": true
-  }]
-}
-```
-
----
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing`)
-5. Open a Pull Request
-
----
-
-## License
-
-MIT License - see [LICENSE](LICENSE) for details.
+- [x] Command Center mockups
+- [x] Launchpad mockups
+- [ ] Command Center MVP (Tauri + React)
+- [ ] Launchpad MVP (React Native)
+- [ ] GitHub API integration
+- [ ] Claude agent integration
+- [ ] Push notifications (FCM)
 
 ---
 
 <p align="center">
-  Built with caffeine and Claude by <a href="https://github.com/aruncastro">Arun Castro</a>
+  <sub>Built by <a href="https://github.com/castroarun">Arun Castro</a> — shipping projects, one at a time.</sub>
 </p>

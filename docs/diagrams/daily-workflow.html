@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Workflow Diagram</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: #ffffff; }
+  </style>
+</head>
+<body class="p-8">
+
+  <div class="max-w-6xl mx-auto">
+    <!-- Title -->
+    <h1 class="text-3xl font-bold text-gray-800 text-center mb-12">A Typical Day with Your Project Hub</h1>
+
+    <!-- Timeline -->
+    <div class="grid grid-cols-4 gap-6">
+
+      <!-- Morning -->
+      <div class="text-center">
+        <div class="text-sm font-semibold text-gray-500 uppercase mb-4">Morning</div>
+        <div class="text-5xl mb-4">☀️</div>
+
+        <div class="space-y-3">
+          <div class="bg-emerald-100 border-2 border-emerald-500 rounded-xl p-4 text-emerald-800">
+            <p class="text-sm font-medium">Phone buzzes:</p>
+            <p class="text-xs italic">"Numbers Game hasn't been touched in 7 days"</p>
+          </div>
+
+          <div class="text-emerald-500 text-xl">↓</div>
+
+          <div class="bg-emerald-100 border-2 border-emerald-500 rounded-xl p-4 text-emerald-800">
+            <p class="text-sm font-medium">Open Launchpad</p>
+            <p class="text-xs text-emerald-600">on the couch</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Work Time -->
+      <div class="text-center">
+        <div class="text-sm font-semibold text-gray-500 uppercase mb-4">Work Time</div>
+        <div class="text-5xl mb-4">💻</div>
+
+        <div class="space-y-3">
+          <div class="bg-indigo-100 border-2 border-indigo-500 rounded-xl p-4 text-indigo-800">
+            <p class="text-sm font-medium">Open Command Center</p>
+            <p class="text-xs text-indigo-600">at your desk</p>
+          </div>
+
+          <div class="text-indigo-500 text-xl">↓</div>
+
+          <div class="bg-indigo-100 border-2 border-indigo-500 rounded-xl p-4 text-indigo-800">
+            <p class="text-sm font-medium">Pick a task</p>
+            <p class="text-xs text-indigo-600">from the pipeline</p>
+          </div>
+
+          <div class="text-indigo-500 text-xl">↓</div>
+
+          <div class="bg-indigo-100 border-2 border-indigo-500 rounded-xl p-4 text-indigo-800">
+            <p class="text-sm font-medium">Work with Claude AI</p>
+            <p class="text-xs text-indigo-600">to build it</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- On Break -->
+      <div class="text-center">
+        <div class="text-sm font-semibold text-gray-500 uppercase mb-4">On Break</div>
+        <div class="text-5xl mb-4">🎤</div>
+
+        <div class="space-y-3">
+          <div class="bg-emerald-100 border-2 border-emerald-500 rounded-xl p-4 text-emerald-800">
+            <p class="text-sm font-medium">Walking? Have an idea?</p>
+            <p class="text-xs text-emerald-600">Open Launchpad</p>
+          </div>
+
+          <div class="text-emerald-500 text-xl">↓</div>
+
+          <div class="bg-emerald-100 border-2 border-emerald-500 rounded-xl p-4 text-emerald-800">
+            <p class="text-sm font-medium">Tap mic, speak:</p>
+            <p class="text-xs italic">"Add dark mode toggle to settings"</p>
+          </div>
+
+          <div class="text-amber-500 text-xl">↓</div>
+
+          <div class="bg-amber-100 border-2 border-amber-500 rounded-xl p-4 text-amber-800">
+            <p class="text-sm font-medium">Syncs to desktop</p>
+            <p class="text-xs text-amber-600">for later</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ship It -->
+      <div class="text-center">
+        <div class="text-sm font-semibold text-gray-500 uppercase mb-4">Ship It!</div>
+        <div class="text-5xl mb-4">🚀</div>
+
+        <div class="space-y-3">
+          <div class="bg-emerald-100 border-2 border-emerald-500 rounded-xl p-4 text-emerald-800">
+            <p class="text-sm font-medium">Project ready?</p>
+            <p class="text-xs text-emerald-600">Open Ship Wizard</p>
+          </div>
+
+          <div class="text-emerald-500 text-xl">↓</div>
+
+          <div class="bg-emerald-100 border-2 border-emerald-500 rounded-xl p-4 text-emerald-800">
+            <p class="text-sm font-medium">Go through checklist</p>
+            <p class="text-xs">✅ Tests pass<br>✅ README updated</p>
+          </div>
+
+          <div class="text-pink-500 text-xl">↓</div>
+
+          <div class="bg-pink-100 border-2 border-pink-500 rounded-xl p-4 text-pink-800">
+            <p class="text-sm font-medium">Post to LinkedIn</p>
+            <p class="text-xs">🎉 Celebrate!</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Legend -->
+    <div class="mt-12 flex justify-center gap-6">
+      <div class="flex items-center gap-2">
+        <div class="w-4 h-4 bg-emerald-100 border-2 border-emerald-500 rounded"></div>
+        <span class="text-sm text-gray-600">Launchpad (Mobile)</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-4 h-4 bg-indigo-100 border-2 border-indigo-500 rounded"></div>
+        <span class="text-sm text-gray-600">Command Center (Desktop)</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-4 h-4 bg-amber-100 border-2 border-amber-500 rounded"></div>
+        <span class="text-sm text-gray-600">Data Sync</span>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "@taskboard/shared",
+  "version": "1.0.0",
+  "description": "Shared types and utilities for Command Center and Launchpad",
+  "main": "index.ts",
+  "types": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    "./types": "./types/launchpad-block.ts",
+    "./parser": "./parser/launchpad.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

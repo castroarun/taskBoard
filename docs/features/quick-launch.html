@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feature: Quick Launch (⌘K)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: #0a0a0a; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .fade-up { animation: fadeUp 0.3s ease-out forwards; }
+    .cursor-blink::after {
+      content: '|';
+      animation: blink 1s infinite;
+      color: #6366f1;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-white p-8">
+
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-500/20 rounded-full text-indigo-400 text-sm mb-4">
+        <span>⌘K</span>
+        <span>Command Center Feature</span>
+      </div>
+      <h1 class="text-4xl font-bold mb-4">Quick Launch</h1>
+      <p class="text-zinc-400 text-lg max-w-xl mx-auto">
+        Your command palette for everything. Search, navigate, and command - all from one place.
+      </p>
+    </div>
+
+    <!-- Demo -->
+    <div class="bg-zinc-900 rounded-2xl p-8 mb-8">
+      <!-- Command Palette Mockup -->
+      <div class="bg-zinc-800 rounded-xl border border-zinc-700 max-w-lg mx-auto shadow-2xl">
+        <!-- Input -->
+        <div class="flex items-center gap-3 p-4 border-b border-zinc-700">
+          <span class="text-zinc-500">🔍</span>
+          <span class="text-zinc-300 cursor-blink" id="search-input">Add task to Numbers</span>
+        </div>
+
+        <!-- Results -->
+        <div class="p-2">
+          <div class="text-xs text-zinc-500 px-3 py-2">Commands</div>
+
+          <div class="bg-indigo-500/20 rounded-lg p-3 flex items-center gap-3 mb-1 border border-indigo-500/50 fade-up" style="animation-delay: 0.1s">
+            <span class="text-xl">➕</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-white">Add Task</p>
+              <p class="text-xs text-zinc-500">Create a new task in Numbers Game</p>
+            </div>
+            <span class="text-xs text-zinc-500">↵</span>
+          </div>
+
+          <div class="rounded-lg p-3 flex items-center gap-3 mb-1 hover:bg-zinc-700/50 fade-up" style="animation-delay: 0.2s">
+            <span class="text-xl">📋</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-zinc-300">View Numbers Game</p>
+              <p class="text-xs text-zinc-500">Open project details</p>
+            </div>
+          </div>
+
+          <div class="rounded-lg p-3 flex items-center gap-3 hover:bg-zinc-700/50 fade-up" style="animation-delay: 0.3s">
+            <span class="text-xl">🤖</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-zinc-300">Ask Claude about Numbers</p>
+              <p class="text-xs text-zinc-500">Get AI help for this project</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex items-center justify-between p-3 border-t border-zinc-700 text-xs text-zinc-500">
+          <div class="flex items-center gap-4">
+            <span>↑↓ Navigate</span>
+            <span>↵ Select</span>
+          </div>
+          <span>Esc to close</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
+        <div class="text-3xl mb-4">⚡</div>
+        <h3 class="font-semibold mb-2">Instant Access</h3>
+        <p class="text-zinc-400 text-sm">Press ⌘K from anywhere. No clicking through menus.</p>
+      </div>
+
+      <div class="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
+        <div class="text-3xl mb-4">🔍</div>
+        <h3 class="font-semibold mb-2">Smart Search</h3>
+        <p class="text-zinc-400 text-sm">Fuzzy search across projects, tasks, commands, and agents.</p>
+      </div>
+
+      <div class="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
+        <div class="text-3xl mb-4">🎯</div>
+        <h3 class="font-semibold mb-2">Context-Aware</h3>
+        <p class="text-zinc-400 text-sm">Results adapt based on what you're currently working on.</p>
+      </div>
+    </div>
+
+    <!-- Example Commands -->
+    <div class="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
+      <h3 class="font-semibold mb-4">Example Commands</h3>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="flex items-center gap-3 text-sm">
+          <code class="bg-zinc-800 px-2 py-1 rounded text-indigo-400">inbox add</code>
+          <span class="text-zinc-400">Quick capture an idea</span>
+        </div>
+        <div class="flex items-center gap-3 text-sm">
+          <code class="bg-zinc-800 px-2 py-1 rounded text-indigo-400">switch &lt;project&gt;</code>
+          <span class="text-zinc-400">Jump to a project</span>
+        </div>
+        <div class="flex items-center gap-3 text-sm">
+          <code class="bg-zinc-800 px-2 py-1 rounded text-indigo-400">ask claude</code>
+          <span class="text-zinc-400">Get AI assistance</span>
+        </div>
+        <div class="flex items-center gap-3 text-sm">
+          <code class="bg-zinc-800 px-2 py-1 rounded text-indigo-400">ship</code>
+          <span class="text-zinc-400">Start shipping checklist</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back link -->
+    <div class="mt-8 text-center">
+      <a href="../overview/index.html" class="text-indigo-400 hover:text-indigo-300">← Back to Overview</a>
+    </div>
+  </div>
+
+</body>
+</html>

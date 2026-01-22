@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feature: Pipeline View</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: #0a0a0a; }
+    .card:hover .tooltip { opacity: 1; transform: translateY(0); }
+    .tooltip {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.2s ease;
+    }
+    .stage-glow {
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+    }
+  </style>
+</head>
+<body class="min-h-screen text-white p-8">
+
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-full text-purple-400 text-sm mb-4">
+        <span>📋</span>
+        <span>Command Center Feature</span>
+      </div>
+      <h1 class="text-4xl font-bold mb-4">Pipeline View</h1>
+      <p class="text-zinc-400 text-lg max-w-xl mx-auto">
+        See all your projects at a glance. Drag cards between stages as you progress.
+      </p>
+    </div>
+
+    <!-- Pipeline Demo -->
+    <div class="bg-zinc-900 rounded-2xl p-6 mb-8 overflow-x-auto">
+      <div class="flex gap-4 min-w-max">
+
+        <!-- Idea Stage -->
+        <div class="w-64 flex-shrink-0">
+          <div class="flex items-center gap-2 mb-3 text-zinc-500">
+            <span class="w-3 h-3 bg-zinc-500 rounded-full"></span>
+            <span class="text-sm font-medium">IDEA</span>
+            <span class="text-xs">(2)</span>
+          </div>
+          <div class="space-y-3">
+            <div class="card bg-zinc-800 rounded-lg p-3 border border-zinc-700 cursor-pointer hover:border-zinc-600 relative">
+              <p class="font-medium text-sm">AI Habit Coach</p>
+              <p class="text-xs text-zinc-500 mt-1">Daily motivation app</p>
+              <div class="tooltip absolute -top-16 left-0 right-0 bg-zinc-700 rounded-lg p-3 text-xs z-10">
+                <p class="text-zinc-300">Created: 2 days ago</p>
+                <p class="text-zinc-400">Needs: PRD review</p>
+              </div>
+            </div>
+            <div class="card bg-zinc-800 rounded-lg p-3 border border-zinc-700 cursor-pointer hover:border-zinc-600">
+              <p class="font-medium text-sm">Recipe Tracker</p>
+              <p class="text-xs text-zinc-500 mt-1">Save favorite recipes</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Building Stage -->
+        <div class="w-64 flex-shrink-0">
+          <div class="flex items-center gap-2 mb-3 text-indigo-400">
+            <span class="w-3 h-3 bg-indigo-500 rounded-full"></span>
+            <span class="text-sm font-medium">BUILDING</span>
+            <span class="text-xs">(3)</span>
+          </div>
+          <div class="space-y-3">
+            <div class="card bg-indigo-900/30 rounded-lg p-3 border border-indigo-500/50 cursor-pointer stage-glow relative">
+              <div class="flex items-center justify-between mb-1">
+                <p class="font-medium text-sm">Numbers Game</p>
+                <span class="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded">7d stale</span>
+              </div>
+              <p class="text-xs text-zinc-400 mt-1">Math puzzle game</p>
+              <div class="w-full bg-zinc-700 rounded-full h-1.5 mt-2">
+                <div class="bg-indigo-500 h-1.5 rounded-full" style="width: 40%"></div>
+              </div>
+              <div class="tooltip absolute -top-20 left-0 right-0 bg-zinc-700 rounded-lg p-3 text-xs z-10">
+                <p class="text-amber-400">⚠️ Stale! Last touched 7 days ago</p>
+                <p class="text-zinc-400 mt-1">Next: Add scoring system</p>
+              </div>
+            </div>
+            <div class="card bg-zinc-800 rounded-lg p-3 border border-zinc-700 cursor-pointer hover:border-zinc-600">
+              <p class="font-medium text-sm">Strength Tracker</p>
+              <p class="text-xs text-zinc-500 mt-1">Workout logging app</p>
+              <div class="w-full bg-zinc-700 rounded-full h-1.5 mt-2">
+                <div class="bg-indigo-500 h-1.5 rounded-full" style="width: 65%"></div>
+              </div>
+            </div>
+            <div class="card bg-zinc-800 rounded-lg p-3 border border-zinc-700 cursor-pointer hover:border-zinc-600">
+              <p class="font-medium text-sm">Portfolio Site</p>
+              <p class="text-xs text-zinc-500 mt-1">Personal website</p>
+              <div class="w-full bg-zinc-700 rounded-full h-1.5 mt-2">
+                <div class="bg-indigo-500 h-1.5 rounded-full" style="width: 85%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testing Stage -->
+        <div class="w-64 flex-shrink-0">
+          <div class="flex items-center gap-2 mb-3 text-amber-400">
+            <span class="w-3 h-3 bg-amber-500 rounded-full"></span>
+            <span class="text-sm font-medium">TESTING</span>
+            <span class="text-xs">(1)</span>
+          </div>
+          <div class="space-y-3">
+            <div class="card bg-zinc-800 rounded-lg p-3 border border-zinc-700 cursor-pointer hover:border-zinc-600">
+              <div class="flex items-center justify-between mb-1">
+                <p class="font-medium text-sm">NoteApp</p>
+                <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded">Ready</span>
+              </div>
+              <p class="text-xs text-zinc-500 mt-1">Quick notes PWA</p>
+              <div class="w-full bg-zinc-700 rounded-full h-1.5 mt-2">
+                <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 95%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Stage -->
+        <div class="w-64 flex-shrink-0">
+          <div class="flex items-center gap-2 mb-3 text-emerald-400">
+            <span class="w-3 h-3 bg-emerald-500 rounded-full"></span>
+            <span class="text-sm font-medium">LIVE</span>
+            <span class="text-xs">(2)</span>
+          </div>
+          <div class="space-y-3">
+            <div class="card bg-emerald-900/20 rounded-lg p-3 border border-emerald-500/30 cursor-pointer">
+              <div class="flex items-center justify-between mb-1">
+                <p class="font-medium text-sm">REPPIT</p>
+                <span class="text-xs text-emerald-400">🚀</span>
+              </div>
+              <p class="text-xs text-zinc-500 mt-1">Fitness tracker</p>
+            </div>
+            <div class="card bg-emerald-900/20 rounded-lg p-3 border border-emerald-500/30 cursor-pointer">
+              <p class="font-medium text-sm">Calculator</p>
+              <p class="text-xs text-zinc-500 mt-1">Simple calculator</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
+        <div class="text-3xl mb-4">👀</div>
+        <h3 class="font-semibold mb-2">At-a-Glance Status</h3>
+        <p class="text-zinc-400 text-sm">See every project's stage, progress, and health instantly.</p>
+      </div>
+
+      <div class="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
+        <div class="text-3xl mb-4">🖱️</div>
+        <h3 class="font-semibold mb-2">Drag & Drop</h3>
+        <p class="text-zinc-400 text-sm">Move projects between stages as they progress.</p>
+      </div>
+
+      <div class="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
+        <div class="text-3xl mb-4">⚠️</div>
+        <h3 class="font-semibold mb-2">Stale Alerts</h3>
+        <p class="text-zinc-400 text-sm">Projects that haven't been touched get flagged.</p>
+      </div>
+    </div>
+
+    <!-- Stages Explained -->
+    <div class="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
+      <h3 class="font-semibold mb-4">Pipeline Stages</h3>
+      <div class="flex flex-wrap gap-4">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 bg-zinc-500 rounded-full"></span>
+          <span class="text-zinc-400 text-sm">Idea</span>
+        </div>
+        <span class="text-zinc-600">→</span>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
+          <span class="text-zinc-400 text-sm">Planning</span>
+        </div>
+        <span class="text-zinc-600">→</span>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 bg-indigo-500 rounded-full"></span>
+          <span class="text-zinc-400 text-sm">Building</span>
+        </div>
+        <span class="text-zinc-600">→</span>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 bg-amber-500 rounded-full"></span>
+          <span class="text-zinc-400 text-sm">Testing</span>
+        </div>
+        <span class="text-zinc-600">→</span>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 bg-emerald-500 rounded-full"></span>
+          <span class="text-zinc-400 text-sm">Live</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back link -->
+    <div class="mt-8 text-center">
+      <a href="../overview/index.html" class="text-indigo-400 hover:text-indigo-300">← Back to Overview</a>
+    </div>
+  </div>
+
+</body>
+</html>

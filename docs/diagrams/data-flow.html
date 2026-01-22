@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Flow Diagram</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: #0f172a; }
+    .arrow-right::after {
+      content: '→';
+      font-size: 2rem;
+      color: #6b7280;
+    }
+    .arrow-down::after {
+      content: '↓';
+      font-size: 2rem;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body class="p-8 min-h-screen">
+
+  <div class="max-w-5xl mx-auto">
+    <!-- Title -->
+    <h1 class="text-3xl font-bold text-white text-center mb-12">How Data Flows Between Apps</h1>
+
+    <!-- Main Flow -->
+    <div class="flex items-start justify-center gap-4 mb-8">
+
+      <!-- Command Center -->
+      <div class="bg-indigo-900 border-2 border-indigo-500 rounded-2xl p-6 w-52 text-center">
+        <div class="text-5xl mb-3">🖥️</div>
+        <h3 class="text-lg font-bold text-white mb-1">Command Center</h3>
+        <p class="text-indigo-300 text-sm mb-3">Desktop App</p>
+        <div class="text-left text-indigo-200 text-xs space-y-1">
+          <p>• Create projects</p>
+          <p>• Manage tasks</p>
+          <p>• Work with AI</p>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="flex flex-col items-center justify-center pt-12">
+        <span class="text-indigo-400 text-sm mb-1">writes</span>
+        <span class="text-3xl text-indigo-400">→</span>
+      </div>
+
+      <!-- JSON Files -->
+      <div class="bg-gray-700 border-2 border-gray-500 rounded-2xl p-6 w-48 text-center">
+        <div class="text-5xl mb-3">📄</div>
+        <h3 class="text-lg font-bold text-white mb-1">Local JSON</h3>
+        <div class="font-mono text-gray-300 text-xs space-y-1 mt-3">
+          <p>projects.json</p>
+          <p>tasks.json</p>
+          <p>inbox.md</p>
+          <p>config.json</p>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="flex flex-col items-center justify-center pt-12">
+        <span class="text-gray-400 text-sm mb-1">syncs</span>
+        <span class="text-3xl text-gray-400">→</span>
+      </div>
+
+      <!-- GitHub -->
+      <div class="bg-gray-800 border-2 border-gray-600 rounded-2xl p-6 w-44 text-center">
+        <div class="text-5xl mb-3">📦</div>
+        <h3 class="text-lg font-bold text-white mb-1">GitHub</h3>
+        <p class="text-gray-400 text-xs mt-3">README.md with<br>LAUNCHPAD block</p>
+      </div>
+
+      <!-- Arrow -->
+      <div class="flex flex-col items-center justify-center pt-12">
+        <span class="text-emerald-400 text-sm mb-1">reads</span>
+        <span class="text-3xl text-emerald-400">→</span>
+      </div>
+
+      <!-- Launchpad -->
+      <div class="bg-emerald-900 border-2 border-emerald-500 rounded-2xl p-6 w-52 text-center">
+        <div class="text-5xl mb-3">📱</div>
+        <h3 class="text-lg font-bold text-white mb-1">Launchpad</h3>
+        <p class="text-emerald-300 text-sm mb-3">Mobile App</p>
+        <div class="text-left text-emerald-200 text-xs space-y-1">
+          <p>• View project health</p>
+          <p>• Get notifications</p>
+          <p>• Ship projects</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Voice Flow (reverse) -->
+    <div class="mt-8 flex justify-center">
+      <div class="bg-amber-900/50 border-2 border-amber-500 border-dashed rounded-2xl p-6 max-w-2xl">
+        <div class="flex items-center gap-6">
+          <div class="text-5xl">🎤</div>
+          <div>
+            <h3 class="text-lg font-bold text-amber-200 mb-2">Voice Instructions Flow Back</h3>
+            <p class="text-amber-300 text-sm">
+              Speak from Launchpad → AI structures it → Syncs to inbox → Claude picks up on desktop
+            </p>
+          </div>
+          <div class="text-4xl text-amber-400">←←←</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="mt-12 bg-slate-800 rounded-xl p-4 text-center">
+      <p class="text-gray-300">
+        💡 Project data flows from desktop to mobile via GitHub. Voice instructions flow back.
+      </p>
+    </div>
+
+  </div>
+
+</body>
+</html>

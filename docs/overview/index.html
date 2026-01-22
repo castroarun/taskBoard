@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Project Hub - Command Center + Launchpad</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    .gradient-bg {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+    }
+    .card-command { background: linear-gradient(145deg, #1e1b4b, #312e81); }
+    .card-launchpad { background: linear-gradient(145deg, #064e3b, #047857); }
+    .glow-indigo { box-shadow: 0 0 40px rgba(99, 102, 241, 0.3); }
+    .glow-emerald { box-shadow: 0 0 40px rgba(16, 185, 129, 0.3); }
+  </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+
+  <!-- Header -->
+  <header class="text-center py-16 px-4">
+    <h1 class="text-5xl font-bold mb-4">Your Project Hub</h1>
+    <p class="text-xl text-zinc-400 max-w-2xl mx-auto">
+      Two apps that work together to keep you shipping.
+      <br>One for when you're coding. One for when you're not.
+    </p>
+  </header>
+
+  <!-- Main Cards -->
+  <main class="max-w-6xl mx-auto px-4 pb-16">
+    <div class="grid md:grid-cols-2 gap-8">
+
+      <!-- Command Center Card -->
+      <div class="card-command rounded-3xl p-8 glow-indigo">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-16 h-16 bg-indigo-500/30 rounded-2xl flex items-center justify-center text-3xl">
+            🖥️
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold">Command Center</h2>
+            <p class="text-indigo-300">Desktop App</p>
+          </div>
+        </div>
+
+        <p class="text-lg text-zinc-300 mb-6">
+          Your cockpit when you're at your desk. See all projects, plan your work, and let AI help you build.
+        </p>
+
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">📋</span>
+            <div>
+              <h3 class="font-semibold">Pipeline View</h3>
+              <p class="text-sm text-zinc-400">See all projects in a kanban board. Drag to move between stages.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">⌨️</span>
+            <div>
+              <h3 class="font-semibold">Quick Launch</h3>
+              <p class="text-sm text-zinc-400">Press Cmd+K to instantly search, navigate, or run commands.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">🤖</span>
+            <div>
+              <h3 class="font-semibold">AI Agents</h3>
+              <p class="text-sm text-zinc-400">Claude helps you design, code, test, and document.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">🎤</span>
+            <div>
+              <h3 class="font-semibold">Voice Capture</h3>
+              <p class="text-sm text-zinc-400">Hold to speak. Your voice becomes a task or note.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-black/30 rounded-xl p-4 text-sm">
+          <p class="text-indigo-300 font-medium mb-2">Best for:</p>
+          <ul class="text-zinc-400 space-y-1">
+            <li>• Coding sessions at your desk</li>
+            <li>• Planning what to build next</li>
+            <li>• Working with AI on complex tasks</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Launchpad Card -->
+      <div class="card-launchpad rounded-3xl p-8 glow-emerald">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-16 h-16 bg-emerald-500/30 rounded-2xl flex items-center justify-center text-3xl">
+            📱
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold">Launchpad</h2>
+            <p class="text-emerald-300">Mobile App</p>
+          </div>
+        </div>
+
+        <p class="text-lg text-zinc-300 mb-6">
+          Your coach when you're away from the desk. Get nudged about stale projects and ship when ready.
+        </p>
+
+        <div class="space-y-4 mb-8">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">🔔</span>
+            <div>
+              <h3 class="font-semibold">Smart Notifications</h3>
+              <p class="text-sm text-zinc-400">"Numbers Game hasn't been touched in 7 days" - get reminded.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">📊</span>
+            <div>
+              <h3 class="font-semibold">Health Dashboard</h3>
+              <p class="text-sm text-zinc-400">See which projects need attention at a glance.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">🚀</span>
+            <div>
+              <h3 class="font-semibold">Ship Wizard</h3>
+              <p class="text-sm text-zinc-400">Checklist + LinkedIn post draft. Ship with confidence.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">🎙️</span>
+            <div>
+              <h3 class="font-semibold">Voice Instructions</h3>
+              <p class="text-sm text-zinc-400">Speak your next steps. They flow to your desktop for later.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-black/30 rounded-xl p-4 text-sm">
+          <p class="text-emerald-300 font-medium mb-2">Best for:</p>
+          <ul class="text-zinc-400 space-y-1">
+            <li>• Morning check on the couch</li>
+            <li>• Quick voice notes while walking</li>
+            <li>• Shipping and announcing projects</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- How They Work Together -->
+    <div class="mt-16 bg-white/5 rounded-3xl p-8">
+      <h2 class="text-2xl font-bold text-center mb-8">How They Work Together</h2>
+
+      <div class="grid md:grid-cols-4 gap-4 text-center">
+        <div class="bg-white/5 rounded-2xl p-6">
+          <div class="text-4xl mb-4">☀️</div>
+          <h3 class="font-semibold mb-2">Morning</h3>
+          <p class="text-sm text-zinc-400">Check Launchpad on your phone. See what's stale.</p>
+        </div>
+        <div class="bg-white/5 rounded-2xl p-6">
+          <div class="text-4xl mb-4">💻</div>
+          <h3 class="font-semibold mb-2">Work Time</h3>
+          <p class="text-sm text-zinc-400">Open Command Center. Pick a task. Build with AI.</p>
+        </div>
+        <div class="bg-white/5 rounded-2xl p-6">
+          <div class="text-4xl mb-4">🎤</div>
+          <h3 class="font-semibold mb-2">On Break</h3>
+          <p class="text-sm text-zinc-400">Voice an idea from your phone. It syncs to desktop.</p>
+        </div>
+        <div class="bg-white/5 rounded-2xl p-6">
+          <div class="text-4xl mb-4">🚀</div>
+          <h3 class="font-semibold mb-2">Ship It</h3>
+          <p class="text-sm text-zinc-400">Use Ship Wizard. Share on LinkedIn. Celebrate!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Flow -->
+    <div class="mt-16 text-center">
+      <h2 class="text-2xl font-bold mb-8">Data Stays in Sync</h2>
+
+      <div class="flex flex-col md:flex-row items-center justify-center gap-4 text-lg">
+        <div class="bg-indigo-500/20 px-6 py-3 rounded-xl border border-indigo-500/30">
+          Command Center
+        </div>
+        <div class="text-zinc-500">
+          <span class="hidden md:inline">→ writes to →</span>
+          <span class="md:hidden">↓</span>
+        </div>
+        <div class="bg-zinc-700/50 px-6 py-3 rounded-xl">
+          JSON files
+        </div>
+        <div class="text-zinc-500">
+          <span class="hidden md:inline">→ syncs to →</span>
+          <span class="md:hidden">↓</span>
+        </div>
+        <div class="bg-zinc-700/50 px-6 py-3 rounded-xl">
+          GitHub
+        </div>
+        <div class="text-zinc-500">
+          <span class="hidden md:inline">→ read by →</span>
+          <span class="md:hidden">↓</span>
+        </div>
+        <div class="bg-emerald-500/20 px-6 py-3 rounded-xl border border-emerald-500/30">
+          Launchpad
+        </div>
+      </div>
+
+      <p class="mt-6 text-zinc-500 max-w-xl mx-auto">
+        Voice instructions from Launchpad flow back to Command Center.
+        Your Claude agent picks them up when you're ready to work.
+      </p>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-16 text-center">
+      <p class="text-zinc-400 mb-4">Ready to see more?</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="../apps/command-center/mockups/pipeline-view-v4.html" class="px-8 py-3 bg-indigo-500 hover:bg-indigo-600 rounded-xl font-medium transition-colors">
+          View Command Center Mockups →
+        </a>
+        <a href="../apps/launchpad/mockups/dashboard.html" class="px-8 py-3 bg-emerald-500 hover:bg-emerald-600 rounded-xl font-medium transition-colors">
+          View Launchpad Mockups →
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center py-8 text-zinc-600 text-sm">
+    <p>Built by Arun • 2026</p>
+  </footer>
+
+</body>
+</html>

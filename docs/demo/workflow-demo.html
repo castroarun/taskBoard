@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workflow Demo - Interactive</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%); }
+
+    /* Animations */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.9; }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes recording {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      50% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes checkmark {
+      0% { stroke-dashoffset: 50; }
+      100% { stroke-dashoffset: 0; }
+    }
+
+    .step-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .step-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .step-card.active {
+      animation: pulse 2s infinite;
+      box-shadow: 0 0 40px rgba(99, 102, 241, 0.5);
+    }
+
+    .demo-content {
+      animation: slideIn 0.5s ease-out;
+    }
+
+    .notification-bounce {
+      animation: bounce 1s ease-in-out infinite;
+    }
+
+    .recording-pulse {
+      animation: recording 1.5s ease-in-out infinite;
+    }
+
+    .typing-text {
+      overflow: hidden;
+      white-space: nowrap;
+      animation: typing 2s steps(30, end);
+    }
+
+    .fade-in {
+      animation: slideIn 0.5s ease-out forwards;
+    }
+
+    .hidden-panel { display: none; }
+    .visible-panel { display: block; }
+  </style>
+</head>
+<body class="min-h-screen text-white p-8">
+
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <header class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4">Interactive Workflow Demo</h1>
+      <p class="text-zinc-400 text-lg">Click each step to see how the apps work together</p>
+    </header>
+
+    <!-- Step Cards -->
+    <div class="grid grid-cols-4 gap-4 mb-8">
+      <button onclick="showStep('morning')" id="btn-morning" class="step-card bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/50 rounded-xl p-6 text-center hover:border-amber-400">
+        <div class="text-4xl mb-2">☀️</div>
+        <h3 class="font-semibold">Morning</h3>
+        <p class="text-xs text-zinc-400">Get notified</p>
+      </button>
+
+      <button onclick="showStep('desk')" id="btn-desk" class="step-card bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/50 rounded-xl p-6 text-center hover:border-indigo-400">
+        <div class="text-4xl mb-2">💻</div>
+        <h3 class="font-semibold">At Desk</h3>
+        <p class="text-xs text-zinc-400">Work with AI</p>
+      </button>
+
+      <button onclick="showStep('voice')" id="btn-voice" class="step-card bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/50 rounded-xl p-6 text-center hover:border-emerald-400">
+        <div class="text-4xl mb-2">🎤</div>
+        <h3 class="font-semibold">Voice Instruct</h3>
+        <p class="text-xs text-zinc-400">Speak ideas</p>
+      </button>
+
+      <button onclick="showStep('ship')" id="btn-ship" class="step-card bg-gradient-to-br from-pink-500/20 to-rose-500/20 border border-pink-500/50 rounded-xl p-6 text-center hover:border-pink-400">
+        <div class="text-4xl mb-2">🚀</div>
+        <h3 class="font-semibold">Ship</h3>
+        <p class="text-xs text-zinc-400">Launch & celebrate</p>
+      </button>
+    </div>
+
+    <!-- Demo Area -->
+    <div class="bg-black/30 rounded-3xl p-8 min-h-[400px]">
+
+      <!-- Welcome Panel -->
+      <div id="panel-welcome" class="visible-panel text-center py-16">
+        <div class="text-6xl mb-6">👆</div>
+        <h2 class="text-2xl font-semibold mb-4">Click a step above to begin</h2>
+        <p class="text-zinc-400">See how Command Center and Launchpad work together throughout your day</p>
+      </div>
+
+      <!-- Morning Panel -->
+      <div id="panel-morning" class="hidden-panel demo-content">
+        <div class="flex gap-8 items-center">
+          <!-- Phone mockup -->
+          <div class="w-64 flex-shrink-0">
+            <div class="bg-gray-900 rounded-3xl p-2 border-4 border-gray-700">
+              <div class="bg-emerald-50 rounded-2xl p-4 min-h-[300px]">
+                <!-- Notification -->
+                <div class="notification-bounce bg-white rounded-xl shadow-lg p-4 mb-4 border-l-4 border-emerald-500">
+                  <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">🚨</div>
+                    <div>
+                      <p class="font-semibold text-gray-800 text-sm">Stale Project Alert</p>
+                      <p class="text-gray-600 text-xs">Numbers Game hasn't been touched in 7 days</p>
+                      <p class="text-emerald-600 text-xs mt-1">Tap to see details →</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-emerald-100 rounded-xl p-3 text-center">
+                  <p class="text-emerald-800 text-sm font-medium">📱 Launchpad</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="flex-1">
+            <h2 class="text-2xl font-bold mb-4 text-amber-400">☀️ Morning Check-In</h2>
+            <p class="text-zinc-300 mb-6">
+              Your phone buzzes. Launchpad noticed a project going stale and wants you to know.
+            </p>
+            <div class="space-y-3">
+              <div class="flex items-center gap-3 text-zinc-300">
+                <span class="text-emerald-400">✓</span>
+                <span>Smart notifications keep you accountable</span>
+              </div>
+              <div class="flex items-center gap-3 text-zinc-300">
+                <span class="text-emerald-400">✓</span>
+                <span>No need to remember to check projects</span>
+              </div>
+              <div class="flex items-center gap-3 text-zinc-300">
+                <span class="text-emerald-400">✓</span>
+                <span>Quick triage from your couch</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- At Desk Panel -->
+      <div id="panel-desk" class="hidden-panel demo-content">
+        <div class="flex gap-8 items-center">
+          <!-- Desktop mockup -->
+          <div class="w-80 flex-shrink-0">
+            <div class="bg-gray-800 rounded-xl p-1">
+              <div class="bg-[#0a0a0a] rounded-lg p-3 min-h-[280px]">
+                <!-- Mini pipeline -->
+                <div class="text-xs text-zinc-500 mb-2">Pipeline View</div>
+                <div class="flex gap-2">
+                  <div class="flex-1 bg-zinc-900 rounded p-2">
+                    <div class="text-[10px] text-zinc-500 mb-1">TODO</div>
+                    <div class="bg-indigo-900/50 text-[10px] p-1 rounded text-indigo-300 mb-1">Numbers Game</div>
+                    <div class="bg-zinc-800 text-[10px] p-1 rounded text-zinc-400">Strength App</div>
+                  </div>
+                  <div class="flex-1 bg-zinc-900 rounded p-2">
+                    <div class="text-[10px] text-zinc-500 mb-1">IN PROGRESS</div>
+                    <div class="bg-purple-900/50 text-[10px] p-1 rounded text-purple-300 fade-in">Portfolio</div>
+                  </div>
+                  <div class="flex-1 bg-zinc-900 rounded p-2">
+                    <div class="text-[10px] text-zinc-500 mb-1">DONE</div>
+                    <div class="bg-emerald-900/50 text-[10px] p-1 rounded text-emerald-300">NoteApp</div>
+                  </div>
+                </div>
+
+                <!-- Command bar animation -->
+                <div class="mt-4 bg-zinc-900 rounded-lg p-2 border border-indigo-500/50">
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class="text-zinc-500">⌘K</span>
+                    <span class="typing-text text-indigo-300">Ask Claude to help with dark mode...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="flex-1">
+            <h2 class="text-2xl font-bold mb-4 text-indigo-400">💻 Work Session</h2>
+            <p class="text-zinc-300 mb-6">
+              Open Command Center at your desk. See all projects in the pipeline. Pick a task and let Claude help you build it.
+            </p>
+            <div class="space-y-3">
+              <div class="flex items-center gap-3 text-zinc-300">
+                <span class="text-indigo-400">✓</span>
+                <span>Full kanban view of all projects</span>
+              </div>
+              <div class="flex items-center gap-3 text-zinc-300">
+                <span class="text-indigo-400">✓</span>
+                <span>⌘K to quickly search or command</span>
+              </div>
+              <div class="flex items-center gap-3 text-zinc-300">
+                <span class="text-indigo-400">✓</span>
+                <span>AI agents help design, code, test</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Voice Panel -->
+      <div id="panel-voice" class="hidden-panel demo-content">
+        <div class="flex gap-8 items-center">
+          <!-- Phone mockup -->
+          <div class="w-64 flex-shrink-0">
+            <div class="bg-gray-900 rounded-3xl p-2 border-4 border-gray-700">
+              <div class="bg-gray-50 rounded-2xl p-4 min-h-[300px] flex flex-col items-center justify-center">
+                <!-- Recording animation -->
+                <div class="recording-pulse w-24 h-24 bg-red-500 rounded-full flex items-center justify-center mb-4">
+                  <span class="text-4xl">🎙️</span>
+                </div>
+                <p class="text-gray-800 font-medium mb-2">Recording...</p>
+                <p class="text-gray-600 text-sm text-center px-4">"Add dark mode toggle to the settings page"</p>
+
+                <div class="mt-4 w-full bg-gray-200 rounded-full h-2">
+                  <div class="bg-red-500 h-2 rounded-full" style="width: 60%; animation: typing 3s infinite;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="flex-1">
+            <h2 class="text-2xl font-bold mb-4 text-emerald-400">🎤 Voice Capture</h2>
+            <p class="text-zinc-300 mb-6">
+              Walking and have an idea? Just speak it. Your voice becomes a structured task that syncs to your desktop.
+            </p>
+
+            <!-- Flow visualization -->
+            <div class="flex items-center gap-2 text-sm mb-6">
+              <div class="bg-emerald-500/20 px-3 py-1 rounded-full text-emerald-300">Speak</div>
+              <span class="text-zinc-500">→</span>
+              <div class="bg-indigo-500/20 px-3 py-1 rounded-full text-indigo-300">Transcribed</div>
+              <span class="text-zinc-500">→</span>
+              <div class="bg-amber-500/20 px-3 py-1 rounded-full text-amber-300">AI Structures</div>
+              <span class="text-zinc-500">→</span>
+              <div class="bg-blue-500/20 px-3 py-1 rounded-full text-blue-300">Inbox</div>
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex items-center gap-3 text-zinc-300">
+                <span class="text-emerald-400">✓</span>
+                <span>Hands-free idea capture</span>
+              </div>
+              <div class="flex items-center gap-3 text-zinc-300">
+                <span class="text-emerald-400">✓</span>
+                <span>AI extracts project, priority, tags</span>
+              </div>
+              <div class="flex items-center gap-3 text-zinc-300">
+                <span class="text-emerald-400">✓</span>
+                <span>Claude picks up when you're at desk</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ship Panel -->
+      <div id="panel-ship" class="hidden-panel demo-content">
+        <div class="flex gap-8 items-center">
+          <!-- Phone mockup -->
+          <div class="w-64 flex-shrink-0">
+            <div class="bg-gray-900 rounded-3xl p-2 border-4 border-gray-700">
+              <div class="bg-emerald-50 rounded-2xl p-4 min-h-[300px]">
+                <div class="text-center mb-4">
+                  <span class="text-3xl">🚀</span>
+                  <h3 class="font-bold text-gray-800">Ship Wizard</h3>
+                </div>
+
+                <!-- Checklist -->
+                <div class="space-y-2 mb-4">
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class="text-emerald-500">✅</span>
+                    <span class="text-gray-700">Tests passing</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class="text-emerald-500">✅</span>
+                    <span class="text-gray-700">README updated</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class="text-emerald-500">✅</span>
+                    <span class="text-gray-700">Screenshot added</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class="text-amber-500">⏳</span>
+                    <span class="text-gray-700">LinkedIn post draft</span>
+                  </div>
+                </div>
+
+                <button class="w-full py-2 bg-emerald-500 text-white rounded-xl font-medium text-sm">
+                  🎉 Ship It!
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="flex-1">
+            <h2 class="text-2xl font-bold mb-4 text-pink-400">🚀 Ship & Celebrate</h2>
+            <p class="text-zinc-300 mb-6">
+              Project ready? The Ship Wizard walks you through a checklist and even drafts your LinkedIn announcement.
+            </p>
+
+            <!-- Celebration animation -->
+            <div class="bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-xl p-4 mb-6 border border-pink-500/30">
+              <div class="flex items-center gap-4">
+                <div class="text-4xl">🎉</div>
+                <div>
+                  <p class="font-semibold text-pink-300">Time to celebrate!</p>
+                  <p class="text-zinc-400 text-sm">Share your win with the world</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex items-center gap-3 text-zinc-300">
+                <span class="text-pink-400">✓</span>
+                <span>Pre-flight checklist ensures quality</span>
+              </div>
+              <div class="flex items-center gap-3 text-zinc-300">
+                <span class="text-pink-400">✓</span>
+                <span>AI-generated LinkedIn post draft</span>
+              </div>
+              <div class="flex items-center gap-3 text-zinc-300">
+                <span class="text-pink-400">✓</span>
+                <span>One tap to mark as shipped</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="flex justify-center gap-4 mt-8">
+      <button onclick="previousStep()" class="px-6 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition-colors">
+        ← Previous
+      </button>
+      <button onclick="nextStep()" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors">
+        Next →
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    const steps = ['morning', 'desk', 'voice', 'ship'];
+    let currentStep = -1;
+
+    function showStep(step) {
+      // Hide all panels
+      document.querySelectorAll('[id^="panel-"]').forEach(panel => {
+        panel.classList.remove('visible-panel');
+        panel.classList.add('hidden-panel');
+      });
+
+      // Remove active from all buttons
+      document.querySelectorAll('.step-card').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // Show selected panel
+      document.getElementById(`panel-${step}`).classList.remove('hidden-panel');
+      document.getElementById(`panel-${step}`).classList.add('visible-panel');
+
+      // Mark button as active
+      document.getElementById(`btn-${step}`).classList.add('active');
+
+      currentStep = steps.indexOf(step);
+    }
+
+    function nextStep() {
+      if (currentStep < steps.length - 1) {
+        showStep(steps[currentStep + 1]);
+      } else {
+        showStep(steps[0]);
+      }
+    }
+
+    function previousStep() {
+      if (currentStep > 0) {
+        showStep(steps[currentStep - 1]);
+      } else {
+        showStep(steps[steps.length - 1]);
+      }
+    }
+  </script>
+
+</body>
+</html>
