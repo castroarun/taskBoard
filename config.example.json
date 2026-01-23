@@ -1,29 +1,32 @@
 {
   "$schema": "./config.schema.json",
   "version": "1.0.0",
-  "created": "2026-01-18T00:00:00Z",
+  "created": "2026-01-23T00:00:00Z",
+
+  "_comment": "Copy this file to config.json and customize for your setup",
 
   "user": {
-    "name": "Arun Prakash",
-    "email": "arun.castromin@gmail.com",
-    "timezone": "Asia/Singapore",
+    "name": "Your Name",
+    "email": "you@example.com",
+    "timezone": "UTC",
     "avatar": null,
     "preferences": {
       "theme": "dark",
       "language": "TypeScript",
-      "defaultFramework": "Tauri",
+      "defaultFramework": "Next.js",
       "defaultStyling": "Tailwind",
       "defaultStateManagement": "Zustand"
     }
   },
 
   "paths": {
-    "projects": "C:/Users/Castro/Documents/Projects",
+    "projects": "~/Documents/Projects",
     "dataFolder": "~/.taskboard",
     "screenshotsFolder": "assets"
   },
 
   "workflow": {
+    "_comment": "Customize project stages and phases",
     "phases": [
       {
         "id": "design",
@@ -72,39 +75,41 @@
   },
 
   "documents": {
+    "_comment": "Default document structure for new projects",
     "categories": [
       {
         "id": "design",
         "name": "Design",
-        "icon": "pencil",
+        "icon": "📐",
         "defaultFiles": ["APP_PRD.md", "DESIGN.md"]
       },
       {
         "id": "engineering",
         "name": "Engineering",
-        "icon": "cog",
+        "icon": "⚙️",
         "defaultFiles": ["ARCHITECTURE.md", "DEVELOPMENT-PLAN.md", "TEST-PLAN.csv"]
       },
       {
         "id": "build",
         "name": "Build",
-        "icon": "wrench",
+        "icon": "🔨",
         "defaultFiles": ["DEV-CLOCK.md", "PROJECT-STATUS.md", "CHANGELOG.md"]
       },
       {
         "id": "launch",
         "name": "Launch",
-        "icon": "rocket",
+        "icon": "🚀",
         "defaultFiles": ["PLAY_STORE_LISTING.md", "LINKEDIN-POST.md", "PRIVACY_POLICY.md"]
       },
       {
         "id": "other",
         "name": "Other",
-        "icon": "document",
+        "icon": "📎",
         "defaultFiles": ["GLOSSARY.md"]
       }
     ],
     "approvalMandatory": {
+      "_comment": "Documents that require explicit approval before proceeding",
       "beforeEngineering": ["APP_PRD.md"],
       "beforeBuild": ["ARCHITECTURE.md"],
       "beforeLaunch": ["TEST-PLAN.csv"]
@@ -112,6 +117,7 @@
   },
 
   "agents": {
+    "_comment": "AI agent prompt templates for automation",
     "enabled": true,
     "templates": {
       "orchestrator": "agents/orchestrator.md",
@@ -127,22 +133,23 @@
 
   "integrations": {
     "groq": {
+      "_comment": "Get your API key from https://console.groq.com/keys",
       "enabled": true,
-      "apiKey": "",
+      "apiKey": "YOUR_GROQ_API_KEY_HERE",
       "model": "whisper-large-v3-turbo",
       "useFor": ["voiceTranscription"]
     },
     "github": {
       "enabled": false,
-      "username": "castroarun",
+      "username": null,
       "defaultVisibility": "private"
     },
     "jira": {
       "enabled": false,
-      "url": "https://castroarun.atlassian.net",
-      "email": "arun.castromin@gmail.com",
+      "url": null,
+      "email": null,
       "apiToken": null,
-      "defaultProject": "TASKBOARD"
+      "defaultProject": null
     }
   },
 

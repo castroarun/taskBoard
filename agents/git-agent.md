@@ -173,8 +173,60 @@ function updateLaunchpad(project: Project): void {
 - [ ] All changes staged
 - [ ] Commit message follows format
 - [ ] LAUNCHPAD block updated
+- [ ] **README quality check passed** (see below)
 - [ ] No sensitive data in commit
 - [ ] Tests pass (if applicable)
+
+---
+
+## README Integration
+
+### Automatic README Check
+
+Before every push, the git-agent calls `/readme check` to verify README quality.
+
+**Command:** `_claude-shared/commands/readme.md`
+
+### Quality Scoring Thresholds
+
+| Score | Status | Action |
+|-------|--------|--------|
+| **< 50** | 🔴 Critical | **BLOCK push** - Run `/readme fix` first |
+| **50-69** | 🟡 Needs Work | Warn user, show suggestions |
+| **≥ 70** | 🟢 Healthy | Proceed with push |
+
+### Pre-Push README Workflow
+
+```
+1. Run `/readme check` on project README
+2. Get quality score (0-100)
+3. If score < 50:
+   - Display warning: "README quality critical (score: XX)"
+   - Suggest: "Run `/readme fix` to auto-improve"
+   - Block push until fixed or user overrides
+4. If score 50-69:
+   - Display: "README could be improved (score: XX)"
+   - List top 3 suggestions
+   - Proceed with push
+5. If score >= 70:
+   - Display: "README healthy (score: XX) ✓"
+   - Proceed with push
+```
+
+### Integration with LAUNCHPAD
+
+The `/readme` command also validates:
+- LAUNCHPAD block presence
+- LAUNCHPAD data accuracy (matches project state)
+- LAUNCHPAD format compliance
+
+### Override Option
+
+For urgent pushes, user can bypass README check:
+```
+push <proj> --skip-readme
+```
+This logs a warning but proceeds.
 
 ---
 

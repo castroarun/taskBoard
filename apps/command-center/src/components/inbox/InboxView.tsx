@@ -179,18 +179,20 @@ export function InboxView() {
             <button
               type="button"
               onClick={handleVoiceCapture}
-              disabled={!voiceAvailable || isRecording}
+              disabled={isRecording}
               className={clsx(
-                'px-4 py-3 border rounded-lg transition-all',
+                'px-4 py-3 border rounded-lg transition-all group relative',
                 isRecording
                   ? 'bg-red-500/20 border-red-500/50 text-red-400 animate-pulse'
-                  : voiceAvailable
-                  ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700'
-                  : 'bg-zinc-800/50 border-zinc-700/50 text-zinc-600 cursor-not-allowed'
+                  : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700'
               )}
-              title={voiceAvailable ? (isRecording ? 'Recording...' : 'Voice capture') : 'Voice not available'}
+              title={isRecording ? 'Recording...' : 'Voice capture (AI transcription)'}
             >
               {isRecording ? '⏺️' : '🎤'}
+              {/* AI Badge */}
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-purple-500 rounded-full flex items-center justify-center">
+                <span className="text-[8px] text-white font-bold">AI</span>
+              </span>
             </button>
             <button
               type="submit"
@@ -236,7 +238,8 @@ export function InboxView() {
             Pending ({pendingItems.length})
           </h2>
           {pendingItems.length > 0 && (
-            <button className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
+            <button className="text-xs text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1.5 group">
+              <span className="px-1.5 py-0.5 bg-purple-500/20 text-purple-400 rounded text-[10px] font-semibold">AI</span>
               Process All with Agent →
             </button>
           )}

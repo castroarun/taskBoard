@@ -12,6 +12,14 @@ export const isTauri = (): boolean => {
   return '__TAURI__' in window;
 };
 
+// Dev mode in-memory image store (simulates file system)
+interface DevImageStore {
+  [projectPath: string]: {
+    [folder: string]: Array<{ name: string; dataUrl: string }>;
+  };
+}
+const devImageStore: DevImageStore = {};
+
 // Data API
 
 interface ProjectsData {
@@ -27,16 +35,21 @@ interface TasksData {
 }
 
 /**
- * Read projects from ~/.taskboard/projects.json
+ * Read projects from ~/.taskboard/projects.json (or /data/projects.json in dev)
  */
 export async function readProjects(): Promise<ProjectsData> {
   if (!isTauri()) {
-    // Return mock data for development
-    return {
-      version: '1.0.0',
-      lastUpdated: new Date().toISOString(),
-      projects: getMockProjects(),
-    };
+    // In dev mode, fetch from public data folder
+    try {
+      const response = await fetch('/data/projects.json');
+      if (response.ok) {
+        return response.json();
+      }
+    } catch (e) {
+      console.warn('[tauri] Failed to fetch projects.json, using fallback');
+    }
+    // Fallback to empty
+    return { version: '1.0.0', lastUpdated: new Date().toISOString(), projects: [] };
   }
 
   const data = await invoke<string>('read_projects');
@@ -56,15 +69,21 @@ export async function writeProjects(data: ProjectsData): Promise<void> {
 }
 
 /**
- * Read tasks from ~/.taskboard/tasks.json
+ * Read tasks from ~/.taskboard/tasks.json (or /data/tasks.json in dev)
  */
 export async function readTasks(): Promise<TasksData> {
   if (!isTauri()) {
-    return {
-      version: '1.0.0',
-      lastUpdated: new Date().toISOString(),
-      tasks: getMockTasks(),
-    };
+    // In dev mode, fetch from public data folder
+    try {
+      const response = await fetch('/data/tasks.json');
+      if (response.ok) {
+        return response.json();
+      }
+    } catch (e) {
+      console.warn('[tauri] Failed to fetch tasks.json, using fallback');
+    }
+    // Fallback to empty
+    return { version: '1.0.0', lastUpdated: new Date().toISOString(), tasks: [] };
   }
 
   const data = await invoke<string>('read_tasks');
@@ -111,7 +130,42 @@ export async function writeInbox(content: string): Promise<void> {
  */
 export async function readDocument(path: string): Promise<string> {
   if (!isTauri()) {
-    return `# Mock Document\n\nThis is mock content for: ${path}`;
+    // In browser dev mode, show the actual file path with instructions
+    const fileName = path.split(/[/\\]/).pop() || path;
+    return `# 📄 ${fileName}
+
+> **File Path:** \`${path}\`
+
+---
+
+## 🖥️ Browser Dev Mode
+
+This document cannot be loaded in browser mode because direct filesystem access is restricted.
+
+### To view this document:
+
+1. **Run in Tauri desktop mode:**
+   \`\`\`bash
+   cd apps/command-center
+   npm run tauri dev
+   \`\`\`
+
+2. **Or open directly:**
+   - Open the file in VS Code or your preferred editor
+   - Path: \`${path}\`
+
+### Document Info
+
+| Property | Value |
+|----------|-------|
+| **File** | ${fileName} |
+| **Full Path** | ${path} |
+| **Type** | ${path.endsWith('.md') ? 'Markdown' : path.endsWith('.csv') ? 'CSV' : path.endsWith('.sql') ? 'SQL' : 'Document'} |
+
+---
+
+*Switch to Tauri desktop mode to view and edit documents directly.*
+`;
   }
 
   return invoke<string>('read_document', { path });
@@ -150,158 +204,179 @@ export async function voiceCapture(durationSecs: number): Promise<string> {
   return invoke<string>('voice_capture', { durationSecs });
 }
 
-// Mock Data for Development
+// External App API
 
-function getMockProjects(): Project[] {
-  return [
-    {
-      id: 'taskboard',
-      name: "Arun's Task Board",
-      description: 'File-based project orchestration',
-      repoPath: '~/Projects/taskboard',
-      githubUrl: 'https://github.com/ArunPrakashG/taskboard',
-      stage: 'development',
-      stageStatus: 'in-progress',
-      currentPhase: 'build',
-      priority: 'P1',
-      complexity: 'F',
-      progress: 65,
-      targetDate: '2026-02-15',
-      startedAt: '2026-01-10T00:00:00Z',
-      createdAt: '2026-01-10T00:00:00Z',
-      lastUpdated: new Date().toISOString(),
-      completedAt: null,
-      tags: ['desktop', 'productivity', 'tauri'],
-      techStack: ['Tauri', 'React', 'TypeScript'],
-      links: {
-        github: 'https://github.com/ArunPrakashG/taskboard',
-        docs: null,
-        live: null,
-      },
-      metrics: {
-        totalTasks: 24,
-        completedTasks: 15,
-        blockedTasks: 1,
-      },
-    },
-    {
-      id: 'tradevoice',
-      name: 'TradeVoice',
-      description: 'Voice-powered stock trading commands',
-      repoPath: '~/Projects/tradevoice',
-      githubUrl: null,
-      stage: 'architecture',
-      stageStatus: 'in-progress',
-      currentPhase: 'engineering',
-      priority: 'P1',
-      complexity: 'F',
-      progress: 45,
-      targetDate: '2026-02-28',
-      startedAt: '2026-01-15T00:00:00Z',
-      createdAt: '2026-01-15T00:00:00Z',
-      lastUpdated: new Date().toISOString(),
-      completedAt: null,
-      tags: ['voice', 'trading', 'mobile'],
-      techStack: ['React Native', 'Whisper', 'TypeScript'],
-      links: {
-        github: null,
-        docs: null,
-        live: null,
-      },
-      metrics: {
-        totalTasks: 12,
-        completedTasks: 5,
-        blockedTasks: 1,
-      },
-    },
-    {
-      id: 'reppit',
-      name: 'REPPIT',
-      description: 'Progressive overload fitness app',
-      repoPath: '~/Projects/strength_profile_tracker',
-      githubUrl: 'https://github.com/castroarun/strength-tracker',
-      stage: 'announce',
-      stageStatus: 'in-progress',
-      currentPhase: 'launch',
-      priority: 'P2',
-      complexity: 'F',
-      progress: 95,
-      targetDate: '2026-01-30',
-      startedAt: '2025-12-01T00:00:00Z',
-      createdAt: '2025-12-01T00:00:00Z',
-      lastUpdated: new Date().toISOString(),
-      completedAt: null,
-      tags: ['fitness', 'pwa', 'mobile'],
-      techStack: ['Next.js', 'Supabase', 'TypeScript'],
-      links: {
-        github: 'https://github.com/castroarun/strength-tracker',
-        docs: null,
-        live: 'https://reppit.vercel.app',
-      },
-      metrics: {
-        totalTasks: 18,
-        completedTasks: 17,
-        blockedTasks: 0,
-      },
-    },
-  ];
+/**
+ * Open a folder in VS Code
+ */
+export async function openInVSCode(path: string): Promise<void> {
+  if (!isTauri()) {
+    console.log('Mock: Opening in VS Code', path);
+    // In dev, try to use window.open with vscode:// protocol
+    window.open(`vscode://file/${path}`, '_blank');
+    return;
+  }
+
+  await invoke('open_in_vscode', { path });
 }
 
-function getMockTasks(): Task[] {
-  return [
-    {
-      id: 't-20260118-a1b2',
-      projectId: 'taskboard',
-      title: 'Build Pipeline kanban view',
-      description: 'Create the main dashboard view with drag-drop between stages',
-      stage: 'development',
-      phase: 'development',
-      status: 'in-progress',
-      priority: 'P0',
-      complexity: 'L',
-      assignee: 'claude',
-      assignedAgent: 'dev-agent',
-      dueDate: '2026-01-20',
-      startedAt: '2026-01-18T08:00:00Z',
-      createdAt: '2026-01-15T00:00:00Z',
-      updatedAt: new Date().toISOString(),
-      completedAt: null,
-      dependencies: [],
-      linkedDocs: ['.taskboard/docs/2-engineering/ARCHITECTURE.md'],
-      subtasks: [
-        { id: 'st-001', title: 'Set up Kanban grid', completed: true },
-        { id: 'st-002', title: 'Create project card', completed: true },
-        { id: 'st-003', title: 'Implement drag-drop', completed: false },
-      ],
-      tags: ['feature', 'ui'],
-      comments: [],
-      createdBy: 'agent',
-      sourceDoc: '.taskboard/docs/2-engineering/ARCHITECTURE.md',
-    },
-    {
-      id: 't-20260118-c3d4',
-      projectId: 'taskboard',
-      title: 'Implement file watchers',
-      description: 'Watch JSON files for changes and update UI automatically',
-      stage: 'development',
-      phase: 'development',
-      status: 'todo',
-      priority: 'P1',
-      complexity: 'M',
-      assignee: 'claude',
-      assignedAgent: 'dev-agent',
-      dueDate: '2026-01-22',
-      startedAt: null,
-      createdAt: '2026-01-17T00:00:00Z',
-      updatedAt: new Date().toISOString(),
-      completedAt: null,
-      dependencies: [],
-      linkedDocs: [],
-      subtasks: [],
-      tags: ['feature', 'backend'],
-      comments: [],
-      createdBy: 'agent',
-      sourceDoc: null,
-    },
-  ];
+/**
+ * Open a folder in Claude Code (terminal with claude command)
+ */
+export async function openInClaudeCode(path: string): Promise<void> {
+  if (!isTauri()) {
+    console.log('Mock: Opening in Claude Code', path);
+    alert(`Would open Claude Code in: ${path}`);
+    return;
+  }
+
+  await invoke('open_in_claude_code', { path });
+}
+
+/**
+ * Get project screenshots by scanning the assets folder
+ * Default folder: assets/ (configurable)
+ * Supported formats: png, jpg, jpeg, gif, webp
+ */
+export async function getProjectScreenshots(repoPath: string, folder: string = 'assets'): Promise<string[]> {
+  if (!isTauri()) {
+    // In dev mode, return images from in-memory store
+    const projectImages = devImageStore[repoPath]?.[folder] || [];
+    console.log(`[tauri] Dev mode: returning ${projectImages.length} images from store`);
+    // Return pseudo-paths that getAssetUrl will recognize
+    return projectImages.map(img => `dev://${repoPath}/${folder}/${img.name}`);
+  }
+
+  try {
+    return await invoke<string[]>('get_project_screenshots', { path: repoPath, folder });
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Convert a local file path to a Tauri asset URL for display
+ */
+export function getAssetUrl(path: string): string {
+  if (!isTauri()) {
+    // In dev mode, check if this is a dev:// pseudo-path
+    if (path.startsWith('dev://')) {
+      // Extract repoPath, folder, and filename from dev://repoPath/folder/filename
+      const withoutProtocol = path.replace('dev://', '');
+      const parts = withoutProtocol.split('/');
+      const fileName = parts.pop()!;
+      const folder = parts.pop()!;
+      const repoPath = parts.join('/');
+
+      // Look up the data URL from the store
+      const image = devImageStore[repoPath]?.[folder]?.find(img => img.name === fileName);
+      if (image) {
+        return image.dataUrl;
+      }
+    }
+    // Fallback for browser (won't work due to security)
+    return `file:///${path.replace(/\\/g, '/')}`;
+  }
+  // Tauri asset protocol - allows loading local files
+  return `asset://localhost/${path.replace(/\\/g, '/')}`;
+}
+
+/**
+ * Upload an image to the project's assets folder
+ * Returns the full path of the saved file
+ */
+export async function uploadProjectImage(
+  repoPath: string,
+  folder: string,
+  fileName: string,
+  base64Data: string
+): Promise<string> {
+  if (!isTauri()) {
+    // In dev mode, store in memory
+    if (!devImageStore[repoPath]) {
+      devImageStore[repoPath] = {};
+    }
+    if (!devImageStore[repoPath][folder]) {
+      devImageStore[repoPath][folder] = [];
+    }
+
+    // Determine MIME type from file extension
+    const ext = fileName.split('.').pop()?.toLowerCase() || 'png';
+    const mimeTypes: Record<string, string> = {
+      png: 'image/png',
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      gif: 'image/gif',
+      webp: 'image/webp',
+    };
+    const mimeType = mimeTypes[ext] || 'image/png';
+
+    // Reconstruct full data URL for display
+    const dataUrl = `data:${mimeType};base64,${base64Data}`;
+
+    // Add to store (or replace if exists)
+    const existingIndex = devImageStore[repoPath][folder].findIndex(img => img.name === fileName);
+    if (existingIndex >= 0) {
+      devImageStore[repoPath][folder][existingIndex] = { name: fileName, dataUrl };
+    } else {
+      devImageStore[repoPath][folder].push({ name: fileName, dataUrl });
+    }
+
+    console.log(`[tauri] Dev mode: stored image ${fileName} (total: ${devImageStore[repoPath][folder].length})`);
+    return `dev://${repoPath}/${folder}/${fileName}`;
+  }
+
+  return invoke<string>('upload_project_image', {
+    path: repoPath,
+    folder,
+    fileName,
+    base64Data,
+  });
+}
+
+/**
+ * Add an image reference to the project's README.md
+ * Inserts the image in the screenshots section or creates one
+ */
+export async function addImageToReadme(
+  repoPath: string,
+  imagePath: string,
+  altText: string
+): Promise<void> {
+  if (!isTauri()) {
+    console.log(`[tauri] Would add image to README: ${imagePath}`);
+    return;
+  }
+
+  await invoke('add_image_to_readme', {
+    path: repoPath,
+    imagePath,
+    altText,
+  });
+}
+
+/**
+ * Delete an image from the project's assets folder
+ */
+export async function deleteProjectImage(imagePath: string): Promise<void> {
+  if (!isTauri()) {
+    // In dev mode, remove from memory store
+    if (imagePath.startsWith('dev://')) {
+      const withoutProtocol = imagePath.replace('dev://', '');
+      const parts = withoutProtocol.split('/');
+      const fileName = parts.pop()!;
+      const folder = parts.pop()!;
+      const repoPath = parts.join('/');
+
+      if (devImageStore[repoPath]?.[folder]) {
+        devImageStore[repoPath][folder] = devImageStore[repoPath][folder].filter(
+          img => img.name !== fileName
+        );
+        console.log(`[tauri] Dev mode: deleted image ${fileName}`);
+      }
+    }
+    return;
+  }
+
+  await invoke('delete_project_image', { path: imagePath });
 }

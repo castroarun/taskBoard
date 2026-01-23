@@ -1,100 +1,189 @@
 import { useState, useEffect } from 'react';
-import { useAppStore, DocFile, Project } from '@/store';
+import { useAppStore, DocFile, Project, DocumentReview } from '@/store';
 import { readDocument, writeDocument } from '@/lib/tauri';
+import { useVoiceRecorder } from '@/hooks/useVoiceRecorder';
+import { transcribeAudio } from '@/lib/groq';
 import clsx from 'clsx';
 import ReactMarkdown from 'react-markdown';
 
-// Build document tree from projects
-function buildDocTree(projects: Project[]): DocFile[] {
-  return projects.map((project) => ({
-    name: project.name,
-    path: `${project.repoPath}/.taskboard/docs`,
-    type: 'folder' as const,
-    children: [
-      {
-        name: '1-design',
-        path: `${project.repoPath}/.taskboard/docs/1-design`,
-        type: 'folder' as const,
-        children: [
-          { name: 'idea.md', path: `${project.repoPath}/.taskboard/docs/1-design/idea.md`, type: 'md' as const },
-          { name: 'discovery.md', path: `${project.repoPath}/.taskboard/docs/1-design/discovery.md`, type: 'md' as const },
-          { name: 'APP_PRD.md', path: `${project.repoPath}/.taskboard/docs/1-design/APP_PRD.md`, type: 'md' as const },
-        ],
-      },
-      {
-        name: '2-engineering',
-        path: `${project.repoPath}/.taskboard/docs/2-engineering`,
-        type: 'folder' as const,
-        children: [
-          { name: 'ARCHITECTURE.md', path: `${project.repoPath}/.taskboard/docs/2-engineering/ARCHITECTURE.md`, type: 'md' as const },
-          { name: 'TEST_CASES.md', path: `${project.repoPath}/.taskboard/docs/2-engineering/TEST_CASES.md`, type: 'md' as const },
-        ],
-      },
-      {
-        name: '3-build',
-        path: `${project.repoPath}/.taskboard/docs/3-build`,
-        type: 'folder' as const,
-        children: [
-          { name: 'CHANGELOG.md', path: `${project.repoPath}/.taskboard/docs/3-build/CHANGELOG.md`, type: 'md' as const },
-        ],
-      },
-    ],
-  }));
+// AI Badge Component
+function AIBadge({ model, purpose }: { model: string; purpose: string }) {
+  return (
+    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-purple-500/10 border border-purple-500/30 rounded text-[10px]">
+      <span className="w-3 h-3 bg-purple-500 rounded flex items-center justify-center">
+        <span className="text-[6px] text-white font-bold">AI</span>
+      </span>
+      <span className="text-purple-400 font-medium">{model}</span>
+      <span className="text-zinc-500">• {purpose}</span>
+    </span>
+  );
 }
 
-// Mock markdown content for development
-const MOCK_CONTENT = `# Project Architecture
+// Known document mappings per project (based on actual docs/ folders)
+// This maps project IDs to their actual documentation structure
+const PROJECT_DOC_MAPPINGS: Record<string, { design: string[]; engineering: string[]; build: string[]; launch: string[]; other: string[] }> = {
+  'anycalc': {
+    design: ['APP_PRD.md', 'Design/DESIGN.md'],
+    engineering: ['DEVELOPMENT-PLAN.md', 'TEST-PLAN.csv'],
+    build: ['DEV-CLOCK.md', 'PROJECT-STATUS.md'],
+    launch: ['LINKEDIN-POSTS.md', 'TECH-STACK-WALKTHROUGH.md'],
+    other: ['GLOSSARY.md'],
+  },
+  'portfolio': {
+    design: ['Design/DESIGN.md', 'PORTFOLIO-FEATURES.md'],
+    engineering: ['CASE-STUDY-TEMPLATE.md'],
+    build: ['PROJECT-STATUS.md'],
+    launch: ['LINKEDIN-POSTS-PORTFOLIO.md'],
+    other: ['PORTFOLIO-REVIEW.md'],
+  },
+  'noteapp': {
+    design: ['NOTE-APP-PRD.md', 'DESIGN.md', 'UI-PROTOTYPES.md'],
+    engineering: ['DATABASE-SCHEMA.sql', 'TEST-PLAN.csv'],
+    build: ['DEV-CLOCK.md', 'BUILD-INSTRUCTIONS.md', 'CODE-WALKTHROUGH.md'],
+    launch: ['linked-in-instructions.md'],
+    other: ['NOTE-APP-PROJECT.md', 'TIME-SPENT.md'],
+  },
+  'primmo': {
+    design: ['Design/APP_PRD.md'],
+    engineering: ['DEVELOPMENT-PLAN.md', 'TEST-PLAN.csv'],
+    build: ['DEV-CLOCK.md', 'PROJECT-STATUS.md', 'TWILIO-SETUP.md'],
+    launch: ['PLAY_STORE_LISTING.md', 'PRIVACY_POLICY.md'],
+    other: ['GLOSSARY.md'],
+  },
+  'reppit': {
+    design: ['APP_PRD.md', 'strength_profile_tracker_PRD.md', 'COACHING_FEATURES.md'],
+    engineering: ['DEVELOPMENT-PLAN.md', 'PROJECT-SETUP.md', 'TEST-PLAN.csv'],
+    build: ['DEV-CLOCK.md', 'PROJECT-STATUS.md', 'ANDROID_BUILD_GUIDE.md', 'SUPABASE-SETUP.md'],
+    launch: ['PLAY_STORE_LISTING.md', 'linkedin-post.md', 'linkedin-article-draft.md', 'PRIVACY_POLICY.md'],
+    other: [],
+  },
+  'covered-calls': {
+    design: ['APP_PRD.md', 'Design/DESIGN.md'],
+    engineering: ['DEVELOPMENT-PLAN.md', 'TEST-PLAN.csv', 'TEST-PLAN-SUMMARY.md'],
+    build: ['DEV-CLOCK.md', 'PROJECT-STATUS.md'],
+    launch: ['BEST-STRATEGIES.md', 'CLAUDE-CODE-PORTFOLIO.md'],
+    other: ['GLOSSARY.md'],
+  },
+  'conexus': {
+    design: ['APP_PRD.md', 'DESIGN-SPEC.md'],
+    engineering: ['DEVELOPMENT-PLAN.md', 'TEST-PLAN.csv'],
+    build: ['DEV-CLOCK.md', 'PROJECT-STATUS.md'],
+    launch: [],
+    other: ['GLOSSARY.md'],
+  },
+  'taskboard': {
+    design: ['docs/Design/APP_PRD.md'],
+    engineering: ['docs/Design/ARCHITECTURE.md', 'docs/QA_PLAN.md'],
+    build: ['docs/DEV-CLOCK.md', 'docs/PROJECT-STATUS.md'],
+    launch: [],
+    other: [],
+  },
+};
 
-## Overview
+// Build document tree from projects using real document mappings
+function buildDocTree(projects: Project[]): DocFile[] {
+  return projects.map((project) => {
+    const mapping = PROJECT_DOC_MAPPINGS[project.id];
+    const docsBase = project.id === 'taskboard' ? project.repoPath : `${project.repoPath}/docs`;
 
-This document outlines the technical architecture for the Command Center application.
+    // Helper to create doc entries
+    const createDocEntries = (files: string[]): DocFile[] => {
+      return files.map((file) => ({
+        name: file.split('/').pop() || file,
+        path: project.id === 'taskboard' ? `${project.repoPath}/${file}` : `${docsBase}/${file}`,
+        type: 'md' as const,
+      }));
+    };
 
-## Tech Stack
+    // If we have a mapping, use it; otherwise show README
+    if (mapping) {
+      const children: DocFile[] = [];
 
-| Component | Technology | Rationale |
-|-----------|------------|-----------|
-| **Desktop App** | Tauri 2.0 + Rust | 3MB binary, native performance |
-| **Frontend** | React 18 + TypeScript | Familiar ecosystem |
-| **Styling** | Tailwind CSS | Utility-first, dark theme |
-| **State** | Zustand | Minimal, no boilerplate |
+      if (mapping.design.length > 0) {
+        children.push({
+          name: '📐 Design',
+          path: `${docsBase}/design`,
+          type: 'folder' as const,
+          children: createDocEntries(mapping.design),
+        });
+      }
 
-## Core Components
+      if (mapping.engineering.length > 0) {
+        children.push({
+          name: '⚙️ Engineering',
+          path: `${docsBase}/engineering`,
+          type: 'folder' as const,
+          children: createDocEntries(mapping.engineering),
+        });
+      }
 
-### 1. Pipeline View
-The main kanban board showing projects across 5 phases:
-- Design (conception, discovery, requirements)
-- Engineering (architecture, qa-planning, review)
-- Build (development, testing, staging)
-- Launch (ship, announce, walkthrough)
-- Closure (documentation, portfolio, retrospective)
+      if (mapping.build.length > 0) {
+        children.push({
+          name: '🔨 Build',
+          path: `${docsBase}/build`,
+          type: 'folder' as const,
+          children: createDocEntries(mapping.build),
+        });
+      }
 
-### 2. Quick Launch
-Command palette accessible via \`Cmd+K\`:
-- Search projects and tasks
-- Execute commands
-- Navigate between views
+      if (mapping.launch.length > 0) {
+        children.push({
+          name: '🚀 Launch',
+          path: `${docsBase}/launch`,
+          type: 'folder' as const,
+          children: createDocEntries(mapping.launch),
+        });
+      }
 
-### 3. Document Viewer
-Inline markdown reader and editor for project documentation.
+      if (mapping.other.length > 0) {
+        children.push({
+          name: '📎 Other',
+          path: `${docsBase}/other`,
+          type: 'folder' as const,
+          children: createDocEntries(mapping.other),
+        });
+      }
 
-## Data Flow
+      // Always add README at root level
+      children.unshift({
+        name: 'README.md',
+        path: `${project.repoPath}/README.md`,
+        type: 'md' as const,
+      });
 
-\`\`\`
-User Input → Zustand Store → JSON Files → File Watcher → UI Update
-\`\`\`
+      return {
+        name: project.name,
+        path: docsBase,
+        type: 'folder' as const,
+        children,
+      };
+    }
 
-## Next Steps
+    // Fallback: just show README
+    return {
+      name: project.name,
+      path: docsBase,
+      type: 'folder' as const,
+      children: [
+        { name: 'README.md', path: `${project.repoPath}/README.md`, type: 'md' as const },
+      ],
+    };
+  });
+}
 
-- [ ] Implement file watchers
-- [ ] Add drag-drop to kanban
-- [ ] Build agent invocation
-`;
+// No mock content needed - readDocument now provides meaningful dev mode content
 
 export function DocsView() {
   const { projects, selectedDoc, setSelectedDoc, docContent, setDocContent, isEditMode, setEditMode } = useAppStore();
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+
+  // Get project from store (reactive to changes)
+  const selectedProjectForDoc = selectedProjectId
+    ? projects.find((p) => p.id === selectedProjectId) || null
+    : null;
 
   // Build doc tree from projects
   const docTree = buildDocTree(projects);
@@ -102,7 +191,9 @@ export function DocsView() {
   // Auto-expand first project folder
   useEffect(() => {
     if (projects.length > 0 && expandedFolders.size === 0) {
-      setExpandedFolders(new Set([`${projects[0].repoPath}/.taskboard/docs`]));
+      const firstProject = projects[0];
+      const docsBase = firstProject.id === 'taskboard' ? firstProject.repoPath : `${firstProject.repoPath}/docs`;
+      setExpandedFolders(new Set([docsBase]));
     }
   }, [projects, expandedFolders.size]);
 
@@ -119,12 +210,17 @@ export function DocsView() {
   const handleDocSelect = async (doc: DocFile) => {
     setSelectedDoc(doc);
     setIsLoading(true);
+
+    // Find which project this doc belongs to
+    const project = projects.find((p) => doc.path.includes(p.repoPath));
+    setSelectedProjectId(project?.id || null);
+
     try {
       const content = await readDocument(doc.path);
       setDocContent(content);
-    } catch {
-      // Fallback to mock content for demo
-      setDocContent(MOCK_CONTENT);
+    } catch (err) {
+      // Show error with file path
+      setDocContent(`# ❌ Error Loading Document\n\n**Path:** \`${doc.path}\`\n\n**Error:** ${err instanceof Error ? err.message : 'Unknown error'}\n\nPlease check if the file exists and try again.`);
     } finally {
       setIsLoading(false);
     }
@@ -191,6 +287,7 @@ export function DocsView() {
               isEditMode={isEditMode}
               isLoading={isLoading}
               isSaving={isSaving}
+              project={selectedProjectForDoc}
               onSave={handleSaveDocument}
               onModeChange={setEditMode}
               onClose={() => setSelectedDoc(null)}
@@ -273,6 +370,7 @@ interface DocumentViewerProps {
   isEditMode: boolean;
   isLoading: boolean;
   isSaving: boolean;
+  project: Project | null;
   onSave: (content: string) => void;
   onModeChange: (isEdit: boolean) => void;
   onClose: () => void;
@@ -284,16 +382,33 @@ function DocumentViewer({
   isEditMode,
   isLoading,
   isSaving,
+  project,
   onSave,
   onModeChange,
   onClose,
 }: DocumentViewerProps) {
+  const { addDocumentReview, updateDocumentReview, deleteDocumentReview, revokeApproval } = useAppStore();
   const [editContent, setEditContent] = useState(content);
+  const [showCommentInput, setShowCommentInput] = useState(false);
+  const [commentText, setCommentText] = useState('');
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
+  const [lastVoiceSuccess, setLastVoiceSuccess] = useState(false);
+  const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
+  const [editingReviewContent, setEditingReviewContent] = useState('');
+  const { isRecording, isSupported, startRecording, stopRecording, error: recorderError } = useVoiceRecorder();
 
   // Update edit content when content changes
   useEffect(() => {
     setEditContent(content);
   }, [content]);
+
+  // Check if this document has been approved - match by path or name
+  const existingReviews = project?.reviews?.filter((r) =>
+    r.documentPath === doc.path || r.documentName === doc.name
+  ) || [];
+  const isApproved = existingReviews.some((r) => r.approved && !r.resolved);
+  const latestApproval = existingReviews.find((r) => r.approved && !r.resolved);
 
   const handleSave = () => {
     onSave(editContent);
@@ -304,14 +419,151 @@ function DocumentViewer({
     onModeChange(false);
   };
 
+  const handleApprove = () => {
+    if (!project) return;
+
+    const review: DocumentReview = {
+      id: `r-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+      type: 'approval',
+      author: 'arun',
+      documentPath: doc.path,
+      documentName: doc.name,
+      content: `Approved: ${doc.name}`,
+      createdAt: new Date().toISOString(),
+      forClaude: true,
+      resolved: false,
+      approved: true,
+      source: 'text',
+    };
+
+    addDocumentReview(project.id, review);
+  };
+
+  const handleRevokeApproval = () => {
+    if (!project || !latestApproval) return;
+    revokeApproval(project.id, latestApproval.id);
+  };
+
+  const handleDeleteReview = (reviewId: string) => {
+    if (!project) return;
+    if (confirm('Delete this comment?')) {
+      deleteDocumentReview(project.id, reviewId);
+    }
+  };
+
+  const handleEditReview = (review: DocumentReview) => {
+    setEditingReviewId(review.id);
+    setEditingReviewContent(review.content);
+  };
+
+  const handleSaveEditReview = () => {
+    if (!project || !editingReviewId || !editingReviewContent.trim()) return;
+    updateDocumentReview(project.id, editingReviewId, { content: editingReviewContent.trim() });
+    setEditingReviewId(null);
+    setEditingReviewContent('');
+  };
+
+  const handleCancelEditReview = () => {
+    setEditingReviewId(null);
+    setEditingReviewContent('');
+  };
+
+  const handleComment = () => {
+    if (!project || !commentText.trim()) return;
+
+    const review: DocumentReview = {
+      id: `r-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+      type: 'feedback',
+      author: 'arun',
+      documentPath: doc.path,
+      documentName: doc.name,
+      content: commentText.trim(),
+      createdAt: new Date().toISOString(),
+      forClaude: true,
+      resolved: false,
+      approved: false,
+      source: 'text',
+    };
+
+    addDocumentReview(project.id, review);
+    setCommentText('');
+    setShowCommentInput(false);
+  };
+
+  const handleVoiceComment = async () => {
+    setVoiceError(null);
+
+    if (!isSupported) {
+      setVoiceError('Voice recording not supported in this browser');
+      return;
+    }
+
+    if (isRecording) {
+      // Stop recording and transcribe
+      const audioBlob = await stopRecording();
+      if (audioBlob) {
+        setIsTranscribing(true);
+        const result = await transcribeAudio(audioBlob);
+        setIsTranscribing(false);
+
+        if (result.error) {
+          setVoiceError(result.error);
+          setLastVoiceSuccess(false);
+        } else if (result.text && project) {
+          // Create voice comment review
+          const review: DocumentReview = {
+            id: `r-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+            type: 'feedback',
+            author: 'arun',
+            documentPath: doc.path,
+            documentName: doc.name,
+            content: result.text,
+            createdAt: new Date().toISOString(),
+            forClaude: true,
+            resolved: false,
+            approved: false,
+            source: 'voice',
+          };
+          addDocumentReview(project.id, review);
+          setLastVoiceSuccess(true);
+          // Auto-hide success after 3 seconds
+          setTimeout(() => setLastVoiceSuccess(false), 3000);
+        }
+      }
+    } else {
+      // Start recording
+      await startRecording();
+    }
+  };
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+    if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+    return date.toLocaleDateString();
+  };
+
   return (
     <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl overflow-hidden animate-fade-in">
-      {/* Header */}
+      {/* Header with Document Info */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-900/50">
         <div className="flex items-center gap-2">
           <span className="text-lg">📄</span>
           <span className="text-sm font-medium text-zinc-200">{doc.name}</span>
-          <span className="text-xs text-zinc-500">{doc.path}</span>
+          {isApproved && latestApproval && (
+            <span className="flex items-center gap-1 px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full group">
+              ✓ Approved by {latestApproval.author} ({formatDate(latestApproval.createdAt)})
+              <button
+                onClick={handleRevokeApproval}
+                className="ml-1 text-green-400 hover:text-red-400 transition-colors"
+                title="Revoke approval"
+              >
+                ✕
+              </button>
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-2">
           {/* View/Edit Toggle */}
@@ -350,6 +602,212 @@ function DocumentViewer({
           </button>
         </div>
       </div>
+
+      {/* Review Toolbar */}
+      {project && !isEditMode && (
+        <div className="flex items-center gap-2 px-4 py-2 border-b border-zinc-800/50 bg-zinc-800/30">
+          <button
+            onClick={handleApprove}
+            disabled={isApproved}
+            className={clsx(
+              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
+              isApproved
+                ? 'bg-green-500/20 text-green-400 cursor-default'
+                : 'bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20'
+            )}
+          >
+            {isApproved ? '✓ Approved' : '✓ Approve'}
+          </button>
+          <button
+            onClick={() => setShowCommentInput(!showCommentInput)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-700 text-zinc-300 border border-zinc-600 hover:bg-zinc-600 transition-colors"
+          >
+            💬 Comment
+          </button>
+          <button
+            onClick={handleVoiceComment}
+            disabled={isTranscribing || !isSupported}
+            className={clsx(
+              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors relative',
+              isRecording
+                ? 'bg-red-500/20 text-red-400 border border-red-500/30 animate-pulse'
+                : isTranscribing
+                  ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                  : 'bg-zinc-700 text-zinc-300 border border-zinc-600 hover:bg-zinc-600'
+            )}
+            title={isRecording ? 'Click to stop & transcribe' : 'Click to start recording'}
+          >
+            {isTranscribing ? (
+              <span className="w-3 h-3 inline-block border-2 border-purple-400/30 border-t-purple-400 rounded-full animate-spin" />
+            ) : isRecording ? (
+              '⏹️'
+            ) : (
+              '🎤'
+            )}
+            {isTranscribing ? 'Transcribing...' : isRecording ? 'Stop' : 'Voice'}
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-purple-500 rounded-full flex items-center justify-center">
+              <span className="text-[8px] text-white font-bold">AI</span>
+            </span>
+          </button>
+          <span className="ml-auto text-xs text-zinc-500">
+            {existingReviews.length > 0 && `${existingReviews.length} review(s)`}
+          </span>
+        </div>
+      )}
+
+      {/* Voice Success */}
+      {lastVoiceSuccess && !isEditMode && (
+        <div className="px-4 py-2 bg-green-500/10 border-b border-green-500/20 flex items-center gap-2">
+          <span className="text-xs text-green-400">✓ Voice comment added</span>
+          <AIBadge model="Groq Whisper" purpose="Voice transcription" />
+        </div>
+      )}
+
+      {/* Voice Error */}
+      {(voiceError || recorderError) && !isEditMode && !lastVoiceSuccess && (
+        <div className="px-4 py-2 bg-red-500/10 border-b border-red-500/20">
+          <p className="text-xs text-red-400">⚠️ {voiceError || recorderError}</p>
+        </div>
+      )}
+
+      {/* Comment Input */}
+      {showCommentInput && (
+        <div className="px-4 py-3 border-b border-zinc-800/50 bg-zinc-800/20">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleComment()}
+              placeholder="Add feedback for Claude..."
+              className="flex-1 px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              autoFocus
+            />
+            <button
+              onClick={handleComment}
+              disabled={!commentText.trim()}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-700 disabled:text-zinc-500 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              Send
+            </button>
+            <button
+              onClick={() => setShowCommentInput(false)}
+              className="px-3 py-2 text-zinc-400 hover:text-zinc-200 transition-colors"
+            >
+              ✕
+            </button>
+          </div>
+          <p className="text-xs text-zinc-500 mt-2">
+            💡 This feedback will be read by Claude Code on next session
+          </p>
+        </div>
+      )}
+
+      {/* Reviews Section - Shows existing reviews */}
+      {existingReviews.length > 0 && !isEditMode && (
+        <div className="px-4 py-3 border-b border-zinc-800/50 bg-zinc-800/20">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+              Reviews ({existingReviews.length})
+            </span>
+          </div>
+          <div className="space-y-2 max-h-48 overflow-y-auto">
+            {existingReviews.map((review) => (
+              <div
+                key={review.id}
+                className={clsx(
+                  'p-3 rounded-lg border group',
+                  review.approved
+                    ? 'bg-green-500/10 border-green-500/20'
+                    : 'bg-zinc-800/50 border-zinc-700'
+                )}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium text-zinc-300 capitalize">
+                      {review.author}
+                    </span>
+                    {review.approved && (
+                      <span className="px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded text-[10px] font-semibold">
+                        APPROVED
+                      </span>
+                    )}
+                    {review.forClaude && !review.approved && (
+                      <span className="px-1.5 py-0.5 bg-purple-500/20 text-purple-400 rounded text-[10px] font-semibold">
+                        FOR CLAUDE
+                      </span>
+                    )}
+                    {review.source === 'voice' && (
+                      <span className="text-zinc-500 text-xs">🎤</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-zinc-500">{formatDate(review.createdAt)}</span>
+                    {/* Edit/Delete buttons - only show for non-approval reviews */}
+                    {!review.approved && (
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => handleEditReview(review)}
+                          className="p-1 text-zinc-500 hover:text-blue-400 transition-colors"
+                          title="Edit"
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          onClick={() => handleDeleteReview(review.id)}
+                          className="p-1 text-zinc-500 hover:text-red-400 transition-colors"
+                          title="Delete"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    )}
+                    {/* Revoke button for approvals */}
+                    {review.approved && (
+                      <button
+                        onClick={() => {
+                          if (project) revokeApproval(project.id, review.id);
+                        }}
+                        className="p-1 text-zinc-500 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+                        title="Revoke approval"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                </div>
+                {/* Editing mode */}
+                {editingReviewId === review.id ? (
+                  <div className="flex gap-2 mt-1">
+                    <input
+                      type="text"
+                      value={editingReviewContent}
+                      onChange={(e) => setEditingReviewContent(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleSaveEditReview()}
+                      className="flex-1 px-2 py-1 bg-zinc-900 border border-zinc-600 rounded text-sm text-zinc-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      autoFocus
+                    />
+                    <button
+                      onClick={handleSaveEditReview}
+                      className="px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white text-xs rounded transition-colors"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={handleCancelEditReview}
+                      className="px-2 py-1 text-zinc-400 hover:text-zinc-200 text-xs transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <p className="text-sm text-zinc-300">{review.content}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Content */}
       {isLoading ? (

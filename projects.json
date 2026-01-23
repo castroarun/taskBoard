@@ -1,7 +1,103 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-01-18T11:00:00Z",
+  "lastUpdated": "2026-01-22T12:00:00Z",
   "projects": [
+    {
+      "id": "anycalc",
+      "name": "AnyCalc",
+      "description": "Calculate everything. Plan anything. 19+ financial, health, and utility calculators in one elegant workspace.",
+      "repoPath": "C:/Users/Castro/Documents/Projects/any_calculator",
+      "githubUrl": "https://github.com/castroarun/caclulate_anything",
+
+      "stage": "announce",
+      "stageStatus": "in-progress",
+      "currentPhase": "closure",
+
+      "priority": "P1",
+      "complexity": "F",
+      "progress": 100,
+
+      "targetDate": "2026-01-17",
+      "startedAt": "2025-12-15T00:00:00Z",
+      "createdAt": "2025-12-15T00:00:00Z",
+      "lastUpdated": "2026-01-22T12:00:00Z",
+      "completedAt": "2026-01-17T00:00:00Z",
+
+      "tags": ["calculators", "finance", "productivity", "pwa", "shipped"],
+      "techStack": ["Next.js 14", "TypeScript", "Tailwind CSS", "Supabase", "Recharts", "Zustand"],
+
+      "links": {
+        "github": "https://github.com/castroarun/caclulate_anything",
+        "docs": null,
+        "live": "https://anycalc.in",
+        "jira": "https://castroarun.atlassian.net/jira/software/projects/CALC/boards/167"
+      },
+
+      "metrics": {
+        "totalTasks": 25,
+        "completedTasks": 25,
+        "blockedTasks": 0
+      },
+
+      "stageHistory": [
+        {
+          "stage": "design",
+          "phase": "conception",
+          "enteredAt": "2025-12-15T00:00:00Z",
+          "completedAt": "2025-12-15T12:00:00Z"
+        },
+        {
+          "stage": "design",
+          "phase": "discovery",
+          "enteredAt": "2025-12-15T12:00:00Z",
+          "completedAt": "2025-12-16T00:00:00Z"
+        },
+        {
+          "stage": "design",
+          "phase": "requirements",
+          "enteredAt": "2025-12-16T00:00:00Z",
+          "completedAt": "2025-12-17T00:00:00Z"
+        },
+        {
+          "stage": "engineering",
+          "phase": "architecture",
+          "enteredAt": "2025-12-17T00:00:00Z",
+          "completedAt": "2025-12-18T00:00:00Z"
+        },
+        {
+          "stage": "build",
+          "phase": "development",
+          "enteredAt": "2025-12-18T00:00:00Z",
+          "completedAt": "2026-01-10T00:00:00Z"
+        },
+        {
+          "stage": "launch",
+          "phase": "testing",
+          "enteredAt": "2026-01-10T00:00:00Z",
+          "completedAt": "2026-01-12T00:00:00Z"
+        },
+        {
+          "stage": "launch",
+          "phase": "staging",
+          "enteredAt": "2026-01-12T00:00:00Z",
+          "completedAt": "2026-01-15T00:00:00Z"
+        },
+        {
+          "stage": "launch",
+          "phase": "ship",
+          "enteredAt": "2026-01-15T00:00:00Z",
+          "completedAt": "2026-01-17T00:00:00Z"
+        },
+        {
+          "stage": "closure",
+          "phase": "announce",
+          "enteredAt": "2026-01-17T00:00:00Z",
+          "completedAt": null
+        }
+      ],
+
+      "reviews": []
+    },
     {
       "id": "taskboard",
       "name": "Arun's Task Board",
@@ -76,6 +172,240 @@
           "resolved": false
         }
       ]
+    },
+    {
+      "id": "portfolio",
+      "name": "Castronix Portfolio",
+      "description": "A three-part portfolio suite: Portfolio, Digital Resume, and Traditional CV. Showcasing 17+ years of enterprise architecture experience through an interactive, AI-enhanced digital presence.",
+      "repoPath": "C:/Users/Castro/Documents/Projects/castronix-portfolio",
+      "githubUrl": "https://github.com/castroarun/portfolio",
+
+      "stage": "ship",
+      "stageStatus": "completed",
+      "currentPhase": "launch",
+
+      "priority": "P1",
+      "complexity": "F",
+      "progress": 95,
+
+      "targetDate": null,
+      "startedAt": "2025-11-01T00:00:00Z",
+      "createdAt": "2025-11-01T00:00:00Z",
+      "lastUpdated": "2026-01-23T00:00:00Z",
+      "completedAt": null,
+
+      "tags": ["portfolio", "resume", "personal-branding", "shipped"],
+      "techStack": ["HTML5", "CSS3", "JavaScript", "Chart.js", "GitHub Pages"],
+
+      "links": {
+        "github": "https://github.com/castroarun/portfolio",
+        "docs": null,
+        "live": "https://castroarun.github.io/portfolio"
+      },
+
+      "metrics": {
+        "totalTasks": 15,
+        "completedTasks": 14,
+        "blockedTasks": 0
+      },
+
+      "stageHistory": [],
+      "reviews": []
+    },
+    {
+      "id": "noteapp",
+      "name": "NoteApp",
+      "description": "Clean & simple note-taking. A fast, clean note-taking web app with rich text editing and templates. Built with Next.js 16, TypeScript, Tailwind CSS, and Supabase.",
+      "repoPath": "C:/Users/Castro/Documents/Projects/noteApp",
+      "githubUrl": "https://github.com/castroarun/noteApp",
+
+      "stage": "documentation",
+      "stageStatus": "in-progress",
+      "currentPhase": "closure",
+
+      "priority": "P2",
+      "complexity": "F",
+      "progress": 90,
+
+      "targetDate": null,
+      "startedAt": "2025-12-01T00:00:00Z",
+      "createdAt": "2025-12-01T00:00:00Z",
+      "lastUpdated": "2026-01-17T00:00:00Z",
+      "completedAt": null,
+
+      "tags": ["notes", "productivity", "webapp", "shipped"],
+      "techStack": ["Next.js 16", "TypeScript", "Tailwind CSS", "Supabase", "Tiptap"],
+
+      "links": {
+        "github": "https://github.com/castroarun/noteApp",
+        "docs": null,
+        "live": null
+      },
+
+      "metrics": {
+        "totalTasks": 20,
+        "completedTasks": 18,
+        "blockedTasks": 0
+      },
+
+      "stageHistory": [],
+      "reviews": []
+    },
+    {
+      "id": "primmo",
+      "name": "PRIMMO",
+      "description": "AI Strength Coach Agent. An agentic AI strength coach that communicates via WhatsApp and Voice calls, providing personalized training, nutrition, and motivational support.",
+      "repoPath": "C:/Users/Castro/Documents/Projects/PRIMMO",
+      "githubUrl": "https://github.com/castroarun/PRIMMO",
+
+      "stage": "development",
+      "stageStatus": "in-progress",
+      "currentPhase": "build",
+
+      "priority": "P1",
+      "complexity": "F",
+      "progress": 30,
+
+      "targetDate": "2026-02-28",
+      "startedAt": "2026-01-01T00:00:00Z",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "lastUpdated": "2026-01-17T00:00:00Z",
+      "completedAt": null,
+
+      "tags": ["ai", "fitness", "whatsapp", "voice", "agent"],
+      "techStack": ["Claude API", "Supabase", "Twilio", "Vapi.ai", "n8n", "Next.js"],
+
+      "links": {
+        "github": "https://github.com/castroarun/PRIMMO",
+        "docs": null,
+        "live": null
+      },
+
+      "metrics": {
+        "totalTasks": 25,
+        "completedTasks": 7,
+        "blockedTasks": 0
+      },
+
+      "stageHistory": [],
+      "reviews": []
+    },
+    {
+      "id": "reppit",
+      "name": "REPPIT",
+      "description": "Track Your Reps. Build Your Strength. A mobile-first strength tracking app that automatically measures your fitness level and guides your progression.",
+      "repoPath": "C:/Users/Castro/Documents/Projects/strength_profile_tracker",
+      "githubUrl": "https://github.com/castroarun/REPPIT",
+
+      "stage": "ship",
+      "stageStatus": "completed",
+      "currentPhase": "launch",
+
+      "priority": "P1",
+      "complexity": "F",
+      "progress": 85,
+
+      "targetDate": null,
+      "startedAt": "2025-11-15T00:00:00Z",
+      "createdAt": "2025-11-15T00:00:00Z",
+      "lastUpdated": "2026-01-09T00:00:00Z",
+      "completedAt": null,
+
+      "tags": ["fitness", "mobile", "android", "pwa", "shipped"],
+      "techStack": ["Next.js 16", "TypeScript", "Tailwind CSS", "Capacitor", "Supabase"],
+
+      "links": {
+        "github": "https://github.com/castroarun/REPPIT",
+        "docs": null,
+        "live": null
+      },
+
+      "metrics": {
+        "totalTasks": 30,
+        "completedTasks": 26,
+        "blockedTasks": 0
+      },
+
+      "stageHistory": [],
+      "reviews": []
+    },
+    {
+      "id": "covered-calls",
+      "name": "Covered Calls",
+      "description": "Backtest & Research. A Python-based backtesting and research tool for Covered Call options strategies with strike optimization and performance metrics.",
+      "repoPath": "C:/Users/Castro/Documents/Projects/Covered_Calls",
+      "githubUrl": "https://github.com/castroarun/covered_calls",
+
+      "stage": "development",
+      "stageStatus": "in-progress",
+      "currentPhase": "build",
+
+      "priority": "P2",
+      "complexity": "F",
+      "progress": 20,
+
+      "targetDate": null,
+      "startedAt": "2026-01-01T00:00:00Z",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "lastUpdated": "2026-01-17T00:00:00Z",
+      "completedAt": null,
+
+      "tags": ["trading", "options", "backtesting", "research", "python"],
+      "techStack": ["Python 3.11", "Pandas", "NumPy", "Jupyter", "Matplotlib"],
+
+      "links": {
+        "github": "https://github.com/castroarun/covered_calls",
+        "docs": null,
+        "live": null
+      },
+
+      "metrics": {
+        "totalTasks": 15,
+        "completedTasks": 3,
+        "blockedTasks": 0
+      },
+
+      "stageHistory": [],
+      "reviews": []
+    },
+    {
+      "id": "conexus",
+      "name": "Conexus",
+      "description": "Bible Intertextuality Explorer. A mobile app for exploring connections and cross-references within biblical texts. Built with Expo and React Native.",
+      "repoPath": "C:/Users/Castro/Documents/Projects/Bible_Intertextuality",
+      "githubUrl": null,
+
+      "stage": "development",
+      "stageStatus": "in-progress",
+      "currentPhase": "build",
+
+      "priority": "P3",
+      "complexity": "F",
+      "progress": 25,
+
+      "targetDate": null,
+      "startedAt": "2025-12-01T00:00:00Z",
+      "createdAt": "2025-12-01T00:00:00Z",
+      "lastUpdated": "2025-12-27T00:00:00Z",
+      "completedAt": null,
+
+      "tags": ["bible", "mobile", "expo", "react-native", "research"],
+      "techStack": ["Expo", "React Native", "TypeScript", "expo-router"],
+
+      "links": {
+        "github": null,
+        "docs": null,
+        "live": null
+      },
+
+      "metrics": {
+        "totalTasks": 20,
+        "completedTasks": 5,
+        "blockedTasks": 0
+      },
+
+      "stageHistory": [],
+      "reviews": []
     }
   ]
 }

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useAppStore, TabId } from './store';
 import { useDataLoader } from './hooks/useDataLoader';
+import { useNotifications } from './hooks/useNotifications';
 import { Header } from './components/ui/Header';
 import { QuickLaunch } from './components/ui/QuickLaunch';
 import { NewProjectModal } from './components/ui/NewProjectModal';
@@ -9,6 +10,7 @@ import { VoiceCapture } from './components/ui/VoiceCapture';
 import { PipelineView } from './components/pipeline/PipelineView';
 import { DocsView } from './components/docs/DocsView';
 import { InboxView } from './components/inbox/InboxView';
+import { HelpView } from './components/help/HelpView';
 
 export default function App() {
   const {
@@ -28,6 +30,9 @@ export default function App() {
   // Load data from backend
   useDataLoader();
 
+  // Notification hooks
+  const { notifyVoiceTranscript } = useNotifications();
+
   // Global keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -37,12 +42,13 @@ export default function App() {
         openQuickLaunch();
       }
 
-      // Tab switching with Ctrl+1/2/3
+      // Tab switching with Ctrl+1/2/3/4
       if (e.ctrlKey && !e.shiftKey && !e.altKey) {
         const tabMap: Record<string, TabId> = {
           '1': 'pipeline',
           '2': 'docs',
           '3': 'inbox',
+          '4': 'help',
         };
         if (tabMap[e.key]) {
           e.preventDefault();
@@ -80,6 +86,7 @@ export default function App() {
         {activeTab === 'pipeline' && <PipelineView />}
         {activeTab === 'docs' && <DocsView />}
         {activeTab === 'inbox' && <InboxView />}
+        {activeTab === 'help' && <HelpView />}
       </main>
 
       {isQuickLaunchOpen && <QuickLaunch />}
@@ -98,6 +105,8 @@ export default function App() {
               status: 'pending',
               createdAt: new Date().toISOString(),
             });
+            // Notify user
+            notifyVoiceTranscript(text);
           }}
           onClose={closeVoiceCapture}
         />
