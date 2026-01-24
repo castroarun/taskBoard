@@ -9,6 +9,7 @@ interface Command {
   description: string;
   category: 'command' | 'project' | 'task';
   action: () => void;
+  shortcut?: string; // e.g., "Ctrl+N", "Ctrl+1"
 }
 
 export function QuickLaunch() {
@@ -40,19 +41,21 @@ export function QuickLaunch() {
         icon: '➕',
         description: 'Create a new project',
         category: 'command',
+        shortcut: 'Ctrl+N',
         action: () => {
           openNewProjectModal();
         },
       },
       {
-        id: 'pipeline',
-        label: 'Pipeline',
+        id: 'projects',
+        label: 'Projects',
         icon: '📊',
-        description: 'Open pipeline kanban view',
+        description: 'Open project board',
         category: 'command',
+        shortcut: 'Ctrl+1',
         action: () => {
           setSelectedProjectId(null);
-          setActiveTab('pipeline');
+          setActiveTab('projects');
         },
       },
       {
@@ -61,6 +64,7 @@ export function QuickLaunch() {
         icon: '📄',
         description: 'Browse project documentation',
         category: 'command',
+        shortcut: 'Ctrl+2',
         action: () => setActiveTab('docs'),
       },
       {
@@ -69,6 +73,7 @@ export function QuickLaunch() {
         icon: '📥',
         description: 'Quick capture notes & ideas',
         category: 'command',
+        shortcut: 'Ctrl+3',
         action: () => setActiveTab('inbox'),
       },
       {
@@ -85,6 +90,7 @@ export function QuickLaunch() {
         icon: '⚙️',
         description: 'Configure preferences',
         category: 'command',
+        shortcut: 'Ctrl+,',
         action: () => openSettings(),
       },
     ];
@@ -98,7 +104,7 @@ export function QuickLaunch() {
       category: 'project',
       action: () => {
         setSelectedProjectId(p.id);
-        setActiveTab('pipeline');
+        setActiveTab('projects');
       },
     }));
 
@@ -116,7 +122,7 @@ export function QuickLaunch() {
           category: 'task',
           action: () => {
             setSelectedProjectId(t.projectId);
-            setActiveTab('pipeline');
+            setActiveTab('projects');
           },
         };
       });
@@ -320,6 +326,11 @@ function CommandItem({
         <div className="text-sm font-medium truncate">{command.label}</div>
         <div className="text-xs text-zinc-500 truncate">{command.description}</div>
       </div>
+      {command.shortcut && (
+        <kbd className="flex-shrink-0 px-2 py-0.5 text-[10px] text-zinc-500 bg-zinc-800 rounded border border-zinc-700 font-mono">
+          {command.shortcut}
+        </kbd>
+      )}
     </button>
   );
 }

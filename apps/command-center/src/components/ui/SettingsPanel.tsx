@@ -87,8 +87,18 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
     try {
       const response = await fetch('/data/config.json');
       if (response.ok) {
-        const data = await response.json();
-        setConfig(data);
+        const fileConfig = await response.json();
+
+        // Merge with localStorage overrides (for browser mode persistence)
+        const savedOverrides = localStorage.getItem('taskboard-config-overrides');
+        if (savedOverrides) {
+          const overrides = JSON.parse(savedOverrides);
+          // Deep merge overrides into file config
+          const merged = deepMerge(fileConfig, overrides);
+          setConfig(merged);
+        } else {
+          setConfig(fileConfig);
+        }
       } else {
         // Fallback to default config
         setConfig(getDefaultConfig());
@@ -98,6 +108,22 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       setConfig(getDefaultConfig());
     }
     setLoading(false);
+  };
+
+  // Deep merge helper
+  const deepMerge = (target: Record<string, unknown>, source: Record<string, unknown>): Record<string, unknown> => {
+    const result = { ...target };
+    for (const key in source) {
+      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+        result[key] = deepMerge(
+          (target[key] as Record<string, unknown>) || {},
+          source[key] as Record<string, unknown>
+        );
+      } else {
+        result[key] = source[key];
+      }
+    }
+    return result;
   };
 
   const getDefaultConfig = (): Config => ({
@@ -144,7 +170,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
       theme: 'dark',
       accentColor: '#6366f1',
       compactMode: false,
-      defaultView: 'pipeline',
+      defaultView: 'projects',
       cardSize: 'medium',
     },
     advanced: {
@@ -166,9 +192,15 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
 
   const handleSave = async () => {
     setSaving(true);
-    // In browser mode, just log. In Tauri, this would save to file
-    console.log('[settings] Saving config:', config);
-    await new Promise((r) => setTimeout(r, 500));
+
+    // Save to localStorage for browser mode persistence
+    // This stores user changes that override the base config.json
+    if (config) {
+      localStorage.setItem('taskboard-config-overrides', JSON.stringify(config));
+      console.log('[settings] Config saved to localStorage:', config);
+    }
+
+    await new Promise((r) => setTimeout(r, 300));
     setSaving(false);
     onClose();
   };
@@ -217,13 +249,13 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   ];
 
   const shortcuts = [
-    { action: 'Open Quick Launch', keys: '⌘ K' },
-    { action: 'Pipeline View', keys: 'Ctrl 1' },
+    { action: 'Open Quick Launch', keys: 'Ctrl+K' },
+    { action: 'Projects View', keys: 'Ctrl 1' },
     { action: 'Docs View', keys: 'Ctrl 2' },
     { action: 'Inbox View', keys: 'Ctrl 3' },
     { action: 'Help View', keys: 'Ctrl 4' },
     { action: 'Close Modal', keys: 'Esc' },
-    { action: 'Save Document', keys: '⌘ S' },
+    { action: 'Save Document', keys: 'Ctrl+S' },
   ];
 
   const accentColors = [
@@ -819,7 +851,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
                     value={config.ui.defaultView}
                     onChange={(v) => updateConfig('ui', { defaultView: v })}
                     options={[
-                      { value: 'pipeline', label: 'Pipeline' },
+                      { value: 'projects', label: 'Projects' },
                       { value: 'docs', label: 'Documents' },
                       { value: 'inbox', label: 'Inbox' },
                     ]}

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 // Types
-export type TabId = 'pipeline' | 'docs' | 'inbox' | 'help';
+export type TabId = 'projects' | 'docs' | 'inbox' | 'help';
 
 export type ProjectStage =
   | 'conception' | 'discovery' | 'requirements'  // Design
@@ -224,7 +224,7 @@ interface AppState {
 
 export const useAppStore = create<AppState>((set) => ({
   // UI State
-  activeTab: 'pipeline',
+  activeTab: 'projects',
   setActiveTab: (tab) => set({ activeTab: tab }),
 
   // Notifications

@@ -84,7 +84,7 @@ function GettingStartedSection() {
 
       <Section title="Quick Start">
         <ol className="list-decimal list-inside space-y-1.5 text-zinc-300">
-          <li><strong>Create a Project</strong> — <Kbd>+ New Project</Kbd> or <Kbd>⌘K</Kbd></li>
+          <li><strong>Create a Project</strong> — <Kbd>+ New Project</Kbd> or <Kbd>Ctrl+K</Kbd></li>
           <li><strong>Set Up Workflow</strong> — Settings → Workflow</li>
           <li><strong>Add Tasks</strong> — Open project, create tasks</li>
           <li><strong>Track Progress</strong> — Move tasks through stages</li>
@@ -112,10 +112,10 @@ function FeaturesSection() {
       </header>
 
       <div className="grid gap-2">
-        <FeatureCard icon={<PipelineIcon />} title="Pipeline View" description="Kanban board for projects by workflow phase. Drag & drop, drill into details." />
+        <FeatureCard icon={<PipelineIcon />} title="Project Board" description="Kanban board for projects by workflow phase. Drag & drop, drill into details." />
         <FeatureCard icon={<DocsIcon />} title="Document Viewer" description="Markdown viewer/editor. Navigate docs, edit files, real-time preview." />
         <FeatureCard icon={<InboxIcon />} title="Inbox" description="Quick capture for ideas & notes. Voice capture supported." />
-        <FeatureCard icon={<SearchIcon />} title="Quick Launch" description="⌘K to search projects, switch tabs, trigger actions." />
+        <FeatureCard icon={<SearchIcon />} title="Quick Launch" description="Ctrl+K to search projects, switch tabs, trigger actions." />
         <FeatureCard icon={<MicIcon />} title="Voice Capture" description="Voice notes transcribed via Groq Whisper API." />
         <FeatureCard icon={<BellIcon />} title="Notifications" description="Desktop alerts for task completion, stale projects, approvals." />
       </div>
@@ -166,7 +166,7 @@ function ShortcutsSection() {
   const shortcuts = [
     { category: 'Navigation', items: [
       { keys: '⌘ K', action: 'Quick Launch' },
-      { keys: 'Ctrl 1', action: 'Pipeline' },
+      { keys: 'Ctrl 1', action: 'Projects' },
       { keys: 'Ctrl 2', action: 'Docs' },
       { keys: 'Ctrl 3', action: 'Inbox' },
       { keys: 'Ctrl 4', action: 'Help' },
@@ -259,36 +259,291 @@ function ConfigurationSection() {
   );
 }
 
+const GITHUB_BASE = 'https://github.com/castroarun/_claude-shared/blob/main';
+
+const unifiedAgents = [
+  {
+    id: 'designer',
+    name: 'Designer',
+    invocation: '@designer',
+    file: 'agents/designer.md',
+    desc: 'Requirements via deep research',
+    capabilities: ['WebSearch for research', 'Skill discovery', 'Systematic questioning', 'Creates idea.md, discovery.md, APP_PRD.md'],
+    phase: 'Design',
+  },
+  {
+    id: 'architect',
+    name: 'Architect',
+    invocation: '@architect',
+    file: 'agents/architect.md',
+    desc: 'System design, PRD, mockups',
+    capabilities: ['Two-phase approach (Discovery → PRD)', 'HTML mockups generation', '.drawio diagrams', 'Jira integration', 'Creates ARCHITECTURE.md'],
+    phase: 'Engineering',
+  },
+  {
+    id: 'qa',
+    name: 'QA',
+    invocation: '@qa',
+    file: 'agents/qa.md',
+    desc: 'Test planning and execution',
+    capabilities: ['TEST-PLAN.csv (Excel format)', 'TEST_CASES.md (Markdown)', 'test-results.md', 'Quality gates', 'Staging checklist'],
+    phase: 'Engineering / Build',
+  },
+  {
+    id: 'dev',
+    name: 'Dev',
+    invocation: '@dev',
+    file: 'agents/dev.md',
+    desc: 'Development tracking',
+    capabilities: ['Task execution tracking', 'dev-log.md maintenance', 'Progress updates', 'Bug discovery workflow', 'Code standards'],
+    phase: 'Build',
+  },
+  {
+    id: 'walkthrough',
+    name: 'Walkthrough',
+    invocation: '@walkthrough',
+    file: 'agents/walkthrough.md',
+    desc: 'Code walkthroughs',
+    capabilities: ['Live code explanation', 'WALKTHROUGH.md generation', 'Feature documentation'],
+    phase: 'Launch',
+  },
+];
+
+const unifiedCommands = [
+  {
+    id: 'readme',
+    name: 'README',
+    invocation: '/readme',
+    file: 'commands/readme.md',
+    desc: 'README quality scoring',
+    capabilities: ['Quality score 0-100', 'Badge generation', 'LAUNCHPAD validation', 'Roadmap sync', 'Auto-fix suggestions'],
+  },
+  {
+    id: 'git',
+    name: 'Git',
+    invocation: '/git',
+    file: 'commands/git.md',
+    desc: 'Git operations',
+    capabilities: ['Commit standards', 'LAUNCHPAD sync on push', 'Branch management', 'README check before push'],
+  },
+  {
+    id: 'docs',
+    name: 'Docs',
+    invocation: '/docs',
+    file: 'commands/docs.md',
+    desc: 'Documentation generation',
+    capabilities: ['README.md', 'CHANGELOG.md', 'WALKTHROUGH.md', 'portfolio-entry.md', 'linkedin-post.md', 'retro.md'],
+  },
+  {
+    id: 'deploy',
+    name: 'Deploy',
+    invocation: '/deploy',
+    file: 'commands/deploy.md',
+    desc: 'Deployment workflows',
+    capabilities: ['Production deploy', 'Staging deploy', 'Environment configuration'],
+  },
+  {
+    id: 'newproject',
+    name: 'New Project',
+    invocation: '/newproject',
+    file: 'commands/newproject.md',
+    desc: 'Project initialization',
+    capabilities: ['9-step workflow setup', 'Folder structure', 'Template files', 'DEV-CLOCK.md', 'PROJECT-STATUS.md'],
+  },
+];
+
 function AgentsSection() {
+  const [expandedAgent, setExpandedAgent] = useState<string | null>(null);
+  const [expandedCommand, setExpandedCommand] = useState<string | null>(null);
+
   return (
     <div className="space-y-4">
       <header>
         <h1 className="text-base font-semibold text-zinc-100 mb-1">AI Agents</h1>
-        <p className="text-xs text-zinc-500">Prompt templates for AI-assisted development.</p>
+        <p className="text-xs text-zinc-500">Unified agents from <code className="text-blue-400/70">_claude-shared</code> for AI-assisted development.</p>
       </header>
 
       <Section title="What are Agents?">
-        <p>Markdown templates that guide AI assistants for specific workflow stages.</p>
+        <p>Markdown templates that guide AI assistants. Use <code className="text-blue-400">@agent</code> in Claude Code IDE or automatically via inbox.md.</p>
       </Section>
 
-      <Section title="Available Agents">
-        <div className="grid gap-1.5">
-          <AgentCard name="Design Agent" file="design-agent.md" desc="PRD, user stories, requirements" />
-          <AgentCard name="Architecture Agent" file="architecture-agent.md" desc="Tech design, diagrams, APIs" />
-          <AgentCard name="Dev Agent" file="dev-agent.md" desc="Coding with project context" />
-          <AgentCard name="QA Agent" file="qa-agent.md" desc="Test planning, test cases" />
-          <AgentCard name="Git Agent" file="git-agent.md" desc="Commits, PRs, changelogs" />
+      <Section title="Agents (@invocation)">
+        <div className="space-y-1.5">
+          {unifiedAgents.map((agent) => (
+            <ExpandableAgentCard
+              key={agent.id}
+              agent={agent}
+              isExpanded={expandedAgent === agent.id}
+              onToggle={() => setExpandedAgent(expandedAgent === agent.id ? null : agent.id)}
+              githubUrl={`${GITHUB_BASE}/${agent.file}`}
+            />
+          ))}
         </div>
       </Section>
 
-      <Section title="Usage">
-        <ol className="list-decimal list-inside space-y-1 text-zinc-400">
-          <li>Open agent file in AI assistant</li>
-          <li>Context loads automatically</li>
-          <li>Give task, let it guide you</li>
-        </ol>
-        <p className="mt-2 text-[11px] text-zinc-600">Stored in <code className="text-blue-400/70">agents/</code></p>
+      <Section title="Commands (/invocation)">
+        <div className="space-y-1.5">
+          {unifiedCommands.map((cmd) => (
+            <ExpandableCommandCard
+              key={cmd.id}
+              command={cmd}
+              isExpanded={expandedCommand === cmd.id}
+              onToggle={() => setExpandedCommand(expandedCommand === cmd.id ? null : cmd.id)}
+              githubUrl={`${GITHUB_BASE}/${cmd.file}`}
+            />
+          ))}
+        </div>
       </Section>
+
+      <Section title="Execution Modes">
+        <div className="space-y-1.5 text-zinc-400">
+          <div className="flex items-center gap-2 px-2 py-1.5 bg-zinc-800/30 rounded">
+            <div className="w-1.5 h-1.5 bg-green-500/70 rounded-full flex-shrink-0" />
+            <span className="text-xs"><strong>Manual</strong> — Type @agent or /command in Claude Code</span>
+          </div>
+          <div className="flex items-center gap-2 px-2 py-1.5 bg-zinc-800/30 rounded">
+            <div className="w-1.5 h-1.5 bg-blue-500/70 rounded-full flex-shrink-0" />
+            <span className="text-xs"><strong>Auto</strong> — App detects inbox.md changes, spawns agents</span>
+          </div>
+          <div className="flex items-center gap-2 px-2 py-1.5 bg-zinc-800/30 rounded">
+            <div className="w-1.5 h-1.5 bg-purple-500/70 rounded-full flex-shrink-0" />
+            <span className="text-xs"><strong>Hybrid</strong> — Both modes enabled (default)</span>
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Source">
+        <a
+          href="https://github.com/castroarun/_claude-shared"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 px-2.5 py-2 bg-zinc-800/50 rounded border border-zinc-700/50 hover:bg-zinc-800 transition-colors group"
+        >
+          <GitHubIcon className="w-4 h-4 text-zinc-500 group-hover:text-zinc-300" />
+          <span className="text-xs text-zinc-400 group-hover:text-zinc-300">castroarun/_claude-shared</span>
+          <ExternalLinkIcon className="w-3 h-3 text-zinc-600 ml-auto" />
+        </a>
+      </Section>
+    </div>
+  );
+}
+
+interface AgentData {
+  id: string;
+  name: string;
+  invocation: string;
+  file: string;
+  desc: string;
+  capabilities: string[];
+  phase: string;
+}
+
+interface CommandData {
+  id: string;
+  name: string;
+  invocation: string;
+  file: string;
+  desc: string;
+  capabilities: string[];
+}
+
+function ExpandableAgentCard({
+  agent,
+  isExpanded,
+  onToggle,
+  githubUrl,
+}: {
+  agent: AgentData;
+  isExpanded: boolean;
+  onToggle: () => void;
+  githubUrl: string;
+}) {
+  return (
+    <div className="bg-zinc-800/30 rounded border border-zinc-800/50 overflow-hidden">
+      <button
+        onClick={onToggle}
+        className="w-full px-2.5 py-2 flex items-center gap-2 text-left hover:bg-zinc-800/50 transition-colors"
+      >
+        <ChevronIcon className={clsx('w-3 h-3 text-zinc-500 transition-transform', isExpanded && 'rotate-90')} />
+        <span className="text-xs font-medium text-zinc-300">{agent.name}</span>
+        <code className="text-[10px] text-blue-400/70 bg-blue-500/10 px-1.5 py-0.5 rounded">{agent.invocation}</code>
+        <span className="text-[10px] text-zinc-600 ml-auto">{agent.phase}</span>
+      </button>
+      {isExpanded && (
+        <div className="px-2.5 pb-2.5 pt-1 border-t border-zinc-800/50">
+          <p className="text-[11px] text-zinc-500 mb-2">{agent.desc}</p>
+          <div className="mb-2">
+            <h4 className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Capabilities</h4>
+            <ul className="space-y-0.5">
+              {agent.capabilities.map((cap, i) => (
+                <li key={i} className="text-[11px] text-zinc-400 flex items-start gap-1.5">
+                  <span className="text-green-500/70 mt-0.5">•</span>
+                  {cap}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <a
+            href={githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-[10px] text-zinc-500 hover:text-blue-400 transition-colors"
+          >
+            <DownloadIcon className="w-3 h-3" />
+            View on GitHub
+          </a>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ExpandableCommandCard({
+  command,
+  isExpanded,
+  onToggle,
+  githubUrl,
+}: {
+  command: CommandData;
+  isExpanded: boolean;
+  onToggle: () => void;
+  githubUrl: string;
+}) {
+  return (
+    <div className="bg-zinc-800/30 rounded border border-zinc-800/50 overflow-hidden">
+      <button
+        onClick={onToggle}
+        className="w-full px-2.5 py-2 flex items-center gap-2 text-left hover:bg-zinc-800/50 transition-colors"
+      >
+        <ChevronIcon className={clsx('w-3 h-3 text-zinc-500 transition-transform', isExpanded && 'rotate-90')} />
+        <span className="text-xs font-medium text-zinc-300">{command.name}</span>
+        <code className="text-[10px] text-emerald-400/70 bg-emerald-500/10 px-1.5 py-0.5 rounded">{command.invocation}</code>
+      </button>
+      {isExpanded && (
+        <div className="px-2.5 pb-2.5 pt-1 border-t border-zinc-800/50">
+          <p className="text-[11px] text-zinc-500 mb-2">{command.desc}</p>
+          <div className="mb-2">
+            <h4 className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Outputs</h4>
+            <ul className="space-y-0.5">
+              {command.capabilities.map((cap, i) => (
+                <li key={i} className="text-[11px] text-zinc-400 flex items-start gap-1.5">
+                  <span className="text-emerald-500/70 mt-0.5">•</span>
+                  {cap}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <a
+            href={githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-[10px] text-zinc-500 hover:text-blue-400 transition-colors"
+          >
+            <DownloadIcon className="w-3 h-3" />
+            View on GitHub
+          </a>
+        </div>
+      )}
     </div>
   );
 }
@@ -398,18 +653,6 @@ function ConfigItem({ title, desc }: { title: string; desc: string }) {
       <div className="w-1.5 h-1.5 bg-blue-500/70 rounded-full flex-shrink-0" />
       <span className="text-xs text-zinc-400">{title}</span>
       <span className="text-[11px] text-zinc-600">— {desc}</span>
-    </div>
-  );
-}
-
-function AgentCard({ name, file, desc }: { name: string; file: string; desc: string }) {
-  return (
-    <div className="px-2.5 py-2 bg-zinc-800/30 rounded border border-zinc-800/50">
-      <div className="flex items-center gap-2">
-        <span className="text-xs text-zinc-300">{name}</span>
-        <code className="text-[10px] text-zinc-600">{file}</code>
-      </div>
-      <p className="text-[11px] text-zinc-500">{desc}</p>
     </div>
   );
 }
@@ -542,6 +785,30 @@ function ExternalLinkIcon({ className = 'w-4 h-4' }: { className?: string }) {
   return (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+    </svg>
+  );
+}
+
+function ChevronIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+    </svg>
+  );
+}
+
+function DownloadIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+    </svg>
+  );
+}
+
+function GitHubIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
     </svg>
   );
 }

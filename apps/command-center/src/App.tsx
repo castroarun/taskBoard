@@ -21,6 +21,7 @@ export default function App() {
     isVoiceCaptureOpen,
     openQuickLaunch,
     closeQuickLaunch,
+    openNewProjectModal,
     closeSettings,
     closeVoiceCapture,
     addInboxItem,
@@ -42,10 +43,16 @@ export default function App() {
         openQuickLaunch();
       }
 
+      // Cmd/Ctrl + N to open New Project modal
+      if ((e.metaKey || e.ctrlKey) && e.key === 'n') {
+        e.preventDefault();
+        openNewProjectModal();
+      }
+
       // Tab switching with Ctrl+1/2/3/4
       if (e.ctrlKey && !e.shiftKey && !e.altKey) {
         const tabMap: Record<string, TabId> = {
-          '1': 'pipeline',
+          '1': 'projects',
           '2': 'docs',
           '3': 'inbox',
           '4': 'help',
@@ -64,7 +71,7 @@ export default function App() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isQuickLaunchOpen, openQuickLaunch, closeQuickLaunch]);
+  }, [isQuickLaunchOpen, openQuickLaunch, closeQuickLaunch, openNewProjectModal]);
 
   // Show loading state
   if (isLoading) {
@@ -83,7 +90,7 @@ export default function App() {
       <Header />
 
       <main className="pt-14">
-        {activeTab === 'pipeline' && <PipelineView />}
+        {activeTab === 'projects' && <PipelineView />}
         {activeTab === 'docs' && <DocsView />}
         {activeTab === 'inbox' && <InboxView />}
         {activeTab === 'help' && <HelpView />}

@@ -64,7 +64,7 @@ const PHASES = [
   { id: 'design', label: 'Design', color: 'rose', stages: ['Idea & Discovery', 'Requirements (PRD)'] },
   { id: 'engineering', label: 'Engineering', color: 'indigo', stages: ['Architecture', 'QA Planning', 'Review'] },
   { id: 'build', label: 'Build', color: 'emerald', stages: ['Development', 'Testing', 'Staging'] },
-  { id: 'launch', label: 'Launch', color: 'amber', stages: ['Ship', 'Announce', 'Walkthrough'] },
+  { id: 'launch', label: 'Launch', color: 'amber', stages: ['Walkthrough', 'Ship', 'Announce'] },
   { id: 'closure', label: 'Closure', color: 'violet', stages: ['Documentation', 'Portfolio', 'Retrospective'] },
 ];
 
@@ -594,31 +594,33 @@ export function ProjectDetailView({ project, onBack }: ProjectDetailViewProps) {
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
-        Back to Pipeline
+        Back to Project Board
       </button>
 
       {/* Project Header */}
-      <div className="flex items-center justify-between gap-6 mb-6">
-        {/* Left: Project Info */}
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow-md shadow-blue-500/20">
+      <div className="flex items-center gap-6 mb-6">
+        {/* Left: Project Info - wider for longer descriptions */}
+        <div className="flex items-center gap-3 w-[420px] flex-shrink-0">
+          <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow-md shadow-blue-500/20 flex-shrink-0">
             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
             </svg>
           </div>
-          <div>
-            <div className="flex items-center gap-3">
-              <h2 className="text-lg font-semibold text-white uppercase tracking-wide">{project.name}</h2>
-              <span className={clsx('px-2.5 py-1 rounded-full text-xs font-semibold border', priorityConfig[project.priority].bg, priorityConfig[project.priority].text, priorityConfig[project.priority].border)}>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-white uppercase tracking-wide truncate">{project.name}</h2>
+              <span className={clsx('px-2 py-0.5 rounded-full text-xs font-semibold border flex-shrink-0', priorityConfig[project.priority].bg, priorityConfig[project.priority].text, priorityConfig[project.priority].border)}>
                 {project.priority}
               </span>
             </div>
-            <p className="text-zinc-500 text-sm mt-1">{project.description}</p>
+            <p className="text-zinc-500 text-sm mt-1 truncate cursor-help group relative" title={project.description}>
+              {project.description}
+            </p>
           </div>
         </div>
 
-        {/* Center: Progress Bar */}
-        <div className="flex-1 max-w-md">
+        {/* Center: Progress Bar - flexible */}
+        <div className="flex-1 min-w-[200px]">
           <div className="flex items-center justify-between mb-1.5">
             <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-[10px] font-semibold rounded-full uppercase">
               {project.currentPhase} Phase
@@ -642,7 +644,7 @@ export function ProjectDetailView({ project, onBack }: ProjectDetailViewProps) {
           </div>
         </div>
 
-        {/* Right: Circular Progress */}
+        {/* Right: Circular Progress - right aligned */}
         <div className="flex items-center gap-3 flex-shrink-0">
           <svg className="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
             <path

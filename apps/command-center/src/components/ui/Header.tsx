@@ -4,7 +4,7 @@ import clsx from 'clsx';
 
 // SVG Icons for tabs
 const TabIcons = {
-  pipeline: (
+  projects: (
     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
     </svg>
@@ -27,7 +27,7 @@ const TabIcons = {
 };
 
 const tabs: { id: TabId; label: string; shortcut: string }[] = [
-  { id: 'pipeline', label: 'Pipeline', shortcut: 'Ctrl+1' },
+  { id: 'projects', label: 'Project Board', shortcut: 'Ctrl+1' },
   { id: 'docs', label: 'Docs', shortcut: 'Ctrl+2' },
   { id: 'inbox', label: 'Inbox', shortcut: 'Ctrl+3' },
   { id: 'help', label: 'Help', shortcut: 'Ctrl+4' },
@@ -37,6 +37,7 @@ export function Header() {
   const {
     activeTab,
     setActiveTab,
+    setSelectedProjectId,
     openQuickLaunch,
     openSettings,
     isSaving,
@@ -131,7 +132,13 @@ export function Header() {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => {
+                setActiveTab(tab.id);
+                // Clear selected project when navigating to Project Board tab
+                if (tab.id === 'projects') {
+                  setSelectedProjectId(null);
+                }
+              }}
               className={clsx(
                 'px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-2',
                 activeTab === tab.id
@@ -154,8 +161,8 @@ export function Header() {
             className="flex items-center gap-2 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg transition-colors"
           >
             <span className="text-zinc-400 text-sm">Quick Launch</span>
-            <kbd className="px-1.5 py-0.5 bg-zinc-900 text-zinc-500 text-xs rounded border border-zinc-700">
-              ⌘K
+            <kbd className="px-1.5 py-0.5 bg-zinc-900 text-zinc-500 text-xs rounded border border-zinc-700 font-mono">
+              Ctrl+K
             </kbd>
           </button>
 
