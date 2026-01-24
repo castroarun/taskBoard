@@ -101,36 +101,36 @@
     {
       "id": "taskboard",
       "name": "Arun's Task Board",
-      "description": "File-based project orchestration system with Command Center desktop app",
-      "repoPath": "C:/Users/Castro/arun-task-board",
-      "githubUrl": null,
+      "description": "File-based project orchestration system with Command Center desktop app. Features pipeline view, document viewer, inbox, notifications, voice capture, and AI agent integration.",
+      "repoPath": "C:/Users/Castro/Documents/Projects/Taskboard",
+      "githubUrl": "https://github.com/castroarun/taskBoard",
 
-      "stage": "engineering",
+      "stage": "development",
       "stageStatus": "in-progress",
-      "currentPhase": "architecture",
+      "currentPhase": "build",
 
       "priority": "P0",
       "complexity": "F",
-      "progress": 15,
+      "progress": 55,
 
       "targetDate": "2026-02-15",
       "startedAt": "2026-01-18T00:00:00Z",
       "createdAt": "2026-01-18T00:00:00Z",
-      "lastUpdated": "2026-01-18T11:00:00Z",
+      "lastUpdated": "2026-01-24T00:00:00Z",
       "completedAt": null,
 
       "tags": ["desktop", "productivity", "tauri", "dogfooding"],
-      "techStack": ["Tauri", "React", "TypeScript", "Tailwind", "Zustand"],
+      "techStack": ["Tauri 2.0", "React 18", "TypeScript", "Tailwind CSS", "Zustand", "Vite"],
 
       "links": {
-        "github": null,
+        "github": "https://github.com/castroarun/taskBoard",
         "docs": null,
         "live": null
       },
 
       "metrics": {
         "totalTasks": 17,
-        "completedTasks": 0,
+        "completedTasks": 8,
         "blockedTasks": 0
       },
 
@@ -157,6 +157,18 @@
           "stage": "engineering",
           "phase": "architecture",
           "enteredAt": "2026-01-18T11:00:00Z",
+          "completedAt": "2026-01-20T00:00:00Z"
+        },
+        {
+          "stage": "engineering",
+          "phase": "qa-planning",
+          "enteredAt": "2026-01-20T00:00:00Z",
+          "completedAt": "2026-01-21T00:00:00Z"
+        },
+        {
+          "stage": "build",
+          "phase": "development",
+          "enteredAt": "2026-01-21T00:00:00Z",
           "completedAt": null
         }
       ],
@@ -169,7 +181,7 @@
           "createdAt": "2026-01-18T12:00:00Z",
           "content": "UI mockups approved. Proceed with the dark theme as shown in pipeline-view-v2-updated.html",
           "forClaude": true,
-          "resolved": false
+          "resolved": true
         }
       ]
     },
