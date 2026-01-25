@@ -39,6 +39,8 @@ fn main() {
             data::write_tasks,
             data::read_inbox,
             data::write_inbox,
+            data::read_inbox_json,
+            data::write_inbox_json,
             data::read_document,
             data::write_document,
             data::get_data_path,

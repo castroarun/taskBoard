@@ -66,7 +66,7 @@ pub fn write_tasks(data: String, state: State<'_, Mutex<AppState>>) -> Result<()
         .map_err(|e| format!("Failed to write tasks.json: {}", e))
 }
 
-/// Read inbox.md
+/// Read inbox.md (for Claude readability)
 #[tauri::command]
 pub fn read_inbox(state: State<'_, Mutex<AppState>>) -> Result<String, String> {
     let path = get_data_dir(&state).join("inbox.md");
@@ -79,13 +79,35 @@ pub fn read_inbox(state: State<'_, Mutex<AppState>>) -> Result<String, String> {
         .map_err(|e| format!("Failed to read inbox.md: {}", e))
 }
 
-/// Write inbox.md
+/// Write inbox.md (for Claude readability)
 #[tauri::command]
 pub fn write_inbox(data: String, state: State<'_, Mutex<AppState>>) -> Result<(), String> {
     let path = get_data_dir(&state).join("inbox.md");
 
     fs::write(&path, data)
         .map_err(|e| format!("Failed to write inbox.md: {}", e))
+}
+
+/// Read inbox.json (structured data)
+#[tauri::command]
+pub fn read_inbox_json(state: State<'_, Mutex<AppState>>) -> Result<String, String> {
+    let path = get_data_dir(&state).join("inbox.json");
+
+    if !path.exists() {
+        return Ok(r#"{"version":"1.0.0","lastUpdated":"","items":[]}"#.to_string());
+    }
+
+    fs::read_to_string(&path)
+        .map_err(|e| format!("Failed to read inbox.json: {}", e))
+}
+
+/// Write inbox.json (structured data)
+#[tauri::command]
+pub fn write_inbox_json(data: String, state: State<'_, Mutex<AppState>>) -> Result<(), String> {
+    let path = get_data_dir(&state).join("inbox.json");
+
+    fs::write(&path, data)
+        .map_err(|e| format!("Failed to write inbox.json: {}", e))
 }
 
 /// Read any markdown document

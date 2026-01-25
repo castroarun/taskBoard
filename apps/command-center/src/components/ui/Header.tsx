@@ -33,6 +33,30 @@ const tabs: { id: TabId; label: string; shortcut: string }[] = [
   { id: 'help', label: 'Help', shortcut: 'Ctrl+4' },
 ];
 
+// Klarity Lens K Logo
+function KlarityLogo() {
+  return (
+    <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20 bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800">
+      <svg className="w-6 h-6" viewBox="0 0 64 64" fill="none">
+        <defs>
+          <linearGradient id="klarity-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#6366f1" />
+            <stop offset="100%" stopColor="#22d3ee" />
+          </linearGradient>
+        </defs>
+        {/* Magnifying glass ring */}
+        <circle cx="32" cy="28" r="20" fill="none" stroke="url(#klarity-gradient)" strokeWidth="3" />
+        {/* K letter - vertical bar */}
+        <rect x="24" y="14" width="4" height="28" fill="#a78bfa" />
+        {/* K letter - arms */}
+        <path d="M28 28 L40 14 L44 14 L44 18 L32 28 L44 38 L44 42 L40 42 L28 28" fill="#6366f1" />
+        {/* Handle */}
+        <line x1="46" y1="42" x2="58" y2="54" stroke="#a78bfa" strokeWidth="4" strokeLinecap="round" />
+      </svg>
+    </div>
+  );
+}
+
 export function Header() {
   const {
     activeTab,
@@ -49,10 +73,22 @@ export function Header() {
     markNotificationRead,
     markAllNotificationsRead,
     clearNotifications,
+    inboxItems,
   } = useAppStore();
 
   const notificationRef = useRef<HTMLDivElement>(null);
   const unreadCount = notifications.filter(n => !n.read).length;
+
+  // Calculate unread inbox count - only count items FROM Claude or with unread Claude replies
+  const unreadInboxCount = inboxItems.filter(item => {
+    if (item.status !== 'pending') return false;
+    // Count if item is from Claude and unread
+    if (item.author === 'claude' && !item.read) return true;
+    // Count if item has any unread Claude replies (check if item was read AFTER latest Claude reply)
+    const claudeReplies = item.replies?.filter(r => r.author === 'claude') || [];
+    if (claudeReplies.length > 0 && !item.read) return true;
+    return false;
+  }).length;
 
   // Close notification panel when clicking outside
   useEffect(() => {
@@ -105,12 +141,9 @@ export function Header() {
       <div className="flex items-center justify-between px-4 h-14">
         {/* Logo / Title */}
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
-            </svg>
-          </div>
-          <span className="text-sm font-semibold text-zinc-100">Command Center</span>
+          <KlarityLogo />
+          <span className="text-base font-semibold text-zinc-100 font-display">Klarity</span>
+          <span className="text-[10px] text-zinc-400 font-medium tracking-wide">DECLUTTER. DESIGN. DEPLOY.</span>
           {/* Save Status Indicator */}
           <div className="flex items-center gap-1.5 ml-2">
             {isSaving ? (
@@ -140,7 +173,7 @@ export function Header() {
                 }
               }}
               className={clsx(
-                'px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-2',
+                'relative px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-2',
                 activeTab === tab.id
                   ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
                   : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
@@ -149,6 +182,12 @@ export function Header() {
             >
               {TabIcons[tab.id]}
               <span>{tab.label}</span>
+              {/* Unread inbox badge - subtle circle */}
+              {tab.id === 'inbox' && unreadInboxCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-zinc-700 text-zinc-300 text-[10px] font-medium rounded-full flex items-center justify-center">
+                  {unreadInboxCount > 9 ? '9+' : unreadInboxCount}
+                </span>
+              )}
             </button>
           ))}
         </nav>

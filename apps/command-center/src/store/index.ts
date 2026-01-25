@@ -47,6 +47,7 @@ export interface Project {
   id: string;
   name: string;
   description: string;
+  icon: string | null; // Emoji, built-in icon name, or file path (e.g., "📦", "folder", "./assets/icon.png")
   repoPath: string;
   githubUrl: string | null;
   stage: ProjectStage;
@@ -105,14 +106,26 @@ export interface Task {
   sourceDoc: string | null;
 }
 
+export interface InboxReply {
+  id: string;
+  author: 'user' | 'claude';
+  text: string;
+  createdAt: string;
+}
+
 export interface InboxItem {
   id: string;
   text: string;
-  type: 'idea' | 'task' | 'note';
+  type: 'idea' | 'task' | 'note' | 'claude-response';
   project: string | null;
   priority: Priority | null;
   status: 'pending' | 'done' | 'skipped';
   createdAt: string;
+  // Threading & read tracking
+  read: boolean;
+  author: 'user' | 'claude';
+  parentId: string | null;
+  replies: InboxReply[];
 }
 
 export interface DocFile {
@@ -131,6 +144,38 @@ export interface AppNotification {
   timestamp: number;
   read: boolean;
   onClick?: () => void;
+}
+
+// Activity type for Recent Activity feed
+export type ActivityType =
+  | 'project_created'
+  | 'stage_changed'
+  | 'document_created'
+  | 'document_approved'
+  | 'deployed'
+  | 'task_completed'
+  | 'review_submitted';
+
+export interface Activity {
+  id: string;
+  type: ActivityType;
+  projectId: string;
+  projectName: string;
+  description: string;  // e.g., "WALKTHROUGH.md created by @walkthrough"
+  timestamp: string;    // ISO string
+}
+
+// Attention item types for "Needs Attention" panel
+export type AttentionType = 'stale' | 'review_needed' | 'ready_to_ship' | 'blocked';
+
+export interface AttentionItem {
+  id: string;
+  type: AttentionType;
+  projectId: string;
+  projectName: string;
+  description: string;
+  daysSince?: number;
+  documentName?: string;
 }
 
 // Store interface
@@ -202,6 +247,10 @@ interface AppState {
   setInboxItems: (items: InboxItem[]) => void;
   addInboxItem: (item: InboxItem) => void;
   updateInboxItem: (id: string, updates: Partial<InboxItem>) => void;
+  deleteInboxItem: (id: string) => void;
+  addReplyToInboxItem: (itemId: string, reply: InboxReply) => void;
+  markInboxItemRead: (id: string) => void;
+  markAllInboxRead: () => void;
 
   // Document Viewer
   selectedDoc: DocFile | null;
@@ -220,6 +269,17 @@ interface AppState {
   lastSaved: string | null;
   setSaving: (saving: boolean) => void;
   setLastSaved: (date: string | null) => void;
+
+  // Bottom Panel
+  isBottomPanelOpen: boolean;
+  toggleBottomPanel: () => void;
+  openBottomPanel: () => void;
+  closeBottomPanel: () => void;
+
+  // Activities
+  activities: Activity[];
+  setActivities: (activities: Activity[]) => void;
+  addActivity: (activity: Omit<Activity, 'id' | 'timestamp'>) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -374,6 +434,24 @@ export const useAppStore = create<AppState>((set) => ({
       item.id === id ? { ...item, ...updates } : item
     ),
   })),
+  deleteInboxItem: (id) => set((state) => ({
+    inboxItems: state.inboxItems.filter((item) => item.id !== id),
+  })),
+  addReplyToInboxItem: (itemId, reply) => set((state) => ({
+    inboxItems: state.inboxItems.map((item) =>
+      item.id === itemId
+        ? { ...item, replies: [...item.replies, reply] }
+        : item
+    ),
+  })),
+  markInboxItemRead: (id) => set((state) => ({
+    inboxItems: state.inboxItems.map((item) =>
+      item.id === id ? { ...item, read: true } : item
+    ),
+  })),
+  markAllInboxRead: () => set((state) => ({
+    inboxItems: state.inboxItems.map((item) => ({ ...item, read: true })),
+  })),
 
   // Document Viewer
   selectedDoc: null,
@@ -392,4 +470,24 @@ export const useAppStore = create<AppState>((set) => ({
   lastSaved: null,
   setSaving: (saving) => set({ isSaving: saving }),
   setLastSaved: (date) => set({ lastSaved: date }),
+
+  // Bottom Panel
+  isBottomPanelOpen: true, // Open by default
+  toggleBottomPanel: () => set((state) => ({ isBottomPanelOpen: !state.isBottomPanelOpen })),
+  openBottomPanel: () => set({ isBottomPanelOpen: true }),
+  closeBottomPanel: () => set({ isBottomPanelOpen: false }),
+
+  // Activities
+  activities: [],
+  setActivities: (activities) => set({ activities }),
+  addActivity: (activity) => set((state) => ({
+    activities: [
+      {
+        ...activity,
+        id: `activity-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        timestamp: new Date().toISOString(),
+      },
+      ...state.activities,
+    ].slice(0, 100), // Keep last 100
+  })),
 }));

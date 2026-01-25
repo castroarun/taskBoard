@@ -1,11 +1,11 @@
 /**
- * Tauri API wrapper for Command Center
+ * Tauri API wrapper for Klarity
  *
  * Provides typed interfaces for all Tauri commands.
  */
 
 import { invoke } from '@tauri-apps/api/core';
-import { Project, Task } from '@/store';
+import { Project, Task, InboxItem, InboxReply } from '@/store';
 
 // Check if we're running in Tauri
 export const isTauri = (): boolean => {
@@ -123,6 +123,181 @@ export async function writeInbox(content: string): Promise<void> {
   }
 
   await invoke('write_inbox', { data: content });
+}
+
+// Inbox JSON Data Structure
+interface InboxData {
+  version: string;
+  lastUpdated: string;
+  items: InboxItem[];
+}
+
+// Mock inbox data for dev mode
+// Note: read=true for user-created items (user knows about them)
+// read=false only when Claude has replied and user hasn't seen it yet
+const MOCK_INBOX_ITEMS: InboxItem[] = [
+  {
+    id: 'inbox-1',
+    text: 'Move taskboard pipeline task to review',
+    type: 'task',
+    project: 'taskboard',
+    priority: 'P1',
+    status: 'pending',
+    createdAt: new Date().toISOString(),
+    read: true, // User created this, they know about it
+    author: 'user',
+    parentId: null,
+    replies: [],
+  },
+  {
+    id: 'inbox-2',
+    text: 'Create task for taskboard: Add keyboard shortcuts',
+    type: 'task',
+    project: 'taskboard',
+    priority: 'P2',
+    status: 'pending',
+    createdAt: new Date(Date.now() - 3600000).toISOString(),
+    read: true, // User created this
+    author: 'user',
+    parentId: null,
+    replies: [],
+  },
+  {
+    id: 'inbox-3',
+    text: 'P0 the file watcher task',
+    type: 'task',
+    project: null,
+    priority: 'P0',
+    status: 'pending',
+    createdAt: new Date(Date.now() - 7200000).toISOString(),
+    read: true,
+    author: 'user',
+    parentId: null,
+    replies: [],
+  },
+  {
+    id: 'inbox-4',
+    text: 'Research Whisper alternatives for tradevoice',
+    type: 'idea',
+    project: 'tradevoice',
+    priority: null,
+    status: 'pending',
+    createdAt: new Date(Date.now() - 86400000).toISOString(),
+    read: false, // Claude replied, user hasn't seen it yet - THIS shows badge
+    author: 'user',
+    parentId: null,
+    replies: [
+      {
+        id: 'reply-1',
+        author: 'claude',
+        text: 'I found several alternatives: Deepgram, AssemblyAI, and Google Speech-to-Text. Want me to compare them?',
+        createdAt: new Date(Date.now() - 82800000).toISOString(),
+      },
+    ],
+  },
+  {
+    id: 'inbox-5',
+    text: 'Update tradevoice to architecture stage',
+    type: 'task',
+    project: 'tradevoice',
+    priority: 'P1',
+    status: 'done',
+    createdAt: new Date(Date.now() - 172800000).toISOString(),
+    read: true,
+    author: 'user',
+    parentId: null,
+    replies: [],
+  },
+];
+
+/**
+ * Read inbox from ~/.taskboard/inbox.json (structured data)
+ */
+export async function readInboxJson(): Promise<InboxData> {
+  if (!isTauri()) {
+    // In dev mode, return mock data so badge and inbox items work
+    return { version: '1.0.0', lastUpdated: new Date().toISOString(), items: MOCK_INBOX_ITEMS };
+  }
+
+  const data = await invoke<string>('read_inbox_json');
+  return JSON.parse(data);
+}
+
+/**
+ * Write inbox to ~/.taskboard/inbox.json (structured data)
+ */
+export async function writeInboxJson(data: InboxData): Promise<void> {
+  if (!isTauri()) {
+    console.log('Mock: Writing inbox.json', data);
+    return;
+  }
+
+  await invoke('write_inbox_json', { data: JSON.stringify(data, null, 2) });
+}
+
+/**
+ * Generate inbox.md content from inbox items (for Claude readability)
+ */
+export function generateInboxMarkdown(items: InboxItem[]): string {
+  const pendingItems = items.filter(i => i.status === 'pending');
+  const doneItems = items.filter(i => i.status !== 'pending');
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const formatItem = (item: InboxItem): string => {
+    const typeLabel = item.type.toUpperCase();
+    const priority = item.priority ? ` [${item.priority}]` : '';
+    const project = item.project ? `\n**Project:** @${item.project}` : '';
+    const readStatus = item.read ? 'read' : 'unread';
+
+    let md = `### [${typeLabel}] ${item.text}${priority}
+**ID:** ${item.id}
+**Created:** ${formatDate(item.createdAt)}
+**Status:** ${item.status} (${readStatus})${project}
+
+> ${item.author === 'claude' ? 'Claude' : 'User'}: ${item.text}
+`;
+
+    if (item.replies.length > 0) {
+      md += '\n**Replies:**\n';
+      item.replies.forEach(reply => {
+        const authorLabel = reply.author === 'claude' ? 'Claude' : 'User';
+        md += `> ${authorLabel} (${formatDate(reply.createdAt)}): ${reply.text}\n\n`;
+      });
+    }
+
+    md += '\n---\n';
+    return md;
+  };
+
+  let markdown = '# Inbox\n\n';
+
+  if (pendingItems.length > 0) {
+    markdown += '## Active Items\n\n';
+    pendingItems.forEach(item => {
+      markdown += formatItem(item);
+    });
+  }
+
+  if (doneItems.length > 0) {
+    markdown += '\n## Processed Archive\n\n';
+    doneItems.slice(0, 10).forEach(item => {
+      markdown += formatItem(item);
+    });
+    if (doneItems.length > 10) {
+      markdown += `\n*(${doneItems.length - 10} older items omitted)*\n`;
+    }
+  }
+
+  return markdown;
 }
 
 /**
