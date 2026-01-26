@@ -68,6 +68,7 @@ export function NewProjectModal() {
       id: name.toLowerCase().replace(/\s+/g, '-'),
       name: name.trim(),
       description: description.trim() || 'New project',
+      icon: null, // Can be set later: emoji (📦), image path (./assets/icon.png)
       repoPath: repoPath.trim() || `~/Projects/${name.toLowerCase().replace(/\s+/g, '-')}`,
       githubUrl: null,
       stage: 'conception',

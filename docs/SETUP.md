@@ -6,13 +6,45 @@ This guide will help you set up Task Board's Command Center on your machine.
 
 ## Prerequisites
 
-- **Node.js** 18+ ([download](https://nodejs.org/))
-- **Rust** (for Tauri) ([install](https://rustup.rs/))
-- **pnpm** (recommended) or npm
+### Required Software
+
+| Software | Version | Download |
+|----------|---------|----------|
+| **Node.js** | 18.0+ | [nodejs.org](https://nodejs.org/) |
+| **Rust** | Latest stable | [rustup.rs](https://rustup.rs/) |
+| **npm** | 9.0+ | Included with Node.js |
+
+### Platform-Specific Requirements
+
+#### Windows
+- Visual Studio Build Tools with C++ workload
+- WebView2 (usually pre-installed on Windows 10/11)
+
+```powershell
+# Install via winget
+winget install Microsoft.VisualStudio.2022.BuildTools
+```
+
+#### macOS
+- Xcode Command Line Tools
 
 ```bash
-# Install pnpm globally
-npm install -g pnpm
+xcode-select --install
+```
+
+#### Linux (Ubuntu/Debian)
+```bash
+sudo apt update
+sudo apt install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+```
+
+### Verify Installation
+
+```bash
+node --version    # Should be 18+
+npm --version     # Should be 9+
+rustc --version   # Should show version
+cargo --version   # Should show version
 ```
 
 ---
@@ -223,8 +255,39 @@ In browser dev mode, documents can't be loaded due to security restrictions. Use
 
 ---
 
+## Agent System Setup
+
+Task Board uses a unified agent system. See [AGENTS.md](./AGENTS.md) for full documentation.
+
+### Quick Agent Setup
+
+1. Agents are located in `_claude-shared/agents/`
+2. Commands are located in `_claude-shared/commands/`
+3. Use `@agent-name` in Claude Code to invoke agents
+4. Use `/command` to run commands
+
+### Execution Modes
+
+| Mode | Description |
+|------|-------------|
+| **Manual** | You invoke agents directly in Claude Code |
+| **Auto** | App detects inbox.md changes and spawns agents |
+| **Hybrid** | Both modes enabled (default) |
+
+Configure in `config.json`:
+```json
+{
+  "agentExecution": {
+    "mode": "hybrid"
+  }
+}
+```
+
+---
+
 ## Next Steps
 
 - Read the [Configuration Guide](./CONFIGURATION.md) for all options
-- Check [agents/](../agents/) for AI agent templates
+- Read [AGENTS.md](./AGENTS.md) for the agent system
+- Check the [Architecture](../.taskboard/docs/2-engineering/ARCHITECTURE.md) for technical details
 - Join discussions on GitHub Issues

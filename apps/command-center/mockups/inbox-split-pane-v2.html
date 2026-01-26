@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klarity Inbox - Split Pane v2</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: #0a0a0a; }
+
+    /* Subtle scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #444; }
+
+    /* Keyboard hint */
+    .kbd {
+      background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+      border: 1px solid #333;
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-size: 9px;
+      font-weight: 500;
+      color: #666;
+    }
+
+    /* Selected item highlight */
+    .inbox-item.selected {
+      background: rgba(59, 130, 246, 0.08);
+      border-left: 2px solid #3b82f6;
+    }
+
+    /* Recording pulse */
+    @keyframes pulse-ring {
+      0% { transform: scale(0.8); opacity: 1; }
+      100% { transform: scale(1.4); opacity: 0; }
+    }
+    .recording-ring {
+      animation: pulse-ring 1.2s ease-out infinite;
+    }
+  </style>
+</head>
+<body class="text-zinc-100 h-screen overflow-hidden">
+
+  <!-- Main Layout: Header + Centered Content -->
+  <div class="h-full flex flex-col">
+
+    <!-- Compact Header -->
+    <header class="flex items-center justify-between px-4 h-12 border-b border-zinc-800/80 bg-zinc-950/90 flex-shrink-0">
+      <div class="flex items-center gap-4">
+        <h1 class="text-sm font-semibold text-zinc-200">Inbox</h1>
+        <nav class="flex items-center gap-1">
+          <button class="px-3 py-1 text-xs font-medium text-blue-400 bg-blue-500/10 rounded-md">All</button>
+          <button class="px-3 py-1 text-xs font-medium text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 rounded-md transition-colors">Unread</button>
+          <button class="px-3 py-1 text-xs font-medium text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 rounded-md transition-colors">Action</button>
+          <button class="px-3 py-1 text-xs font-medium text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 rounded-md transition-colors">Claude</button>
+        </nav>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-[10px] text-zinc-600"><span class="kbd">C</span> capture</span>
+        <span class="text-[10px] text-zinc-600"><span class="kbd">J/K</span> nav</span>
+      </div>
+    </header>
+
+    <!-- Centered Container with max-width -->
+    <div class="flex-1 flex justify-center overflow-hidden">
+      <div class="w-full max-w-6xl flex overflow-hidden">
+
+        <!-- LEFT: Inbox List -->
+        <div class="w-[420px] border-r border-zinc-800/80 flex flex-col bg-zinc-950/50">
+
+        <!-- Quick Capture -->
+        <div class="p-3 border-b border-zinc-800/50">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="Quick capture... (C)"
+              class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg px-3 py-2 pr-16 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-zinc-700 transition-colors"
+            />
+            <div class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
+              <button class="p-1.5 text-zinc-600 hover:text-zinc-400 transition-colors" title="Voice">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-14 0m14 0a7 7 0 00-14 0m14 0v1a7 7 0 01-14 0v-1m7 8v3m-4 0h8"/>
+                </svg>
+              </button>
+              <button class="px-2 py-1 text-[10px] font-medium text-zinc-500 hover:text-zinc-300 bg-zinc-800 hover:bg-zinc-700 rounded transition-colors">Add</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inbox Items List -->
+        <div class="flex-1 overflow-y-auto">
+
+          <!-- Section: Needs Attention -->
+          <div class="px-3 py-2 sticky top-0 bg-zinc-950/95 backdrop-blur-sm z-10">
+            <div class="flex items-center gap-2">
+              <div class="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>
+              <span class="text-[10px] font-medium text-zinc-500 uppercase tracking-wider">Needs Attention</span>
+            </div>
+          </div>
+
+          <!-- Item 1 - Review (selected) -->
+          <div class="inbox-item selected px-3 py-3 cursor-pointer border-b border-zinc-800/30">
+            <div class="flex items-start gap-3">
+              <div class="w-2 h-2 bg-purple-500 rounded-full mt-1.5 flex-shrink-0"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm font-medium text-zinc-100 truncate">Research Whisper alternatives</span>
+                  <span class="text-[10px] text-zinc-600 flex-shrink-0">1h</span>
+                </div>
+                <p class="text-xs text-zinc-500 truncate mb-1.5">Look into alternatives for voice transcription...</p>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] px-1.5 py-0.5 bg-zinc-800 text-zinc-400 rounded">@tradevoice</span>
+                  <span class="text-[10px] text-purple-400">Claude replied</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 2 - Review pending -->
+          <div class="inbox-item px-3 py-3 cursor-pointer border-b border-zinc-800/30 hover:bg-zinc-900/50 transition-colors">
+            <div class="flex items-start gap-3">
+              <div class="w-2 h-2 bg-transparent mt-1.5 flex-shrink-0"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm text-zinc-300 truncate">Review pending: APP_PRD.md</span>
+                  <span class="text-[10px] text-zinc-600 flex-shrink-0">2d</span>
+                </div>
+                <p class="text-xs text-zinc-600 truncate mb-1.5">Product requirements document needs review</p>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] px-1.5 py-0.5 bg-zinc-800/60 text-zinc-500 rounded">@tradevoice</span>
+                  <span class="text-[10px] text-amber-500/80">5d pending</span>
+                  <span class="text-[10px] text-zinc-600">3 comments</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 3 - Stale -->
+          <div class="inbox-item px-3 py-3 cursor-pointer border-b border-zinc-800/30 hover:bg-zinc-900/50 transition-colors">
+            <div class="flex items-start gap-3">
+              <div class="w-2 h-2 bg-transparent mt-1.5 flex-shrink-0"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm text-zinc-300 truncate">Stale project: Portfolio</span>
+                  <span class="text-[10px] text-zinc-600 flex-shrink-0">18d</span>
+                </div>
+                <p class="text-xs text-zinc-600 truncate mb-1.5">Project hasn't been updated recently</p>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] px-1.5 py-0.5 bg-zinc-800/60 text-zinc-500 rounded">@portfolio</span>
+                  <span class="text-[10px] text-red-400/80">no updates in 18d</span>
+                  <span class="text-[10px] text-red-400/80">needs action</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Pending -->
+          <div class="px-3 py-2 sticky top-0 bg-zinc-950/95 backdrop-blur-sm z-10 mt-2">
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-medium text-zinc-500 uppercase tracking-wider">Pending</span>
+              <span class="text-[10px] text-zinc-700">(4)</span>
+            </div>
+          </div>
+
+          <!-- Item 4 - Task -->
+          <div class="inbox-item px-3 py-3 cursor-pointer border-b border-zinc-800/30 hover:bg-zinc-900/50 transition-colors">
+            <div class="flex items-start gap-3">
+              <div class="w-2 h-2 bg-transparent mt-1.5 flex-shrink-0"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm text-zinc-400 truncate">Move pipeline task to review</span>
+                  <span class="text-[10px] text-zinc-700 flex-shrink-0">2h</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] px-1.5 py-0.5 bg-zinc-800/60 text-zinc-500 rounded">@taskboard</span>
+                  <span class="text-[10px] px-1.5 py-0.5 bg-orange-500/10 text-orange-400/80 rounded border border-orange-500/20">P1</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 5 - Task -->
+          <div class="inbox-item px-3 py-3 cursor-pointer border-b border-zinc-800/30 hover:bg-zinc-900/50 transition-colors">
+            <div class="flex items-start gap-3">
+              <div class="w-2 h-2 bg-transparent mt-1.5 flex-shrink-0"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm text-zinc-400 truncate">Add keyboard shortcuts</span>
+                  <span class="text-[10px] text-zinc-700 flex-shrink-0">1d</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] px-1.5 py-0.5 bg-zinc-800/60 text-zinc-500 rounded">@taskboard</span>
+                  <span class="text-[10px] px-1.5 py-0.5 bg-yellow-500/10 text-yellow-400/80 rounded border border-yellow-500/20">P2</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 6 - Task P0 -->
+          <div class="inbox-item px-3 py-3 cursor-pointer border-b border-zinc-800/30 hover:bg-zinc-900/50 transition-colors">
+            <div class="flex items-start gap-3">
+              <div class="w-2 h-2 bg-transparent mt-1.5 flex-shrink-0"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm text-zinc-400 truncate">P0 the file watcher task</span>
+                  <span class="text-[10px] text-zinc-700 flex-shrink-0">3h</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] px-1.5 py-0.5 bg-red-500/10 text-red-400/80 rounded border border-red-500/20">P0</span>
+                  <span class="text-[10px] text-red-400/60">urgent</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 7 - Idea -->
+          <div class="inbox-item px-3 py-3 cursor-pointer border-b border-zinc-800/30 hover:bg-zinc-900/50 transition-colors">
+            <div class="flex items-start gap-3">
+              <div class="w-2 h-2 bg-transparent mt-1.5 flex-shrink-0"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm text-zinc-400 truncate">Start discovery: Fitness Tracker</span>
+                  <span class="text-[10px] text-zinc-700 flex-shrink-0">12d</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] px-1.5 py-0.5 bg-zinc-800/60 text-zinc-500 rounded">@fittrack</span>
+                  <span class="text-[10px] text-zinc-600">idea logged 12d ago</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Completed -->
+          <div class="px-3 py-2 sticky top-0 bg-zinc-950/95 backdrop-blur-sm z-10 mt-2">
+            <button class="flex items-center gap-1.5 text-[10px] text-zinc-600 hover:text-zinc-400 transition-colors">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+              <span class="font-medium uppercase tracking-wider">Completed</span>
+              <span class="text-zinc-700">(12)</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RIGHT: Detail Pane -->
+      <div class="flex-1 flex flex-col bg-zinc-900/30">
+
+        <!-- Detail Header -->
+        <div class="px-6 py-4 border-b border-zinc-800/50 flex items-start justify-between">
+          <div>
+            <div class="flex items-center gap-3 mb-1">
+              <h2 class="text-lg font-medium text-zinc-100">Research Whisper alternatives</h2>
+              <span class="text-[10px] px-2 py-0.5 bg-purple-500/10 text-purple-400 rounded-full border border-purple-500/20">Claude replied</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs">
+              <span class="text-zinc-500">@tradevoice</span>
+              <span class="text-zinc-600">·</span>
+              <span class="text-zinc-500">Created yesterday</span>
+              <span class="text-zinc-600">·</span>
+              <span class="text-zinc-500">💡 Idea</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1">
+            <button class="p-2 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 rounded-lg transition-colors" title="Mark done (E)">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </button>
+            <button class="p-2 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 rounded-lg transition-colors" title="Go to project">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </button>
+            <button class="p-2 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors" title="Delete">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Conversation Thread -->
+        <div class="flex-1 overflow-y-auto px-6 py-6">
+          <div class="max-w-2xl space-y-6">
+
+            <!-- Original message -->
+            <div class="flex gap-4">
+              <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                <span class="text-sm">👤</span>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-sm font-medium text-zinc-200">You</span>
+                  <span class="text-xs text-zinc-600">Yesterday at 2:30 PM</span>
+                </div>
+                <div class="bg-zinc-800/50 rounded-xl rounded-tl-sm px-4 py-3">
+                  <p class="text-sm text-zinc-300 leading-relaxed">
+                    Look into alternatives to Whisper for the voice transcription feature in TradeVoice. Need something that works well for real-time transcription with low latency.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Claude's reply -->
+            <div class="flex gap-4">
+              <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                <span class="text-sm">🤖</span>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-sm font-medium text-purple-400">Claude</span>
+                  <span class="text-xs text-zinc-600">1 hour ago</span>
+                </div>
+                <div class="bg-purple-500/5 border border-purple-500/10 rounded-xl rounded-tl-sm px-4 py-3">
+                  <p class="text-sm text-zinc-300 leading-relaxed mb-3">
+                    I found several alternatives worth considering for real-time voice transcription:
+                  </p>
+                  <div class="space-y-2 mb-3">
+                    <div class="flex items-start gap-2">
+                      <span class="text-purple-400 mt-0.5">•</span>
+                      <div>
+                        <span class="text-sm font-medium text-zinc-200">Deepgram</span>
+                        <span class="text-sm text-zinc-400"> — Fastest option, great for real-time with ~100ms latency</span>
+                      </div>
+                    </div>
+                    <div class="flex items-start gap-2">
+                      <span class="text-purple-400 mt-0.5">•</span>
+                      <div>
+                        <span class="text-sm font-medium text-zinc-200">AssemblyAI</span>
+                        <span class="text-sm text-zinc-400"> — Best accuracy, more features like speaker diarization</span>
+                      </div>
+                    </div>
+                    <div class="flex items-start gap-2">
+                      <span class="text-purple-400 mt-0.5">•</span>
+                      <div>
+                        <span class="text-sm font-medium text-zinc-200">Groq Whisper</span>
+                        <span class="text-sm text-zinc-400"> — Free tier available, fast inference on their hardware</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-sm text-zinc-400">
+                    Want me to create a detailed comparison doc with pricing and code examples?
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- User reply -->
+            <div class="flex gap-4">
+              <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                <span class="text-sm">👤</span>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-sm font-medium text-zinc-200">You</span>
+                  <span class="text-xs text-zinc-600">30 minutes ago</span>
+                </div>
+                <div class="bg-zinc-800/50 rounded-xl rounded-tl-sm px-4 py-3">
+                  <p class="text-sm text-zinc-300 leading-relaxed">
+                    Yes, please create the comparison. Focus on Deepgram and Groq since we need speed. Include pricing for ~100k minutes/month.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Reply Input (fixed at bottom) -->
+        <div class="border-t border-zinc-800/50 px-6 py-4 bg-zinc-900/50">
+          <div class="max-w-2xl">
+            <div class="flex items-end gap-3">
+              <div class="flex-1 relative">
+                <textarea
+                  placeholder="Reply... (R)"
+                  rows="2"
+                  class="w-full bg-zinc-800/60 border border-zinc-700/50 rounded-xl px-4 py-3 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-zinc-600 resize-none transition-colors"
+                ></textarea>
+              </div>
+              <div class="flex items-center gap-2 pb-1">
+                <!-- Voice Button -->
+                <button class="relative p-3 text-zinc-500 hover:text-zinc-300 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-xl transition-colors group" title="Voice reply (M)">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-14 0m14 0a7 7 0 00-14 0m14 0v1a7 7 0 01-14 0v-1m7 8v3m-4 0h8"/>
+                  </svg>
+                </button>
+                <!-- Send Button -->
+                <button class="px-5 py-3 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors">
+                  Send
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mt-2">
+              <p class="text-[10px] text-zinc-600">
+                Press <span class="kbd">Enter</span> to send · <span class="kbd">Shift+Enter</span> for new line
+              </p>
+              <p class="text-[10px] text-zinc-600">
+                Saved to inbox.md for Claude
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Recording State Variant (uncomment to see) -->
+  <!--
+  <div class="fixed bottom-6 right-6 flex items-center gap-3 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-xl">
+    <div class="relative">
+      <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+      <div class="absolute inset-0 w-3 h-3 bg-red-500 rounded-full recording-ring"></div>
+    </div>
+    <span class="text-sm text-red-400">Recording...</span>
+    <button class="text-xs text-red-300 hover:text-white transition-colors">Stop</button>
+  </div>
+  -->
+
+</body>
+</html>

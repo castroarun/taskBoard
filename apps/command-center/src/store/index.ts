@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 // Types
-export type TabId = 'projects' | 'docs' | 'inbox' | 'help';
+export type TabId = 'projects' | 'docs' | 'inbox' | 'help' | 'calendar';
 
 export type ProjectStage =
   | 'conception' | 'discovery' | 'requirements'  // Design
@@ -154,7 +154,10 @@ export type ActivityType =
   | 'document_approved'
   | 'deployed'
   | 'task_completed'
-  | 'review_submitted';
+  | 'review_submitted'
+  | 'code_merged'
+  | 'comment_added'
+  | 'milestone_reached';
 
 export interface Activity {
   id: string;
@@ -178,8 +181,15 @@ export interface AttentionItem {
   documentName?: string;
 }
 
+// Theme type
+export type Theme = 'dark' | 'light';
+
 // Store interface
 interface AppState {
+  // Theme
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+
   // UI State
   activeTab: TabId;
   setActiveTab: (tab: TabId) => void;
@@ -282,7 +292,23 @@ interface AppState {
   addActivity: (activity: Omit<Activity, 'id' | 'timestamp'>) => void;
 }
 
+// Get initial theme from localStorage or default to dark
+const getInitialTheme = (): Theme => {
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('klarity-theme');
+    if (saved === 'light' || saved === 'dark') return saved;
+  }
+  return 'dark';
+};
+
 export const useAppStore = create<AppState>((set) => ({
+  // Theme
+  theme: getInitialTheme(),
+  setTheme: (theme) => {
+    localStorage.setItem('klarity-theme', theme);
+    set({ theme });
+  },
+
   // UI State
   activeTab: 'projects',
   setActiveTab: (tab) => set({ activeTab: tab }),

@@ -4,7 +4,7 @@
   "projects": [
     {
       "id": "taskboard",
-      "name": "Arun's Task Board",
+      "name": "Klarity Task Board",
       "description": "File-based project orchestration system with Command Center desktop app",
       "repoPath": "C:/Users/Castro/arun-task-board",
       "githubUrl": null,

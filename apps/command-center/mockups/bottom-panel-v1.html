@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klarity - Bottom Panel (Actions + Activity)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            'surface': '#18181B',
+            'surface-elevated': '#27272A',
+            'background': '#09090B',
+            'border': '#3F3F46',
+            'border-subtle': '#27272A',
+            'design': { light: '#fce7f3', DEFAULT: '#ec4899', dark: '#9d174d' },
+            'engineering': { light: '#c7d2fe', DEFAULT: '#818CF8', dark: '#4338ca' },
+            'build': { light: '#fef9c3', DEFAULT: '#facc15', dark: '#a16207' },
+            'launch': { light: '#dcfce7', DEFAULT: '#4ade80', dark: '#166534' },
+            'closure': { light: '#ccfbf1', DEFAULT: '#2dd4bf', dark: '#0f766e' },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    .bg-mesh {
+      background-color: #09090B;
+      background-image:
+        radial-gradient(at 40% 20%, rgba(129, 140, 248, 0.08) 0px, transparent 50%),
+        radial-gradient(at 80% 0%, rgba(167, 139, 250, 0.05) 0px, transparent 50%),
+        radial-gradient(at 0% 50%, rgba(52, 211, 153, 0.05) 0px, transparent 50%);
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #18181B; }
+    ::-webkit-scrollbar-thumb { background: #3F3F46; border-radius: 3px; }
+    .hover-lift:hover { transform: translateY(-1px); }
+  </style>
+</head>
+<body class="bg-mesh min-h-screen text-zinc-100">
+
+  <!-- Top Navigation -->
+  <nav class="bg-surface/80 backdrop-blur-xl border-b border-border-subtle h-14 flex items-center px-4">
+    <div class="flex items-center gap-3">
+      <!-- Klarity Logo -->
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-700/50">
+        <svg class="w-5 h-5" viewBox="0 0 64 64" fill="none">
+          <defs>
+            <linearGradient id="k-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#6366f1"/>
+              <stop offset="100%" stop-color="#22d3ee"/>
+            </linearGradient>
+          </defs>
+          <circle cx="32" cy="28" r="16" fill="none" stroke="url(#k-grad)" stroke-width="3"/>
+          <rect x="26" y="18" width="3" height="20" fill="#a78bfa"/>
+          <path d="M29 28 L38 18 L41 18 L41 21 L32 28 L41 35 L41 38 L38 38 L29 28" fill="#6366f1"/>
+          <line x1="40" y1="36" x2="50" y2="46" stroke="#a78bfa" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="font-semibold text-white">Klarity</span>
+    </div>
+
+    <div class="flex-1 flex justify-center">
+      <div class="flex items-center gap-1 bg-zinc-800/50 rounded-lg p-1">
+        <button class="px-3 py-1.5 bg-blue-500/20 text-blue-400 rounded-md text-xs font-medium flex items-center gap-2">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
+          </svg>
+          Project Board
+        </button>
+        <button class="px-3 py-1.5 text-zinc-400 hover:text-zinc-200 rounded-md text-xs font-medium flex items-center gap-2">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          Docs
+        </button>
+        <button class="px-3 py-1.5 text-zinc-400 hover:text-zinc-200 rounded-md text-xs font-medium flex items-center gap-2">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+          </svg>
+          Inbox
+        </button>
+        <button class="px-3 py-1.5 text-zinc-400 hover:text-zinc-200 rounded-md text-xs font-medium flex items-center gap-2">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Help
+        </button>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button class="flex items-center gap-2 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg text-xs text-zinc-400">
+        Quick Launch
+        <kbd class="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 rounded text-[10px]">Ctrl+K</kbd>
+      </button>
+      <button class="p-2 text-zinc-400 hover:text-zinc-200">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+        </svg>
+      </button>
+      <button class="p-2 text-zinc-400 hover:text-zinc-200">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content Area -->
+  <div class="flex flex-col h-[calc(100vh-3.5rem)]">
+
+    <!-- Project Board Header -->
+    <div class="px-4 py-3 border-b border-border-subtle">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-sm font-semibold text-white">Project Board</h1>
+          <p class="text-[11px] text-zinc-500">8 projects across 5 phases</p>
+        </div>
+        <div class="flex items-center gap-2 text-[11px]">
+          <span class="px-2 py-1 bg-zinc-800 rounded text-zinc-300">All <span class="text-zinc-500">8</span></span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-design"></span> Design <span class="text-zinc-500">0</span></span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-engineering"></span> Engineering <span class="text-zinc-500">0</span></span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-build"></span> Build <span class="text-zinc-500">4</span></span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-launch"></span> Launch <span class="text-zinc-500">2</span></span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-closure"></span> Closure <span class="text-zinc-500">2</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Columns (Simplified) -->
+    <div class="flex-1 overflow-x-auto p-4">
+      <div class="flex gap-3 h-full min-w-max">
+        <!-- Design Column -->
+        <div class="w-56 flex-shrink-0">
+          <div class="flex items-center justify-between mb-2 px-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-medium text-design">Design</span>
+              <span class="text-[10px] text-zinc-500 bg-zinc-800 px-1.5 py-0.5 rounded">0</span>
+            </div>
+          </div>
+          <div class="h-full bg-surface/30 rounded-lg border border-border-subtle p-2 flex items-center justify-center">
+            <span class="text-xs text-zinc-600">No projects</span>
+          </div>
+        </div>
+
+        <!-- Engineering Column -->
+        <div class="w-56 flex-shrink-0">
+          <div class="flex items-center justify-between mb-2 px-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-medium text-engineering">Engineering</span>
+              <span class="text-[10px] text-zinc-500 bg-zinc-800 px-1.5 py-0.5 rounded">0</span>
+            </div>
+          </div>
+          <div class="h-full bg-surface/30 rounded-lg border border-border-subtle p-2 flex items-center justify-center">
+            <span class="text-xs text-zinc-600">No projects</span>
+          </div>
+        </div>
+
+        <!-- Build Column -->
+        <div class="w-56 flex-shrink-0">
+          <div class="flex items-center justify-between mb-2 px-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-medium text-build">Build</span>
+              <span class="text-[10px] text-zinc-500 bg-zinc-800 px-1.5 py-0.5 rounded">4</span>
+            </div>
+          </div>
+          <div class="h-full bg-surface/30 rounded-lg border border-build/20 p-2 space-y-2 overflow-y-auto">
+            <!-- Project Card -->
+            <div class="bg-surface p-3 rounded-lg border border-border hover-lift transition-all cursor-pointer">
+              <div class="flex items-start justify-between mb-2">
+                <span class="text-xs font-medium text-white">Arun's Task Board</span>
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+              </div>
+              <p class="text-[10px] text-zinc-500 mb-2 line-clamp-2">File-based project orchestration system...</p>
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] text-zinc-500">development</span>
+                <span class="text-[10px] text-build">55%</span>
+              </div>
+              <div class="mt-1 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                <div class="h-full bg-build rounded-full" style="width: 55%"></div>
+              </div>
+            </div>
+            <!-- More cards abbreviated -->
+            <div class="bg-surface p-3 rounded-lg border border-border">
+              <span class="text-xs font-medium text-white">PRIMMO</span>
+              <div class="mt-2 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                <div class="h-full bg-build rounded-full" style="width: 30%"></div>
+              </div>
+            </div>
+            <div class="bg-surface p-3 rounded-lg border border-border">
+              <span class="text-xs font-medium text-white">Covered Calls</span>
+              <div class="mt-2 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                <div class="h-full bg-build rounded-full" style="width: 20%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Launch Column -->
+        <div class="w-56 flex-shrink-0">
+          <div class="flex items-center justify-between mb-2 px-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-medium text-launch">Launch</span>
+              <span class="text-[10px] text-zinc-500 bg-zinc-800 px-1.5 py-0.5 rounded">2</span>
+            </div>
+          </div>
+          <div class="h-full bg-surface/30 rounded-lg border border-launch/20 p-2 space-y-2 overflow-y-auto">
+            <div class="bg-surface p-3 rounded-lg border border-border">
+              <span class="text-xs font-medium text-white">Castronix Portfolio</span>
+              <div class="mt-2 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                <div class="h-full bg-launch rounded-full" style="width: 95%"></div>
+              </div>
+            </div>
+            <div class="bg-surface p-3 rounded-lg border border-border">
+              <span class="text-xs font-medium text-white">REPPIT</span>
+              <div class="mt-2 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                <div class="h-full bg-launch rounded-full" style="width: 85%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Closure Column -->
+        <div class="w-56 flex-shrink-0">
+          <div class="flex items-center justify-between mb-2 px-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-medium text-closure">Closure</span>
+              <span class="text-[10px] text-zinc-500 bg-zinc-800 px-1.5 py-0.5 rounded">2</span>
+            </div>
+          </div>
+          <div class="h-full bg-surface/30 rounded-lg border border-closure/20 p-2 space-y-2 overflow-y-auto">
+            <div class="bg-surface p-3 rounded-lg border border-border">
+              <span class="text-xs font-medium text-white">AnyCalc</span>
+              <div class="mt-2 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                <div class="h-full bg-closure rounded-full" style="width: 100%"></div>
+              </div>
+            </div>
+            <div class="bg-surface p-3 rounded-lg border border-border">
+              <span class="text-xs font-medium text-white">NoteApp</span>
+              <div class="mt-2 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                <div class="h-full bg-closure rounded-full" style="width: 90%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== BOTTOM PANEL ==================== -->
+    <div class="border-t border-border bg-surface/50 backdrop-blur-sm">
+      <!-- Panel Header with Toggle -->
+      <div class="flex items-center justify-between px-4 py-2 border-b border-border-subtle">
+        <div class="flex items-center gap-4">
+          <button class="flex items-center gap-2 text-xs font-medium text-white">
+            <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            Needs Attention
+            <span class="px-1.5 py-0.5 bg-amber-500/20 text-amber-400 rounded text-[10px] font-semibold">3</span>
+          </button>
+          <button class="flex items-center gap-2 text-xs font-medium text-zinc-400 hover:text-zinc-200">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Recent Activity
+          </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] text-zinc-500">Ctrl+B to toggle</span>
+          <button class="p-1 text-zinc-500 hover:text-zinc-300">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel Content: Split View -->
+      <div class="flex h-48">
+        <!-- LEFT: Needs Attention -->
+        <div class="flex-1 border-r border-border-subtle p-3 overflow-y-auto">
+          <div class="divide-y divide-border-subtle">
+
+            <!-- Stale Project Alert -->
+            <div class="flex items-start gap-3 py-3 hover:bg-zinc-800/30 transition-colors cursor-pointer group px-1">
+              <div class="w-2 h-2 rounded-full bg-amber-500 mt-1.5 flex-shrink-0"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-medium text-white">REPPIT</span>
+                  <span class="text-[10px] text-amber-500">Stale 7 days</span>
+                </div>
+                <p class="text-[11px] text-zinc-500 mt-0.5">No commits since Jan 18. Last: Test plan approved.</p>
+                <div class="flex items-center gap-2 mt-2">
+                  <button class="px-2 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 text-[10px] font-medium rounded transition-colors">Resume</button>
+                  <button class="px-2 py-1 text-zinc-500 hover:text-zinc-300 text-[10px] transition-colors">Snooze</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- PRD Review Needed -->
+            <div class="flex items-start gap-3 py-3 hover:bg-zinc-800/30 transition-colors cursor-pointer group px-1">
+              <div class="w-2 h-2 rounded-full bg-blue-400 mt-1.5 flex-shrink-0"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-medium text-white">Conexus</span>
+                  <span class="text-[10px] text-blue-400">PRD Ready</span>
+                </div>
+                <p class="text-[11px] text-zinc-500 mt-0.5">@architect completed ARCHITECTURE.md. Awaiting review.</p>
+                <div class="flex items-center gap-2 mt-2">
+                  <button class="px-2 py-1 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 text-[10px] font-medium rounded transition-colors">Review</button>
+                  <button class="px-2 py-1 text-zinc-500 hover:text-zinc-300 text-[10px] transition-colors">Defer</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ready to Ship -->
+            <div class="flex items-start gap-3 py-3 hover:bg-zinc-800/30 transition-colors cursor-pointer group px-1">
+              <div class="w-2 h-2 rounded-full bg-green-400 mt-1.5 flex-shrink-0"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-medium text-white">NoteApp</span>
+                  <span class="text-[10px] text-green-400">Ready to ship</span>
+                </div>
+                <p class="text-[11px] text-zinc-500 mt-0.5">WALKTHROUGH.md complete. All tests passing.</p>
+                <div class="flex items-center gap-2 mt-2">
+                  <button class="px-2 py-1 bg-green-500/20 hover:bg-green-500/30 text-green-400 text-[10px] font-medium rounded transition-colors">Ship</button>
+                  <button class="px-2 py-1 text-zinc-500 hover:text-zinc-300 text-[10px] transition-colors">Not Yet</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RIGHT: Recent Activity -->
+        <div class="flex-1 p-3 overflow-y-auto">
+          <div class="space-y-1">
+
+            <!-- Today -->
+            <div class="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mb-2">Today</div>
+
+            <div class="flex items-center gap-3 py-2 px-2 rounded hover:bg-zinc-800/50 transition-colors cursor-pointer">
+              <div class="w-6 h-6 rounded bg-closure/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-3 h-3 text-closure" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-[11px] text-zinc-300"><span class="text-white font-medium">NoteApp</span> WALKTHROUGH.md created by @walkthrough</span>
+              </div>
+              <span class="text-[10px] text-zinc-500">2:30 PM</span>
+            </div>
+
+            <div class="flex items-center gap-3 py-2 px-2 rounded hover:bg-zinc-800/50 transition-colors cursor-pointer">
+              <div class="w-6 h-6 rounded bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-3 h-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-[11px] text-zinc-300"><span class="text-white font-medium">AnyCalc</span> deployed to production</span>
+              </div>
+              <span class="text-[10px] text-zinc-500">11:00 AM</span>
+            </div>
+
+            <!-- Yesterday -->
+            <div class="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mb-2 mt-3">Yesterday</div>
+
+            <div class="flex items-center gap-3 py-2 px-2 rounded hover:bg-zinc-800/50 transition-colors cursor-pointer">
+              <div class="w-6 h-6 rounded bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-[11px] text-zinc-300"><span class="text-white font-medium">PRIMMO</span> PRD approved</span>
+              </div>
+              <span class="text-[10px] text-zinc-500">4:15 PM</span>
+            </div>
+
+            <div class="flex items-center gap-3 py-2 px-2 rounded hover:bg-zinc-800/50 transition-colors cursor-pointer">
+              <div class="w-6 h-6 rounded bg-build/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-3 h-3 text-build" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-[11px] text-zinc-300"><span class="text-white font-medium">Covered Calls</span> project created</span>
+              </div>
+              <span class="text-[10px] text-zinc-500">10:30 AM</span>
+            </div>
+
+            <!-- Earlier -->
+            <div class="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mb-2 mt-3">Jan 23</div>
+
+            <div class="flex items-center gap-3 py-2 px-2 rounded hover:bg-zinc-800/50 transition-colors cursor-pointer">
+              <div class="w-6 h-6 rounded bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-3 h-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-[11px] text-zinc-300"><span class="text-white font-medium">REPPIT</span> TEST-PLAN.md approved</span>
+              </div>
+              <span class="text-[10px] text-zinc-500">3:45 PM</span>
+            </div>
+
+            <div class="flex items-center gap-3 py-2 px-2 rounded hover:bg-zinc-800/50 transition-colors cursor-pointer">
+              <div class="w-6 h-6 rounded bg-launch/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-3 h-3 text-launch" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-[11px] text-zinc-300"><span class="text-white font-medium">Portfolio</span> deployed to production</span>
+              </div>
+              <span class="text-[10px] text-zinc-500">11:20 AM</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ==================== END BOTTOM PANEL ==================== -->
+
+  </div>
+
+</body>
+</html>

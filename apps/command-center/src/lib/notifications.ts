@@ -1,5 +1,5 @@
 /**
- * Notification Service for Command Center
+ * Notification Service for Klarity
  *
  * Uses Web Notifications API with fallback to in-app toasts.
  * Respects user notification preferences from config.
@@ -326,7 +326,7 @@ export function startReminders(
   }, 60 * 60 * 1000); // Every hour
 
   // Also run once immediately
-  const { staleProjects, pendingApprovals, blockedTasks } = checkCallback();
+  const { staleProjects, pendingApprovals: _pendingApprovals, blockedTasks: _blockedTasks } = checkCallback();
   staleProjects.forEach(p => {
     if (p.daysSinceUpdate >= config.staleProject) {
       notifyStaleProject(p.name, p.daysSinceUpdate);

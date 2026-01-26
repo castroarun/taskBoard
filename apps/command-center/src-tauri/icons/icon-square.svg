@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- Main gradient: Deep Indigo to Clarity Cyan -->
+    <linearGradient id="main-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+    <!-- K letter gradient -->
+    <linearGradient id="k-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <!-- Handle gradient -->
+    <linearGradient id="handle-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+    <!-- Background gradient -->
+    <radialGradient id="bg-grad" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f0a1a"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="url(#bg-grad)"/>
+
+  <!-- Magnifying glass ring -->
+  <circle
+    cx="230"
+    cy="230"
+    r="140"
+    fill="none"
+    stroke="url(#main-grad)"
+    stroke-width="24"
+  />
+
+  <!-- K letter - centered in lens -->
+  <!-- Vertical bar of K -->
+  <rect
+    x="170"
+    y="150"
+    width="32"
+    height="160"
+    rx="4"
+    fill="url(#k-grad)"
+  />
+
+  <!-- Upper diagonal of K -->
+  <polygon
+    points="202,230 202,210 280,140 300,140 300,165 222,230"
+    fill="url(#k-grad)"
+  />
+
+  <!-- Lower diagonal of K -->
+  <polygon
+    points="202,230 202,250 280,320 300,320 300,295 222,230"
+    fill="url(#k-grad)"
+  />
+
+  <!-- Compact handle (fits in square) -->
+  <rect
+    x="340"
+    y="340"
+    width="120"
+    height="44"
+    rx="22"
+    transform="rotate(45, 350, 350)"
+    fill="url(#handle-grad)"
+  />
+</svg>

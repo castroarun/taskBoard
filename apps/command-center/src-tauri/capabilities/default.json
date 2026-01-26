@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/dev/crates/tauri-utils/schema/capabilities.json",
+  "identifier": "default",
+  "description": "Default capabilities for Klarity",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "shell:allow-open",
+    "clipboard-manager:allow-write-text",
+    "clipboard-manager:allow-read-text",
+    "fs:allow-home-read-recursive",
+    "fs:allow-home-write-recursive",
+    "fs:default"
+  ]
+}

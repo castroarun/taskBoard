@@ -1,0 +1,42 @@
+{
+  "name": "taskboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "File-based project orchestration system with Command Center desktop app",
+  "author": "Arun Prakash <arun.castromin@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/castroarun/taskboard.git"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/command-center",
+    "build": "npm run build --workspace=apps/command-center",
+    "tauri": "npm run tauri --workspace=apps/command-center",
+    "tauri:dev": "npm run tauri:dev --workspace=apps/command-center",
+    "tauri:build": "npm run tauri:build --workspace=apps/command-center",
+    "preview": "npm run preview --workspace=apps/command-center",
+    "lint": "npm run lint --workspace=apps/command-center",
+    "install:all": "npm install",
+    "clean": "rimraf node_modules apps/*/node_modules packages/*/node_modules"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "taskboard",
+    "project-management",
+    "tauri",
+    "desktop-app",
+    "claude",
+    "ai-agents"
+  ]
+}

@@ -23,7 +23,7 @@ interface TaskDetailModalProps {
 }
 
 export function TaskDetailModal({ task, onClose }: TaskDetailModalProps) {
-  const { addTaskComment, updateTask } = useAppStore();
+  const { addTaskComment, updateTask: _updateTask } = useAppStore();
   const [commentText, setCommentText] = useState('');
   const [commentType, setCommentType] = useState<CommentType>('instruction');
   const [isSending, setIsSending] = useState(false);

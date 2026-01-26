@@ -75,7 +75,7 @@ const PROJECT_DOC_MAPPINGS: Record<string, { design: string[]; engineering: stri
     design: ['docs/Design/APP_PRD.md'],
     engineering: ['docs/Design/ARCHITECTURE.md', 'docs/QA_PLAN.md'],
     build: ['docs/DEV-CLOCK.md', 'docs/PROJECT-STATUS.md'],
-    launch: [],
+    launch: ['docs/marketing/LINKEDIN-ARTICLE.md', 'docs/marketing/LINKEDIN-POSTS.md'],
     other: [],
   },
 };

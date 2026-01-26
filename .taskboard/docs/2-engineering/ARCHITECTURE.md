@@ -771,6 +771,105 @@ arun-task-board/
 
 ---
 
+## 14. Hybrid Agent Architecture
+
+### Overview
+
+Taskboard uses a **unified agent system** with **hybrid execution modes**. Agents and commands are shared from the global `_claude-shared` folder and can be invoked either automatically by the app or manually by the user.
+
+### Unified Agent System
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    UNIFIED AGENTS                                   │
+│                                                                     │
+│  Location: C:/Users/{user}/Documents/Projects/_claude-shared/      │
+│                                                                     │
+│  Agents (@invocation in IDE):                                      │
+│  ├── @designer  - Requirements via deep research                  │
+│  ├── @architect - System design, PRD, mockups                     │
+│  ├── @qa        - Test planning (CSV + Markdown)                  │
+│  ├── @dev       - Development tracking, dev-log                   │
+│  └── @walkthrough - Code walkthroughs                             │
+│                                                                     │
+│  Commands (/invocation):                                           │
+│  ├── /readme - README quality scoring                             │
+│  ├── /git    - Git ops, LAUNCHPAD sync                           │
+│  ├── /docs   - Documentation generation                          │
+│  └── /deploy - Deployment workflows                               │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Execution Modes
+
+| Mode | Description | Trigger |
+|------|-------------|---------|
+| **Auto** | App detects changes → spawns Claude Code CLI → invokes agent | inbox.md change, file watcher |
+| **Manual** | User invokes agent directly in Claude Code | `@designer`, `/readme`, etc. |
+| **Hybrid** | Both modes enabled (default) | Either trigger works |
+
+### Configuration
+
+```json
+{
+  "agentExecution": {
+    "mode": "hybrid",           // "auto" | "manual" | "hybrid"
+    "autoTrigger": "inbox",     // What triggers auto mode
+    "claudeCodePath": "claude", // CLI path
+    "timeout": 300000           // 5 min timeout
+  }
+}
+```
+
+### Auto Execution Flow
+
+```
+1. User adds instruction to inbox.md
+        ↓
+2. File watcher detects change
+        ↓
+3. Orchestrator parses inbox.md
+        ↓
+4. Orchestrator determines appropriate agent
+        ↓
+5. App spawns: claude --agent @{agent} --prompt "{task}"
+        ↓
+6. Agent executes, updates files
+        ↓
+7. Notification shown to user
+```
+
+### Manual Execution Flow
+
+```
+1. User opens Claude Code in project
+        ↓
+2. User types: @designer help me with requirements
+        ↓
+3. Agent instructions loaded from _claude-shared/agents/designer.md
+        ↓
+4. Agent executes with full context
+        ↓
+5. User interacts directly
+```
+
+### Orchestrator Role
+
+The `agents/orchestrator.md` file contains routing logic:
+
+| Stage/Phase | Routed To |
+|-------------|-----------|
+| design/* | @designer |
+| engineering/architecture | @architect |
+| engineering/qa-planning | @qa |
+| build/development | @dev |
+| build/testing | @qa |
+| launch/* | /docs |
+| git operations | /git |
+
+---
+
 **Architecture Status:** ✅ Ready for Build Phase
 
 *Next: Dev Agent starts implementation from Task t-20260118-0001*

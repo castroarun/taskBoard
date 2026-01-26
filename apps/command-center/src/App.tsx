@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppStore, TabId } from './store';
 import { useDataLoader } from './hooks/useDataLoader';
 import { useNotifications } from './hooks/useNotifications';
@@ -7,9 +7,11 @@ import { QuickLaunch } from './components/ui/QuickLaunch';
 import { NewProjectModal } from './components/ui/NewProjectModal';
 import { SettingsPanel } from './components/ui/SettingsPanel';
 import { VoiceCapture } from './components/ui/VoiceCapture';
+import { SplashScreen } from './components/ui/SplashScreen';
 import { PipelineView } from './components/pipeline/PipelineView';
 import { DocsView } from './components/docs/DocsView';
 import { InboxView } from './components/inbox/InboxView';
+import { CalendarView } from './components/calendar/CalendarView';
 import { HelpView } from './components/help/HelpView';
 
 export default function App() {
@@ -26,7 +28,16 @@ export default function App() {
     closeVoiceCapture,
     addInboxItem,
     isLoading,
+    theme,
   } = useAppStore();
+
+  // Apply theme to document
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  // Splash screen state - show once per app load
+  const [showSplash, setShowSplash] = useState(true);
 
   // Load data from backend
   useDataLoader();
@@ -49,13 +60,20 @@ export default function App() {
         openNewProjectModal();
       }
 
-      // Tab switching with Ctrl+1/2/3/4
+      // Ctrl + B to toggle bottom panel
+      if (e.ctrlKey && e.key === 'b' && !e.shiftKey && !e.altKey && !e.metaKey) {
+        e.preventDefault();
+        useAppStore.getState().toggleBottomPanel();
+      }
+
+      // Tab switching with Ctrl+1/2/3/4/5
       if (e.ctrlKey && !e.shiftKey && !e.altKey) {
         const tabMap: Record<string, TabId> = {
           '1': 'projects',
           '2': 'docs',
           '3': 'inbox',
-          '4': 'help',
+          '4': 'calendar',
+          '5': 'help',
         };
         if (tabMap[e.key]) {
           e.preventDefault();
@@ -79,7 +97,7 @@ export default function App() {
       <div className="min-h-screen bg-mesh flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-zinc-400 text-sm">Loading Command Center...</p>
+          <p className="text-zinc-400 text-sm">Loading Klarity...</p>
         </div>
       </div>
     );
@@ -93,6 +111,7 @@ export default function App() {
         {activeTab === 'projects' && <PipelineView />}
         {activeTab === 'docs' && <DocsView />}
         {activeTab === 'inbox' && <InboxView />}
+        {activeTab === 'calendar' && <CalendarView />}
         {activeTab === 'help' && <HelpView />}
       </main>
 
@@ -111,11 +130,22 @@ export default function App() {
               priority: null,
               status: 'pending',
               createdAt: new Date().toISOString(),
+              read: false,
+              author: 'user',
+              parentId: null,
+              replies: [],
             });
             // Notify user
             notifyVoiceTranscript(text);
           }}
           onClose={closeVoiceCapture}
+        />
+      )}
+
+      {/* Klarity Splash Screen - shows once per app load */}
+      {showSplash && (
+        <SplashScreen
+          onComplete={() => setShowSplash(false)}
         />
       )}
     </div>

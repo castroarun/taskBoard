@@ -14,36 +14,71 @@ import {
   writeInbox,
   generateInboxMarkdown,
   isTauri,
+  MOCK_INBOX_ITEMS,
 } from '@/lib/tauri';
 
+// Activity templates for generating sample data
+const ACTIVITY_TEMPLATES = [
+  { type: 'document_created', descriptions: ['README.md created', 'CHANGELOG.md created', 'DESIGN.md created', 'API_DOCS.md created', 'WALKTHROUGH.md created'] },
+  { type: 'document_approved', descriptions: ['PRD approved by team', 'Architecture doc approved', 'Design specs approved', 'API contract approved'] },
+  { type: 'deployed', descriptions: ['deployed to staging', 'deployed to production', 'beta release published', 'hotfix deployed'] },
+  { type: 'stage_changed', descriptions: ['moved to development', 'moved to review', 'moved to testing', 'moved to design', 'moved to engineering'] },
+  { type: 'code_merged', descriptions: ['feature branch merged', 'bug fix merged', 'refactor completed', 'tests added', 'CI/CD updated'] },
+  { type: 'comment_added', descriptions: ['code review completed', 'feedback provided', 'discussion updated', 'blockers identified'] },
+  { type: 'milestone_reached', descriptions: ['MVP completed', 'Sprint goal achieved', 'Phase 1 complete', 'Beta ready'] },
+];
+
+// Time blocks for spreading activities throughout the day
+const TIME_BLOCKS = [
+  { name: 'morning', hours: [7, 8, 9, 10, 11] },
+  { name: 'afternoon', hours: [12, 13, 14, 15, 16] },
+  { name: 'evening', hours: [17, 18, 19, 20] },
+  { name: 'night', hours: [21, 22, 23] },
+];
+
 // Generate sample activities from projects
-function generateSampleActivities(projects: { id: string; name: string; lastUpdated: string }[]): Activity[] {
+function generateSampleActivities(projects: { id: string; name: string; lastUpdated: string; currentPhase?: string }[]): Activity[] {
   const activities: Activity[] = [];
   const now = new Date();
 
-  // Add some sample activities based on existing projects
-  projects.forEach((project, index) => {
-    if (index < 5) { // Limit to 5 projects for sample data
-      const daysAgo = index;
-      const timestamp = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000 - Math.random() * 12 * 60 * 60 * 1000);
+  if (projects.length === 0) return activities;
+
+  // Generate activities for the past 21 days (3 weeks)
+  for (let daysAgo = 0; daysAgo <= 21; daysAgo++) {
+    const dayDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+    const isWeekend = dayDate.getDay() === 0 || dayDate.getDay() === 6;
+
+    // Fewer activities on weekends
+    const activityCount = isWeekend ? Math.floor(Math.random() * 3) : Math.floor(Math.random() * 5) + 2;
+
+    for (let i = 0; i < activityCount; i++) {
+      // Pick a random project
+      const project = projects[Math.floor(Math.random() * Math.min(projects.length, 5))];
+
+      // Pick a random activity type and description
+      const template = ACTIVITY_TEMPLATES[Math.floor(Math.random() * ACTIVITY_TEMPLATES.length)];
+      const description = template.descriptions[Math.floor(Math.random() * template.descriptions.length)];
+
+      // Pick a random time block and hour
+      const timeBlock = TIME_BLOCKS[Math.floor(Math.random() * TIME_BLOCKS.length)];
+      const hour = timeBlock.hours[Math.floor(Math.random() * timeBlock.hours.length)];
+      const minute = Math.floor(Math.random() * 60);
+
+      const timestamp = new Date(dayDate);
+      timestamp.setHours(hour, minute, 0, 0);
 
       activities.push({
-        id: `activity-${project.id}-${Date.now()}-${index}`,
-        type: index === 0 ? 'document_created' : index === 1 ? 'deployed' : index === 2 ? 'document_approved' : 'stage_changed',
+        id: `activity-${project.id}-${daysAgo}-${i}-${Date.now()}`,
+        type: template.type as Activity['type'],
         projectId: project.id,
         projectName: project.name,
-        description: index === 0
-          ? 'WALKTHROUGH.md created by @walkthrough'
-          : index === 1
-          ? 'deployed to production'
-          : index === 2
-          ? 'PRD approved'
-          : 'moved to development',
+        description: `${description} by @${['dev', 'claude', 'bot', 'user'][Math.floor(Math.random() * 4)]}`,
         timestamp: timestamp.toISOString(),
       });
     }
-  });
+  }
 
+  // Sort by timestamp (most recent first)
   return activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 }
 
@@ -64,7 +99,7 @@ export function useDataLoader() {
     setLastSaved,
   } = useAppStore();
 
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isInitialLoadRef = useRef(true);
   const previousProjectsRef = useRef<string>('');
   const previousTasksRef = useRef<string>('');
@@ -173,11 +208,17 @@ export function useDataLoader() {
           readInboxJson(),
         ]);
 
-        setProjects(projectsData.projects);
-        setTasks(tasksData.tasks);
+        // Load projects (empty if no data - same as dev mode)
+        const loadedProjects = projectsData.projects;
+        setProjects(loadedProjects);
 
-        // Load inbox items (ensure new fields have defaults for migration)
-        const migratedInboxItems = inboxData.items.map((item: InboxItem) => ({
+        // Load tasks (empty if no data - same as dev mode)
+        const loadedTasks = tasksData.tasks;
+        setTasks(loadedTasks);
+
+        // Load inbox items - use MOCK_INBOX_ITEMS as fallback (same as dev mode)
+        const rawInboxItems = inboxData.items.length > 0 ? inboxData.items : MOCK_INBOX_ITEMS;
+        const migratedInboxItems = rawInboxItems.map((item: InboxItem) => ({
           ...item,
           read: item.read ?? false,
           author: item.author ?? 'user',
@@ -187,20 +228,20 @@ export function useDataLoader() {
         setInboxItems(migratedInboxItems);
 
         // Generate sample activities from projects
-        const sampleActivities = generateSampleActivities(projectsData.projects);
+        const sampleActivities = generateSampleActivities(loadedProjects);
         setActivities(sampleActivities);
 
         // Store initial values for change detection
-        previousProjectsRef.current = JSON.stringify(projectsData.projects);
-        previousTasksRef.current = JSON.stringify(tasksData.tasks);
+        previousProjectsRef.current = JSON.stringify(loadedProjects);
+        previousTasksRef.current = JSON.stringify(loadedTasks);
         previousInboxRef.current = JSON.stringify(migratedInboxItems);
 
         console.log('[DataLoader] Loaded:', {
-          projects: projectsData.projects.length,
-          tasks: tasksData.tasks.length,
+          projects: loadedProjects.length,
+          tasks: loadedTasks.length,
           inbox: migratedInboxItems.length,
           activities: sampleActivities.length,
-          source: isTauri() ? 'tauri' : 'mock',
+          source: isTauri() ? 'tauri' : 'dev',
         });
       } catch (error) {
         console.error('[DataLoader] Load failed:', error);

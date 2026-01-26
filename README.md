@@ -83,7 +83,7 @@ Taskboard solves this by:
 │   (Desktop)                │    │   (Mobile)                         │
 │                            │    │                                    │
 │   For deep work sessions:  │    │   For when you're away:            │
-│   • Pipeline kanban view   │    │   • Push notifications             │
+│   • Project Board view     │    │   • Push notifications             │
 │   • Quick Launch (⌘K)      │    │   • Health monitoring              │
 │   • Claude AI agent        │    │   • Voice instructions             │
 │   • Task breakdown         │    │   • Ship wizard + LinkedIn draft   │
@@ -102,7 +102,7 @@ Taskboard solves this by:
 
 | Feature | Description |
 |---------|-------------|
-| **Pipeline Kanban** | Drag projects through Idea → Building → Testing → Live stages |
+| **Project Board** | Drag projects through Idea → Building → Testing → Live stages |
 | **Quick Launch** | ⌘K palette for fast actions: open project, create task, switch context |
 | **Claude Agent** | AI-powered task breakdown, code assistance, and project planning |
 | **Offline-First** | Works without internet, syncs when connected |
@@ -172,6 +172,37 @@ This enables automatic health scoring, notifications, and cross-device sync with
 
 ---
 
+## Project Icons
+
+Each project can have a custom icon displayed in the Command Center. Add an `icon` field to your project in `projects.json`:
+
+```json
+{
+  "id": "my-project",
+  "name": "My Project",
+  "icon": "🚀"
+}
+```
+
+### Icon Options
+
+| Type | Example | Description |
+|------|---------|-------------|
+| **Emoji** | `"icon": "🚀"` | Any emoji character |
+| **Image** | `"icon": "./assets/icon.png"` | Path relative to project repo |
+
+### Creating Custom Icons
+
+For a polished look, create a square icon (recommended 128×128px or larger):
+
+1. **AI-Generated** — Use Claude or Midjourney: *"Create a minimal app icon for [project description], flat design, single color on dark background"*
+2. **Quick Design** — Use [Figma](https://figma.com) or [Canva](https://canva.com) with a simple shape + gradient
+3. **Emoji** — When in doubt, pick an emoji that represents your project's purpose
+
+Save icons to `assets/icon.png` in your project folder.
+
+---
+
 ## Specs
 
 - [Command Center Spec](specs/taskboard/TASKBOARD_COMPLETE_SPEC.md) — Desktop app architecture and features
@@ -184,7 +215,7 @@ This enables automatic health scoring, notifications, and cross-device sync with
 - [x] Command Center mockups
 - [x] Launchpad mockups
 - [x] Command Center MVP (Tauri + React)
-  - [x] Pipeline kanban view
+  - [x] Project Board view
   - [x] Quick Launch (⌘K) palette
   - [x] Task management (create/edit/drag-drop)
   - [x] Settings panel

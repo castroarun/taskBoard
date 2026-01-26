@@ -3,9 +3,53 @@ import typography from '@tailwindcss/typography';
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  safelist: [
+    // Phase colors - must be safelisted for dynamic class usage
+    'text-design', 'bg-design', 'border-design', 'bg-design/10', 'border-design/30',
+    'text-engineering', 'bg-engineering', 'border-engineering', 'bg-engineering/10', 'border-engineering/30',
+    'text-build', 'bg-build', 'border-build', 'bg-build/10', 'border-build/30',
+    'text-launch', 'bg-launch', 'border-launch', 'bg-launch/10', 'border-launch/30',
+    'text-closure', 'bg-closure', 'border-closure', 'bg-closure/10', 'border-closure/30',
+  ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+      },
       colors: {
+        // Klarity brand colors
+        klarity: {
+          indigo: '#6366f1',
+          purple: '#a78bfa',
+          cyan: '#22d3ee',
+        },
+        // Phase colors
+        design: {
+          DEFAULT: '#ec4899',
+          light: '#fce7f3',
+          dark: '#9d174d',
+        },
+        engineering: {
+          DEFAULT: '#818CF8',
+          light: '#c7d2fe',
+          dark: '#4338ca',
+        },
+        build: {
+          DEFAULT: '#facc15',
+          light: '#fef9c3',
+          dark: '#a16207',
+        },
+        launch: {
+          DEFAULT: '#4ade80',
+          light: '#dcfce7',
+          dark: '#166534',
+        },
+        closure: {
+          DEFAULT: '#2dd4bf',
+          light: '#ccfbf1',
+          dark: '#0f766e',
+        },
         // Professional blue theme (from mockup)
         primary: {
           50: '#eff6ff',

@@ -31,31 +31,31 @@
       {
         "id": "design",
         "name": "Design",
-        "color": "#8b5cf6",
+        "color": "#f472b6",
         "stages": ["conception", "discovery", "requirements"]
       },
       {
         "id": "engineering",
         "name": "Engineering",
-        "color": "#3b82f6",
+        "color": "#38bdf8",
         "stages": ["architecture", "qa-planning", "review"]
       },
       {
         "id": "build",
         "name": "Build",
-        "color": "#22c55e",
+        "color": "#facc15",
         "stages": ["development", "testing", "staging"]
       },
       {
         "id": "launch",
         "name": "Launch",
-        "color": "#f59e0b",
+        "color": "#4ade80",
         "stages": ["ship", "announce", "walkthrough"]
       },
       {
         "id": "closure",
         "name": "Closure",
-        "color": "#6b7280",
+        "color": "#5eead4",
         "stages": ["documentation", "portfolio", "retrospective"]
       }
     ],
@@ -117,17 +117,27 @@
   },
 
   "agents": {
-    "_comment": "AI agent prompt templates for automation",
+    "_comment": "Unified agent system - uses global Claude agents from _claude-shared",
     "enabled": true,
-    "templates": {
-      "orchestrator": "agents/orchestrator.md",
-      "design": "agents/design-agent.md",
-      "architect": "agents/architect-agent.md",
-      "dev": "agents/dev-agent.md",
-      "git": "agents/git-agent.md",
-      "qa": "agents/qa-agent.md",
-      "docs": "agents/docs-agent.md",
-      "readme": "agents/readme-agent.md"
+    "orchestrator": "agents/orchestrator.md",
+    "unifiedAgentsPath": "~/Documents/Projects/_claude-shared/agents",
+    "unifiedCommandsPath": "~/Documents/Projects/_claude-shared/commands",
+    "available": {
+      "agents": ["designer", "architect", "qa", "dev", "walkthrough"],
+      "commands": ["readme", "git", "docs", "deploy", "newproject"]
+    }
+  },
+
+  "agentExecution": {
+    "_comment": "Hybrid mode: auto (app triggers), manual (user invokes), or hybrid (both)",
+    "mode": "hybrid",
+    "autoTrigger": "inbox",
+    "claudeCodePath": "claude",
+    "timeout": 300000,
+    "notifications": {
+      "onStart": true,
+      "onComplete": true,
+      "onError": true
     }
   },
 
@@ -169,7 +179,7 @@
     "accentColor": "#6366f1",
     "compactMode": false,
     "showWelcome": true,
-    "defaultView": "pipeline",
+    "defaultView": "projects",
     "cardSize": "medium"
   },
 

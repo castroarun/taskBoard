@@ -5,7 +5,7 @@
  */
 
 import { invoke } from '@tauri-apps/api/core';
-import { Project, Task, InboxItem, InboxReply } from '@/store';
+import { Project, Task, InboxItem } from '@/store';
 
 // Check if we're running in Tauri
 export const isTauri = (): boolean => {
@@ -132,44 +132,63 @@ interface InboxData {
   items: InboxItem[];
 }
 
-// Mock inbox data for dev mode
+// Mock inbox data for dev mode and first-time Tauri users
 // Note: read=true for user-created items (user knows about them)
 // read=false only when Claude has replied and user hasn't seen it yet
-const MOCK_INBOX_ITEMS: InboxItem[] = [
+export const MOCK_INBOX_ITEMS: InboxItem[] = [
   {
     id: 'inbox-1',
-    text: 'Move taskboard pipeline task to review',
-    type: 'task',
-    project: 'taskboard',
-    priority: 'P1',
+    text: 'Research Whisper alternatives',
+    type: 'idea',
+    project: 'tradevoice',
+    priority: null,
     status: 'pending',
-    createdAt: new Date().toISOString(),
-    read: true, // User created this, they know about it
+    createdAt: new Date(Date.now() - 86400000).toISOString(), // Yesterday
+    read: false, // Claude replied, user hasn't seen - shows badge
     author: 'user',
     parentId: null,
-    replies: [],
+    replies: [
+      {
+        id: 'reply-1',
+        author: 'claude',
+        text: `I found several alternatives worth considering for real-time voice transcription:
+
+• **Deepgram** — Fastest option, great for real-time with ~100ms latency
+• **AssemblyAI** — Best accuracy, more features like speaker diarization
+• **Groq Whisper** — Free tier available, fast inference on their hardware
+
+Want me to create a detailed comparison doc with pricing and code examples?`,
+        createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
+      },
+      {
+        id: 'reply-2',
+        author: 'user',
+        text: 'Yes, please create the comparison. Focus on Deepgram and Groq since we need speed. Include pricing for ~100k minutes/month.',
+        createdAt: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
+      },
+    ],
   },
   {
     id: 'inbox-2',
-    text: 'Create task for taskboard: Add keyboard shortcuts',
+    text: 'Review pending: APP_PRD.md',
     type: 'task',
-    project: 'taskboard',
-    priority: 'P2',
+    project: 'tradevoice',
+    priority: null,
     status: 'pending',
-    createdAt: new Date(Date.now() - 3600000).toISOString(),
-    read: true, // User created this
+    createdAt: new Date(Date.now() - 2 * 86400000).toISOString(), // 2 days ago
+    read: true,
     author: 'user',
     parentId: null,
     replies: [],
   },
   {
     id: 'inbox-3',
-    text: 'P0 the file watcher task',
-    type: 'task',
-    project: null,
-    priority: 'P0',
+    text: 'Stale project: Portfolio',
+    type: 'note',
+    project: 'portfolio',
+    priority: null,
     status: 'pending',
-    createdAt: new Date(Date.now() - 7200000).toISOString(),
+    createdAt: new Date(Date.now() - 18 * 86400000).toISOString(), // 18 days ago
     read: true,
     author: 'user',
     parentId: null,
@@ -177,32 +196,51 @@ const MOCK_INBOX_ITEMS: InboxItem[] = [
   },
   {
     id: 'inbox-4',
-    text: 'Research Whisper alternatives for tradevoice',
-    type: 'idea',
-    project: 'tradevoice',
-    priority: null,
+    text: 'Move pipeline task to review',
+    type: 'task',
+    project: 'taskboard',
+    priority: 'P1',
     status: 'pending',
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-    read: false, // Claude replied, user hasn't seen it yet - THIS shows badge
+    createdAt: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
+    read: true,
     author: 'user',
     parentId: null,
-    replies: [
-      {
-        id: 'reply-1',
-        author: 'claude',
-        text: 'I found several alternatives: Deepgram, AssemblyAI, and Google Speech-to-Text. Want me to compare them?',
-        createdAt: new Date(Date.now() - 82800000).toISOString(),
-      },
-    ],
+    replies: [],
   },
   {
     id: 'inbox-5',
-    text: 'Update tradevoice to architecture stage',
+    text: 'Add keyboard shortcuts',
     type: 'task',
-    project: 'tradevoice',
-    priority: 'P1',
-    status: 'done',
-    createdAt: new Date(Date.now() - 172800000).toISOString(),
+    project: 'taskboard',
+    priority: 'P2',
+    status: 'pending',
+    createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+    read: true,
+    author: 'user',
+    parentId: null,
+    replies: [],
+  },
+  {
+    id: 'inbox-6',
+    text: 'P0 the file watcher task',
+    type: 'task',
+    project: null,
+    priority: 'P0',
+    status: 'pending',
+    createdAt: new Date(Date.now() - 10800000).toISOString(), // 3 hours ago
+    read: true,
+    author: 'user',
+    parentId: null,
+    replies: [],
+  },
+  {
+    id: 'inbox-7',
+    text: 'Start discovery: Fitness Tracker',
+    type: 'idea',
+    project: 'fittrack',
+    priority: null,
+    status: 'pending',
+    createdAt: new Date(Date.now() - 12 * 86400000).toISOString(), // 12 days ago
     read: true,
     author: 'user',
     parentId: null,

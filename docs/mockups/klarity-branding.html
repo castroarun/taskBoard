@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klarity Branding Options</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { background: #0a0a0f; }
+    .font-space { font-family: 'Space Grotesk', sans-serif; }
+    .font-inter { font-family: 'Inter', sans-serif; }
+    .font-jakarta { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-manrope { font-family: 'Manrope', sans-serif; }
+    .font-satoshi { font-family: system-ui, sans-serif; letter-spacing: -0.02em; }
+    .font-cabinet { font-family: system-ui, sans-serif; font-weight: 700; }
+    .font-geist { font-family: system-ui, sans-serif; letter-spacing: -0.01em; }
+  </style>
+</head>
+<body class="min-h-screen text-gray-100 p-8">
+  <div class="max-w-6xl mx-auto space-y-12">
+
+    <!-- Header -->
+    <div class="text-center space-y-4">
+      <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+        Klarity Branding Options
+      </h1>
+      <p class="text-gray-400 text-lg">
+        Visual mockups for fonts, icons, and color palette
+      </p>
+    </div>
+
+    <!-- Live Preview -->
+    <section class="bg-gradient-to-br from-[#1a1a2e] to-[#0d0d1a] rounded-2xl p-8 border border-[#2a2a4a]">
+      <h2 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-6">Live Preview</h2>
+      <div class="flex flex-col items-center space-y-6">
+        <div class="flex items-center gap-6">
+          <!-- K Prism Icon -->
+          <div class="w-20 h-20" id="preview-icon">
+            <svg viewBox="0 0 64 64" class="w-full h-full">
+              <defs>
+                <linearGradient id="prism-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#6366f1" />
+                  <stop offset="50%" stop-color="#a78bfa" />
+                  <stop offset="100%" stop-color="#22d3ee" />
+                </linearGradient>
+              </defs>
+              <polygon points="12,8 32,8 52,56 32,56 32,32 22,56 12,56" fill="url(#prism-grad)" />
+              <polygon points="32,32 52,8 52,32 42,56 32,56" fill="#22d3ee" opacity="0.8" />
+              <line x1="8" y1="20" x2="16" y2="24" stroke="#f472b6" stroke-width="2" opacity="0.6" />
+              <line x1="8" y1="32" x2="16" y2="32" stroke="#facc15" stroke-width="2" opacity="0.6" />
+              <line x1="8" y1="44" x2="16" y2="40" stroke="#4ade80" stroke-width="2" opacity="0.6" />
+            </svg>
+          </div>
+          <div class="text-center">
+            <h2 id="preview-text" class="text-5xl font-bold text-white font-space">Klarity</h2>
+            <p class="text-lg text-gray-400 tracking-widest mt-2">Declutter. Design. Deploy.</p>
+          </div>
+        </div>
+        <div class="flex gap-2 mt-4">
+          <div class="w-16 h-2 rounded-full bg-[#6366f1]"></div>
+          <div class="w-16 h-2 rounded-full bg-[#a78bfa]"></div>
+          <div class="w-16 h-2 rounded-full bg-[#22d3ee]"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Font Options -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-semibold text-white">Font Options</h2>
+        <span class="text-sm text-gray-500">Click to preview</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <!-- Space Grotesk -->
+        <button onclick="setFont('font-space')" class="font-card p-6 rounded-xl border bg-indigo-500/20 border-indigo-500 text-left">
+          <div class="flex items-start justify-between mb-3">
+            <span class="text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400">Recommended</span>
+            <svg class="w-5 h-5 text-indigo-400 checkmark" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-medium text-white mb-1">Space Grotesk</h3>
+          <p class="text-sm text-gray-400 mb-4">Geometric, modern, techy feel with excellent readability</p>
+          <div class="text-3xl text-white font-space">Klarity</div>
+        </button>
+
+        <!-- Satoshi -->
+        <button onclick="setFont('font-satoshi')" class="font-card p-6 rounded-xl border bg-[#1a1a2e] border-[#2a2a4a] hover:border-[#4a4a6a] text-left transition-all">
+          <div class="flex items-start justify-between mb-3">
+            <span class="text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400">Recommended</span>
+            <svg class="w-5 h-5 text-indigo-400 checkmark hidden" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-medium text-white mb-1">Satoshi</h3>
+          <p class="text-sm text-gray-400 mb-4">Clean, contemporary, slightly humanist geometric</p>
+          <div class="text-3xl text-white font-satoshi">Klarity</div>
+        </button>
+
+        <!-- Cabinet Grotesk -->
+        <button onclick="setFont('font-cabinet')" class="font-card p-6 rounded-xl border bg-[#1a1a2e] border-[#2a2a4a] hover:border-[#4a4a6a] text-left transition-all">
+          <div class="flex items-start justify-between mb-3">
+            <span class="text-xs px-2 py-1 rounded-full bg-orange-500/20 text-orange-400">Bold Option</span>
+            <svg class="w-5 h-5 text-indigo-400 checkmark hidden" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-medium text-white mb-1">Cabinet Grotesk</h3>
+          <p class="text-sm text-gray-400 mb-4">Strong, confident, great for headers</p>
+          <div class="text-3xl text-white font-cabinet">Klarity</div>
+        </button>
+
+        <!-- Geist -->
+        <button onclick="setFont('font-geist')" class="font-card p-6 rounded-xl border bg-[#1a1a2e] border-[#2a2a4a] hover:border-[#4a4a6a] text-left transition-all">
+          <div class="flex items-start justify-between mb-3">
+            <span class="text-xs px-2 py-1 rounded-full bg-blue-500/20 text-blue-400">Developer Favorite</span>
+            <svg class="w-5 h-5 text-indigo-400 checkmark hidden" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-medium text-white mb-1">Geist</h3>
+          <p class="text-sm text-gray-400 mb-4">Vercel's font - clean, minimal, developer-focused</p>
+          <div class="text-3xl text-white font-geist">Klarity</div>
+        </button>
+
+        <!-- Inter -->
+        <button onclick="setFont('font-inter')" class="font-card p-6 rounded-xl border bg-[#1a1a2e] border-[#2a2a4a] hover:border-[#4a4a6a] text-left transition-all">
+          <div class="flex items-start justify-between mb-3">
+            <span class="text-xs px-2 py-1 rounded-full bg-gray-500/20 text-gray-400">Safe Choice</span>
+            <svg class="w-5 h-5 text-indigo-400 checkmark hidden" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-medium text-white mb-1">Inter</h3>
+          <p class="text-sm text-gray-400 mb-4">Industry standard, highly readable, versatile</p>
+          <div class="text-3xl text-white font-inter">Klarity</div>
+        </button>
+
+        <!-- Plus Jakarta Sans -->
+        <button onclick="setFont('font-jakarta')" class="font-card p-6 rounded-xl border bg-[#1a1a2e] border-[#2a2a4a] hover:border-[#4a4a6a] text-left transition-all">
+          <div class="flex items-start justify-between mb-3">
+            <span class="text-xs px-2 py-1 rounded-full bg-purple-500/20 text-purple-400">Friendly</span>
+            <svg class="w-5 h-5 text-indigo-400 checkmark hidden" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-medium text-white mb-1">Plus Jakarta Sans</h3>
+          <p class="text-sm text-gray-400 mb-4">Modern, friendly, slightly rounded edges</p>
+          <div class="text-3xl text-white font-jakarta">Klarity</div>
+        </button>
+
+        <!-- Manrope -->
+        <button onclick="setFont('font-manrope')" class="font-card p-6 rounded-xl border bg-[#1a1a2e] border-[#2a2a4a] hover:border-[#4a4a6a] text-left transition-all">
+          <div class="flex items-start justify-between mb-3">
+            <span class="text-xs px-2 py-1 rounded-full bg-purple-500/20 text-purple-400">Elegant</span>
+            <svg class="w-5 h-5 text-indigo-400 checkmark hidden" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-medium text-white mb-1">Manrope</h3>
+          <p class="text-sm text-gray-400 mb-4">Semi-geometric, elegant, great x-height</p>
+          <div class="text-3xl text-white font-manrope">Klarity</div>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- Icon Concepts -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-semibold text-white">Icon Concepts</h2>
+        <span class="text-sm text-gray-500">Click to preview</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <!-- K Prism -->
+        <button onclick="setIcon('prism')" class="icon-card p-6 rounded-xl border bg-indigo-500/20 border-indigo-500 text-left transition-all">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-16 h-16">
+              <svg viewBox="0 0 64 64" class="w-full h-full">
+                <defs>
+                  <linearGradient id="prism-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6366f1" />
+                    <stop offset="50%" stop-color="#a78bfa" />
+                    <stop offset="100%" stop-color="#22d3ee" />
+                  </linearGradient>
+                </defs>
+                <polygon points="12,8 32,8 52,56 32,56 32,32 22,56 12,56" fill="url(#prism-grad-1)" />
+                <polygon points="32,32 52,8 52,32 42,56 32,56" fill="#22d3ee" opacity="0.8" />
+                <line x1="8" y1="20" x2="16" y2="24" stroke="#f472b6" stroke-width="2" opacity="0.6" />
+                <line x1="8" y1="32" x2="16" y2="32" stroke="#facc15" stroke-width="2" opacity="0.6" />
+                <line x1="8" y1="44" x2="16" y2="40" stroke="#4ade80" stroke-width="2" opacity="0.6" />
+              </svg>
+            </div>
+            <svg class="w-5 h-5 text-indigo-400 checkmark" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-white mb-1">K Prism</h3>
+          <p class="text-sm text-gray-400 mb-2">Abstract K formed by light rays refracting through a prism</p>
+          <p class="text-xs text-indigo-400">Represents clarity emerging from complexity</p>
+        </button>
+
+        <!-- Flow K -->
+        <button onclick="setIcon('flow')" class="icon-card p-6 rounded-xl border bg-[#1a1a2e] border-[#2a2a4a] hover:border-[#4a4a6a] text-left transition-all">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-16 h-16">
+              <svg viewBox="0 0 64 64" class="w-full h-full">
+                <defs>
+                  <linearGradient id="flow-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6366f1" />
+                    <stop offset="100%" stop-color="#22d3ee" />
+                  </linearGradient>
+                </defs>
+                <path d="M16 8 L16 56 M16 32 Q32 32 40 16 Q48 0 56 8 M16 32 Q32 32 40 48 Q48 64 56 56" fill="none" stroke="url(#flow-grad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="56" cy="8" r="3" fill="#22d3ee" />
+                <circle cx="56" cy="56" r="3" fill="#a78bfa" />
+              </svg>
+            </div>
+            <svg class="w-5 h-5 text-indigo-400 checkmark hidden" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-white mb-1">Flow K</h3>
+          <p class="text-sm text-gray-400 mb-2">K with flowing lines suggesting workflow and movement</p>
+          <p class="text-xs text-indigo-400">Represents smooth workflow orchestration</p>
+        </button>
+
+        <!-- Grid K -->
+        <button onclick="setIcon('grid')" class="icon-card p-6 rounded-xl border bg-[#1a1a2e] border-[#2a2a4a] hover:border-[#4a4a6a] text-left transition-all">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-16 h-16">
+              <svg viewBox="0 0 64 64" class="w-full h-full">
+                <circle cx="16" cy="12" r="4" fill="#6366f1" />
+                <circle cx="16" cy="24" r="4" fill="#6366f1" />
+                <circle cx="16" cy="36" r="4" fill="#6366f1" />
+                <circle cx="16" cy="48" r="4" fill="#6366f1" />
+                <circle cx="28" cy="30" r="4" fill="#a78bfa" />
+                <circle cx="40" cy="20" r="4" fill="#a78bfa" />
+                <circle cx="52" cy="10" r="4" fill="#22d3ee" />
+                <circle cx="28" cy="38" r="4" fill="#a78bfa" />
+                <circle cx="40" cy="46" r="4" fill="#a78bfa" />
+                <circle cx="52" cy="54" r="4" fill="#22d3ee" />
+              </svg>
+            </div>
+            <svg class="w-5 h-5 text-indigo-400 checkmark hidden" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-white mb-1">Grid K</h3>
+          <p class="text-sm text-gray-400 mb-2">K constructed from grid squares/dots</p>
+          <p class="text-xs text-indigo-400">Represents structured organization and clarity</p>
+        </button>
+
+        <!-- Declutter K -->
+        <button onclick="setIcon('declutter')" class="icon-card p-6 rounded-xl border bg-[#1a1a2e] border-[#2a2a4a] hover:border-[#4a4a6a] text-left transition-all">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-16 h-16">
+              <svg viewBox="0 0 64 64" class="w-full h-full">
+                <defs>
+                  <linearGradient id="declutter-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#6366f1" />
+                    <stop offset="100%" stop-color="#a78bfa" />
+                  </linearGradient>
+                </defs>
+                <rect x="12" y="8" width="8" height="48" rx="2" fill="url(#declutter-grad)" />
+                <polygon points="20,32 48,8 56,8 56,16 28,32 56,48 56,56 48,56 20,32" fill="#22d3ee" />
+              </svg>
+            </div>
+            <svg class="w-5 h-5 text-indigo-400 checkmark hidden" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-white mb-1">Declutter K</h3>
+          <p class="text-sm text-gray-400 mb-2">Minimalist K with clean, sharp lines</p>
+          <p class="text-xs text-indigo-400">Represents simplicity and decluttering</p>
+        </button>
+
+        <!-- Lens K -->
+        <button onclick="setIcon('lens')" class="icon-card p-6 rounded-xl border bg-[#1a1a2e] border-[#2a2a4a] hover:border-[#4a4a6a] text-left transition-all">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-16 h-16">
+              <svg viewBox="0 0 64 64" class="w-full h-full">
+                <defs>
+                  <linearGradient id="lens-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6366f1" />
+                    <stop offset="100%" stop-color="#22d3ee" />
+                  </linearGradient>
+                </defs>
+                <circle cx="32" cy="28" r="20" fill="none" stroke="url(#lens-grad)" stroke-width="3" />
+                <rect x="24" y="14" width="4" height="28" fill="#a78bfa" />
+                <path d="M28 28 L40 14 L44 14 L44 18 L32 28 L44 38 L44 42 L40 42 L28 28" fill="#6366f1" />
+                <line x1="46" y1="42" x2="58" y2="54" stroke="#a78bfa" stroke-width="4" stroke-linecap="round" />
+              </svg>
+            </div>
+            <svg class="w-5 h-5 text-indigo-400 checkmark hidden" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-white mb-1">Lens K</h3>
+          <p class="text-sm text-gray-400 mb-2">K integrated with a magnifying lens or focus circle</p>
+          <p class="text-xs text-indigo-400">Represents focus and clarity of vision</p>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- Color Palette -->
+    <section class="space-y-6">
+      <h2 class="text-2xl font-semibold text-white">Color Palette</h2>
+
+      <!-- Primary Colors -->
+      <div class="space-y-3">
+        <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider">Primary</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="flex items-center gap-4 p-4 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a]">
+            <div class="w-14 h-14 rounded-lg shadow-lg" style="background-color: #6366f1"></div>
+            <div>
+              <p class="font-medium text-white">Deep Indigo</p>
+              <p class="text-sm text-gray-400 font-mono">#6366f1</p>
+              <p class="text-xs text-gray-500 mt-1">Primary brand color, buttons, accents</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-4 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a]">
+            <div class="w-14 h-14 rounded-lg shadow-lg" style="background-color: #818cf8"></div>
+            <div>
+              <p class="font-medium text-white">Indigo Light</p>
+              <p class="text-sm text-gray-400 font-mono">#818cf8</p>
+              <p class="text-xs text-gray-500 mt-1">Hover states, secondary buttons</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-4 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a]">
+            <div class="w-14 h-14 rounded-lg shadow-lg" style="background-color: #4f46e5"></div>
+            <div>
+              <p class="font-medium text-white">Indigo Dark</p>
+              <p class="text-sm text-gray-400 font-mono">#4f46e5</p>
+              <p class="text-xs text-gray-500 mt-1">Active states, emphasis</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accent Colors -->
+      <div class="space-y-3">
+        <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider">Accent</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="flex items-center gap-4 p-4 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a]">
+            <div class="w-14 h-14 rounded-lg shadow-lg" style="background-color: #22d3ee"></div>
+            <div>
+              <p class="font-medium text-white">Clarity Cyan</p>
+              <p class="text-sm text-gray-400 font-mono">#22d3ee</p>
+              <p class="text-xs text-gray-500 mt-1">Highlights, success states, links</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-4 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a]">
+            <div class="w-14 h-14 rounded-lg shadow-lg" style="background-color: #a78bfa"></div>
+            <div>
+              <p class="font-medium text-white">Soft Purple</p>
+              <p class="text-sm text-gray-400 font-mono">#a78bfa</p>
+              <p class="text-xs text-gray-500 mt-1">Secondary accents, gradients</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-4 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a]">
+            <div class="w-14 h-14 rounded-lg shadow-lg" style="background-color: #f472b6"></div>
+            <div>
+              <p class="font-medium text-white">Warm Pink</p>
+              <p class="text-sm text-gray-400 font-mono">#f472b6</p>
+              <p class="text-xs text-gray-500 mt-1">Design phase, notifications</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workflow Colors -->
+      <div class="space-y-3">
+        <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider">Workflow Phases</h3>
+        <div class="flex flex-wrap gap-4">
+          <div class="flex items-center gap-3 p-3 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a]">
+            <div class="w-8 h-8 rounded-lg" style="background-color: #f472b6"></div>
+            <div>
+              <p class="text-sm font-medium text-white">Design Pink</p>
+              <p class="text-xs text-gray-400 font-mono">#f472b6</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a]">
+            <div class="w-8 h-8 rounded-lg" style="background-color: #38bdf8"></div>
+            <div>
+              <p class="text-sm font-medium text-white">Engineering Blue</p>
+              <p class="text-xs text-gray-400 font-mono">#38bdf8</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a]">
+            <div class="w-8 h-8 rounded-lg" style="background-color: #facc15"></div>
+            <div>
+              <p class="text-sm font-medium text-white">Build Yellow</p>
+              <p class="text-xs text-gray-400 font-mono">#facc15</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a]">
+            <div class="w-8 h-8 rounded-lg" style="background-color: #4ade80"></div>
+            <div>
+              <p class="text-sm font-medium text-white">Launch Green</p>
+              <p class="text-xs text-gray-400 font-mono">#4ade80</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a]">
+            <div class="w-8 h-8 rounded-lg" style="background-color: #5eead4"></div>
+            <div>
+              <p class="text-sm font-medium text-white">Closure Teal</p>
+              <p class="text-xs text-gray-400 font-mono">#5eead4</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Neutral Colors -->
+      <div class="space-y-3">
+        <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider">Neutral</h3>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div class="p-4 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a] text-center">
+            <div class="w-full h-12 rounded-lg mb-3 border border-[#3a3a5a]" style="background-color: #0a0a0f"></div>
+            <p class="text-sm font-medium text-white">Background</p>
+            <p class="text-xs text-gray-400 font-mono">#0a0a0f</p>
+          </div>
+          <div class="p-4 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a] text-center">
+            <div class="w-full h-12 rounded-lg mb-3 border border-[#3a3a5a]" style="background-color: #1a1a2e"></div>
+            <p class="text-sm font-medium text-white">Surface</p>
+            <p class="text-xs text-gray-400 font-mono">#1a1a2e</p>
+          </div>
+          <div class="p-4 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a] text-center">
+            <div class="w-full h-12 rounded-lg mb-3 border border-[#3a3a5a]" style="background-color: #2a2a4a"></div>
+            <p class="text-sm font-medium text-white">Border</p>
+            <p class="text-xs text-gray-400 font-mono">#2a2a4a</p>
+          </div>
+          <div class="p-4 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a] text-center">
+            <div class="w-full h-12 rounded-lg mb-3 border border-[#3a3a5a]" style="background-color: #f8fafc"></div>
+            <p class="text-sm font-medium text-white">Text Primary</p>
+            <p class="text-xs text-gray-400 font-mono">#f8fafc</p>
+          </div>
+          <div class="p-4 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a] text-center">
+            <div class="w-full h-12 rounded-lg mb-3 border border-[#3a3a5a]" style="background-color: #94a3b8"></div>
+            <p class="text-sm font-medium text-white">Text Secondary</p>
+            <p class="text-xs text-gray-400 font-mono">#94a3b8</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lockup Variations -->
+    <section class="space-y-6">
+      <h2 class="text-2xl font-semibold text-white">Lockup Variations</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Horizontal -->
+        <div class="p-8 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a]">
+          <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-6">Horizontal</h3>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12" id="lockup-icon-1">
+              <svg viewBox="0 0 64 64" class="w-full h-full">
+                <defs>
+                  <linearGradient id="prism-grad-2" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6366f1" />
+                    <stop offset="50%" stop-color="#a78bfa" />
+                    <stop offset="100%" stop-color="#22d3ee" />
+                  </linearGradient>
+                </defs>
+                <polygon points="12,8 32,8 52,56 32,56 32,32 22,56 12,56" fill="url(#prism-grad-2)" />
+                <polygon points="32,32 52,8 52,32 42,56 32,56" fill="#22d3ee" opacity="0.8" />
+              </svg>
+            </div>
+            <div>
+              <span id="lockup-text-1" class="text-3xl font-bold text-white font-space">Klarity</span>
+              <span class="text-gray-500 mx-3">—</span>
+              <span class="text-gray-400">Declutter. Design. Deploy.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stacked -->
+        <div class="p-8 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a]">
+          <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-6">Stacked</h3>
+          <div class="flex flex-col items-center text-center">
+            <div class="w-14 h-14 mb-4" id="lockup-icon-2">
+              <svg viewBox="0 0 64 64" class="w-full h-full">
+                <defs>
+                  <linearGradient id="prism-grad-3" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6366f1" />
+                    <stop offset="50%" stop-color="#a78bfa" />
+                    <stop offset="100%" stop-color="#22d3ee" />
+                  </linearGradient>
+                </defs>
+                <polygon points="12,8 32,8 52,56 32,56 32,32 22,56 12,56" fill="url(#prism-grad-3)" />
+                <polygon points="32,32 52,8 52,32 42,56 32,56" fill="#22d3ee" opacity="0.8" />
+              </svg>
+            </div>
+            <span id="lockup-text-2" class="text-3xl font-bold text-white font-space">Klarity</span>
+            <span class="text-sm text-gray-400 tracking-wider mt-2">Declutter. Design. Deploy.</span>
+          </div>
+        </div>
+
+        <!-- Icon Only -->
+        <div class="p-8 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a]">
+          <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-6">Icon Only</h3>
+          <div class="flex items-center gap-6">
+            <div class="w-16 h-16 p-2 bg-[#0a0a0f] rounded-xl" id="lockup-icon-3">
+              <svg viewBox="0 0 64 64" class="w-full h-full">
+                <defs>
+                  <linearGradient id="prism-grad-4" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6366f1" />
+                    <stop offset="50%" stop-color="#a78bfa" />
+                    <stop offset="100%" stop-color="#22d3ee" />
+                  </linearGradient>
+                </defs>
+                <polygon points="12,8 32,8 52,56 32,56 32,32 22,56 12,56" fill="url(#prism-grad-4)" />
+                <polygon points="32,32 52,8 52,32 42,56 32,56" fill="#22d3ee" opacity="0.8" />
+              </svg>
+            </div>
+            <div class="w-12 h-12 p-2 bg-[#0a0a0f] rounded-lg" id="lockup-icon-4">
+              <svg viewBox="0 0 64 64" class="w-full h-full">
+                <defs>
+                  <linearGradient id="prism-grad-5" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6366f1" />
+                    <stop offset="50%" stop-color="#a78bfa" />
+                    <stop offset="100%" stop-color="#22d3ee" />
+                  </linearGradient>
+                </defs>
+                <polygon points="12,8 32,8 52,56 32,56 32,32 22,56 12,56" fill="url(#prism-grad-5)" />
+                <polygon points="32,32 52,8 52,32 42,56 32,56" fill="#22d3ee" opacity="0.8" />
+              </svg>
+            </div>
+            <div class="w-8 h-8 p-1 bg-[#0a0a0f] rounded-md" id="lockup-icon-5">
+              <svg viewBox="0 0 64 64" class="w-full h-full">
+                <defs>
+                  <linearGradient id="prism-grad-6" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6366f1" />
+                    <stop offset="50%" stop-color="#a78bfa" />
+                    <stop offset="100%" stop-color="#22d3ee" />
+                  </linearGradient>
+                </defs>
+                <polygon points="12,8 32,8 52,56 32,56 32,32 22,56 12,56" fill="url(#prism-grad-6)" />
+                <polygon points="32,32 52,8 52,32 42,56 32,56" fill="#22d3ee" opacity="0.8" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wordmark Only -->
+        <div class="p-8 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a]">
+          <h3 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-6">Wordmark Only</h3>
+          <div class="space-y-4">
+            <span id="lockup-text-3" class="block text-4xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent font-space">Klarity</span>
+            <span id="lockup-text-4" class="block text-2xl font-bold text-white font-space">Klarity</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Typography Scale -->
+    <section class="space-y-6">
+      <h2 class="text-2xl font-semibold text-white">Typography Scale</h2>
+      <div class="p-8 bg-[#1a1a2e] rounded-xl border border-[#2a2a4a] space-y-4" id="typography-preview">
+        <div class="font-space">
+          <p class="text-xs text-gray-500 mb-1">Display / 48px</p>
+          <p class="text-5xl font-bold text-white">Klarity Command Center</p>
+        </div>
+        <div class="font-space">
+          <p class="text-xs text-gray-500 mb-1">Heading 1 / 32px</p>
+          <p class="text-3xl font-semibold text-white">Project Management</p>
+        </div>
+        <div class="font-space">
+          <p class="text-xs text-gray-500 mb-1">Heading 2 / 24px</p>
+          <p class="text-2xl font-medium text-white">Task Overview</p>
+        </div>
+        <div class="font-space">
+          <p class="text-xs text-gray-500 mb-1">Body / 16px</p>
+          <p class="text-base text-gray-300">Klarity helps you declutter your project chaos, design with clarity, and deploy with confidence.</p>
+        </div>
+        <div class="font-space">
+          <p class="text-xs text-gray-500 mb-1">Small / 14px</p>
+          <p class="text-sm text-gray-400">Last updated 2 hours ago</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-500 text-sm pt-8 border-t border-[#2a2a4a]">
+      <p>Klarity Branding Mockup  -  Select options above to see live preview</p>
+    </footer>
+  </div>
+
+  <script>
+    let currentFont = 'font-space';
+    let currentIcon = 'prism';
+
+    const iconSVGs = {
+      prism: `<svg viewBox="0 0 64 64" class="w-full h-full">
+        <defs>
+          <linearGradient id="prism-main" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#6366f1" />
+            <stop offset="50%" stop-color="#a78bfa" />
+            <stop offset="100%" stop-color="#22d3ee" />
+          </linearGradient>
+        </defs>
+        <polygon points="12,8 32,8 52,56 32,56 32,32 22,56 12,56" fill="url(#prism-main)" />
+        <polygon points="32,32 52,8 52,32 42,56 32,56" fill="#22d3ee" opacity="0.8" />
+        <line x1="8" y1="20" x2="16" y2="24" stroke="#f472b6" stroke-width="2" opacity="0.6" />
+        <line x1="8" y1="32" x2="16" y2="32" stroke="#facc15" stroke-width="2" opacity="0.6" />
+        <line x1="8" y1="44" x2="16" y2="40" stroke="#4ade80" stroke-width="2" opacity="0.6" />
+      </svg>`,
+      flow: `<svg viewBox="0 0 64 64" class="w-full h-full">
+        <defs>
+          <linearGradient id="flow-main" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#6366f1" />
+            <stop offset="100%" stop-color="#22d3ee" />
+          </linearGradient>
+        </defs>
+        <path d="M16 8 L16 56 M16 32 Q32 32 40 16 Q48 0 56 8 M16 32 Q32 32 40 48 Q48 64 56 56" fill="none" stroke="url(#flow-main)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="56" cy="8" r="3" fill="#22d3ee" />
+        <circle cx="56" cy="56" r="3" fill="#a78bfa" />
+      </svg>`,
+      grid: `<svg viewBox="0 0 64 64" class="w-full h-full">
+        <circle cx="16" cy="12" r="4" fill="#6366f1" />
+        <circle cx="16" cy="24" r="4" fill="#6366f1" />
+        <circle cx="16" cy="36" r="4" fill="#6366f1" />
+        <circle cx="16" cy="48" r="4" fill="#6366f1" />
+        <circle cx="28" cy="30" r="4" fill="#a78bfa" />
+        <circle cx="40" cy="20" r="4" fill="#a78bfa" />
+        <circle cx="52" cy="10" r="4" fill="#22d3ee" />
+        <circle cx="28" cy="38" r="4" fill="#a78bfa" />
+        <circle cx="40" cy="46" r="4" fill="#a78bfa" />
+        <circle cx="52" cy="54" r="4" fill="#22d3ee" />
+      </svg>`,
+      declutter: `<svg viewBox="0 0 64 64" class="w-full h-full">
+        <defs>
+          <linearGradient id="declutter-main" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#6366f1" />
+            <stop offset="100%" stop-color="#a78bfa" />
+          </linearGradient>
+        </defs>
+        <rect x="12" y="8" width="8" height="48" rx="2" fill="url(#declutter-main)" />
+        <polygon points="20,32 48,8 56,8 56,16 28,32 56,48 56,56 48,56 20,32" fill="#22d3ee" />
+      </svg>`,
+      lens: `<svg viewBox="0 0 64 64" class="w-full h-full">
+        <defs>
+          <linearGradient id="lens-main" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#6366f1" />
+            <stop offset="100%" stop-color="#22d3ee" />
+          </linearGradient>
+        </defs>
+        <circle cx="32" cy="28" r="20" fill="none" stroke="url(#lens-main)" stroke-width="3" />
+        <rect x="24" y="14" width="4" height="28" fill="#a78bfa" />
+        <path d="M28 28 L40 14 L44 14 L44 18 L32 28 L44 38 L44 42 L40 42 L28 28" fill="#6366f1" />
+        <line x1="46" y1="42" x2="58" y2="54" stroke="#a78bfa" stroke-width="4" stroke-linecap="round" />
+      </svg>`
+    };
+
+    function setFont(fontClass) {
+      currentFont = fontClass;
+
+      // Update preview text
+      document.getElementById('preview-text').className = `text-5xl font-bold text-white ${fontClass}`;
+
+      // Update all lockup texts
+      document.getElementById('lockup-text-1').className = `text-3xl font-bold text-white ${fontClass}`;
+      document.getElementById('lockup-text-2').className = `text-3xl font-bold text-white ${fontClass}`;
+      document.getElementById('lockup-text-3').className = `block text-4xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent ${fontClass}`;
+      document.getElementById('lockup-text-4').className = `block text-2xl font-bold text-white ${fontClass}`;
+
+      // Update typography preview
+      const typographyDiv = document.getElementById('typography-preview');
+      typographyDiv.querySelectorAll('div').forEach(div => {
+        div.className = fontClass;
+      });
+
+      // Update font cards selection state
+      document.querySelectorAll('.font-card').forEach(card => {
+        card.classList.remove('bg-indigo-500/20', 'border-indigo-500');
+        card.classList.add('bg-[#1a1a2e]', 'border-[#2a2a4a]');
+        card.querySelector('.checkmark').classList.add('hidden');
+      });
+
+      event.currentTarget.classList.remove('bg-[#1a1a2e]', 'border-[#2a2a4a]');
+      event.currentTarget.classList.add('bg-indigo-500/20', 'border-indigo-500');
+      event.currentTarget.querySelector('.checkmark').classList.remove('hidden');
+    }
+
+    function setIcon(iconName) {
+      currentIcon = iconName;
+      const svg = iconSVGs[iconName];
+
+      // Update preview icon
+      document.getElementById('preview-icon').innerHTML = svg;
+
+      // Update lockup icons
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById(`lockup-icon-${i}`).innerHTML = svg;
+      }
+
+      // Update icon cards selection state
+      document.querySelectorAll('.icon-card').forEach(card => {
+        card.classList.remove('bg-indigo-500/20', 'border-indigo-500');
+        card.classList.add('bg-[#1a1a2e]', 'border-[#2a2a4a]');
+        card.querySelector('.checkmark').classList.add('hidden');
+      });
+
+      event.currentTarget.classList.remove('bg-[#1a1a2e]', 'border-[#2a2a4a]');
+      event.currentTarget.classList.add('bg-indigo-500/20', 'border-indigo-500');
+      event.currentTarget.querySelector('.checkmark').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>

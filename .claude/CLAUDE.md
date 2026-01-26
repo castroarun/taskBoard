@@ -12,13 +12,61 @@ This is **Arun's Task Board** - a file-based project orchestration system with a
 
 **IMPORTANT**: At the start of EVERY Claude session, automatically check these files for pending instructions and feedback:
 
-### 1. Inbox (General Instructions)
+### 1. Inbox (Structured JSON + Markdown)
+
+**Primary file**: `~/.taskboard/inbox.json` (structured data)
+**Human-readable**: `~/.taskboard/inbox.md` (auto-generated from JSON)
+
+**At session start:**
+1. Read `inbox.json` to see all pending items
+2. Check for items with `status: "pending"` that need response
+3. Add your reply to the item's `replies` array
+4. Set `read: false` so the user sees the badge notification
+
+**To respond to an inbox item**, edit `inbox.json` and add to the item's replies:
+```json
+{
+  "id": "reply-<timestamp>",
+  "author": "claude",
+  "text": "Your response here...",
+  "createdAt": "2026-01-25T14:30:00.000Z"
+}
 ```
-inbox.md
+
+**Full inbox.json schema:**
+```json
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-01-25T14:30:00.000Z",
+  "items": [
+    {
+      "id": "inbox-<timestamp>",
+      "text": "User's message or task",
+      "type": "task|idea|note",
+      "project": "project-name|null",
+      "priority": "P0|P1|P2|P3|null",
+      "status": "pending|done|skipped",
+      "createdAt": "2026-01-25T14:00:00.000Z",
+      "read": false,
+      "author": "user|claude",
+      "parentId": null,
+      "replies": [
+        {
+          "id": "reply-<timestamp>",
+          "author": "claude",
+          "text": "Claude's response",
+          "createdAt": "2026-01-25T14:30:00.000Z"
+        }
+      ]
+    }
+  ]
+}
 ```
-- Read the "Active Instructions" section
-- Process any items marked with `[ ]`
-- Move processed items to "Processed Archive" with timestamp
+
+**Important:**
+- After adding a reply, set `item.read = false` so user sees notification
+- Mark `item.status = "done"` when task is complete
+- The app auto-generates `inbox.md` from JSON for human readability
 
 ### 2. Project Reviews (Project-Level Feedback)
 ```
@@ -34,6 +82,50 @@ tasks.json → tasks[].comments[] where forClaude=true
 ```
 - Check comments on tasks you're working on
 - Follow any instructions or incorporate feedback
+
+---
+
+## Multi-Task Handling (Global Workflow)
+
+**When the user provides multiple tasks/requests in a single message:**
+
+1. **Create a todo list** immediately with all tasks
+2. **Ask the user**: "Should I wait for review after each task, or execute all sequentially and update status as I go?"
+3. **Based on response**:
+   - **Review mode**: Complete one task → present status → wait for "proceed"
+   - **Sequential mode**: Execute all tasks, updating todo status after each completion
+4. **Always present the todo table** after each task completion showing:
+   - ✅ Completed tasks
+   - 🔄 Current task (in_progress)
+   - ⏳ Pending tasks
+5. **Never skip presenting status** - user should always see progress
+
+**Todo Status Format:**
+```
+| # | Task | Status |
+|---|------|--------|
+| 1 | First task description | ✅ Done |
+| 2 | Second task description | 🔄 In Progress |
+| 3 | Third task description | ⏳ Pending |
+```
+
+**Example workflow:**
+```
+User: "Fix the bug, add tests, and update docs"
+
+Claude: Creating todo list:
+1. Fix the bug
+2. Add tests
+3. Update docs
+
+Should I wait for your review after each task, or execute all sequentially?
+
+User: "proceed sequentially"
+
+Claude: [Completes task 1, shows status table]
+Claude: [Completes task 2, shows status table]
+Claude: [Completes task 3, shows final status table]
+```
 
 ---
 
@@ -71,11 +163,12 @@ tasks.json → tasks[].comments[] where forClaude=true
 
 | File | Purpose |
 |------|---------|
-| `inbox.md` | Quick instructions, ad-hoc feedback |
-| `projects.json` | Project data + reviews |
-| `tasks.json` | Task data + comments |
-| `config.json` | System configuration |
-| `.taskboard/docs/` | Design documents |
+| `~/.taskboard/inbox.json` | **Primary inbox data** - structured JSON for Claude replies |
+| `~/.taskboard/inbox.md` | Human-readable inbox (auto-generated from JSON) |
+| `~/.taskboard/projects.json` | Project data + reviews |
+| `~/.taskboard/tasks.json` | Task data + comments |
+| `~/.taskboard/config.json` | System configuration |
+| `apps/command-center/mockups/` | UI design mockups |
 
 ---
 

@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar - Hybrid View (Month + Timeline)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            design: { DEFAULT: '#ec4899', light: '#fce7f3', dark: '#9d174d' },
+            engineering: { DEFAULT: '#818CF8', light: '#c7d2fe', dark: '#4338ca' },
+            build: { DEFAULT: '#facc15', light: '#fef9c3', dark: '#a16207' },
+            launch: { DEFAULT: '#4ade80', light: '#dcfce7', dark: '#166534' },
+            closure: { DEFAULT: '#2dd4bf', light: '#ccfbf1', dark: '#0f766e' },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .font-display { font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif; }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #27272a; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: #52525b; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #71717a; }
+
+    /* Timeline block hover effect */
+    .timeline-block {
+      transition: all 0.15s ease;
+    }
+    .timeline-block:hover {
+      filter: brightness(1.1);
+      transform: scaleY(1.1);
+    }
+
+    /* Day cell hover */
+    .day-cell {
+      transition: all 0.15s ease;
+    }
+    .day-cell:hover {
+      background: rgba(63, 63, 70, 0.5);
+    }
+    .day-cell.selected {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    /* Week row highlight */
+    .week-row {
+      transition: all 0.15s ease;
+    }
+    .week-row:hover {
+      background: rgba(39, 39, 42, 0.5);
+    }
+    .week-row.selected {
+      background: rgba(59, 130, 246, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 min-h-screen">
+
+  <!-- Main Container -->
+  <div class="max-w-6xl mx-auto p-6">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-display font-bold text-white mb-1">Calendar</h1>
+        <p class="text-sm text-zinc-500">Track your project work history</p>
+      </div>
+
+      <!-- Project Filter -->
+      <div class="flex items-center gap-3">
+        <span class="text-xs text-zinc-500">Filter:</span>
+        <div class="flex items-center gap-1.5">
+          <button class="px-2.5 py-1.5 text-xs font-medium bg-zinc-800 text-white rounded-lg border border-zinc-700">
+            All Projects
+          </button>
+          <button class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-zinc-400 hover:text-white rounded-lg border border-transparent hover:border-zinc-700 transition-colors">
+            <div class="w-2 h-2 rounded-full bg-design"></div>
+            REPPIT
+          </button>
+          <button class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-zinc-400 hover:text-white rounded-lg border border-transparent hover:border-zinc-700 transition-colors">
+            <div class="w-2 h-2 rounded-full bg-engineering"></div>
+            Conexus
+          </button>
+          <button class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-zinc-400 hover:text-white rounded-lg border border-transparent hover:border-zinc-700 transition-colors">
+            <div class="w-2 h-2 rounded-full bg-build"></div>
+            NoteApp
+          </button>
+          <button class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-zinc-400 hover:text-white rounded-lg border border-transparent hover:border-zinc-700 transition-colors">
+            <div class="w-2 h-2 rounded-full bg-launch"></div>
+            Portfolio
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Layout: Month Grid + Timeline -->
+    <div class="grid grid-cols-[320px_1fr] gap-6">
+
+      <!-- LEFT: Compact Month Grid -->
+      <div class="bg-zinc-900/30 rounded-xl border border-zinc-800/50 p-4">
+        <!-- Month Navigation -->
+        <div class="flex items-center justify-between mb-4">
+          <button class="p-1.5 hover:bg-zinc-800/50 rounded transition-colors text-zinc-400 hover:text-white">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <h2 class="text-sm font-semibold text-white">January 2026</h2>
+          <button class="p-1.5 hover:bg-zinc-800/50 rounded transition-colors text-zinc-400 hover:text-white">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Day Headers -->
+        <div class="grid grid-cols-7 gap-1 mb-2">
+          <div class="text-center text-[10px] font-medium text-zinc-500 py-1">Mon</div>
+          <div class="text-center text-[10px] font-medium text-zinc-500 py-1">Tue</div>
+          <div class="text-center text-[10px] font-medium text-zinc-500 py-1">Wed</div>
+          <div class="text-center text-[10px] font-medium text-zinc-500 py-1">Thu</div>
+          <div class="text-center text-[10px] font-medium text-zinc-500 py-1">Fri</div>
+          <div class="text-center text-[10px] font-medium text-zinc-500 py-1">Sat</div>
+          <div class="text-center text-[10px] font-medium text-zinc-500 py-1">Sun</div>
+        </div>
+
+        <!-- Calendar Grid with Week Rows -->
+        <div class="space-y-1">
+          <!-- Week 1 (Dec 29 - Jan 4) -->
+          <div class="week-row grid grid-cols-7 gap-1 rounded-lg p-0.5 cursor-pointer">
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center text-zinc-600 text-xs">29</div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center text-zinc-600 text-xs">30</div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center text-zinc-600 text-xs">31</div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">1</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-design"></div>
+                <div class="w-1 h-1 rounded-full bg-engineering"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">2</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-design"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">3</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-build"></div>
+                <div class="w-1 h-1 rounded-full bg-design"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center text-zinc-500 text-xs">4</div>
+          </div>
+
+          <!-- Week 2 (Jan 5-11) -->
+          <div class="week-row grid grid-cols-7 gap-1 rounded-lg p-0.5 cursor-pointer">
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">5</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-launch"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">6</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-design"></div>
+                <div class="w-1 h-1 rounded-full bg-engineering"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">7</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-design"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">8</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-engineering"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">9</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-design"></div>
+                <div class="w-1 h-1 rounded-full bg-build"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center text-zinc-500 text-xs">10</div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">11</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-launch"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Week 3 (Jan 12-18) -->
+          <div class="week-row grid grid-cols-7 gap-1 rounded-lg p-0.5 cursor-pointer">
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">12</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-design"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">13</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-design"></div>
+                <div class="w-1 h-1 rounded-full bg-engineering"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">14</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-launch"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">15</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-engineering"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">16</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-design"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center text-zinc-500 text-xs">17</div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">18</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-build"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Week 4 (Jan 19-25) - SELECTED WEEK -->
+          <div class="week-row selected grid grid-cols-7 gap-1 rounded-lg p-0.5 cursor-pointer border border-blue-500/30">
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">19</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-engineering"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">20</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-design"></div>
+                <div class="w-1 h-1 rounded-full bg-engineering"></div>
+                <div class="w-1 h-1 rounded-full bg-build"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">21</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-launch"></div>
+                <div class="w-1 h-1 rounded-full bg-design"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">22</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-engineering"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">23</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-build"></div>
+                <div class="w-1 h-1 rounded-full bg-design"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">24</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-design"></div>
+              </div>
+            </div>
+            <!-- TODAY -->
+            <div class="day-cell selected aspect-square rounded flex flex-col items-center justify-center cursor-pointer border border-blue-500/50 bg-blue-500/10">
+              <span class="text-xs text-blue-400 font-medium">25</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-design"></div>
+                <div class="w-1 h-1 rounded-full bg-launch"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Week 5 (Jan 26 - Feb 1) -->
+          <div class="week-row grid grid-cols-7 gap-1 rounded-lg p-0.5 cursor-pointer">
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">26</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-engineering"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">27</span>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">28</span>
+              <div class="flex gap-0.5 mt-0.5">
+                <div class="w-1 h-1 rounded-full bg-amber-500"></div>
+              </div>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">29</span>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">30</span>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center cursor-pointer">
+              <span class="text-xs text-zinc-300">31</span>
+            </div>
+            <div class="day-cell aspect-square rounded flex flex-col items-center justify-center text-zinc-600 text-xs">1</div>
+          </div>
+        </div>
+
+        <!-- Month Stats -->
+        <div class="mt-4 pt-4 border-t border-zinc-800/50">
+          <div class="grid grid-cols-2 gap-3">
+            <div class="text-center">
+              <div class="text-lg font-bold text-white">18</div>
+              <div class="text-[10px] text-zinc-500">Active Days</div>
+            </div>
+            <div class="text-center">
+              <div class="text-lg font-bold text-white">47</div>
+              <div class="text-[10px] text-zinc-500">Activities</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="mt-4 pt-3 border-t border-zinc-800/50">
+          <div class="text-[10px] text-zinc-500 mb-2">Projects</div>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="flex items-center gap-1.5">
+              <div class="w-2 h-2 rounded-full bg-design"></div>
+              <span class="text-[10px] text-zinc-400">REPPIT</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <div class="w-2 h-2 rounded-full bg-engineering"></div>
+              <span class="text-[10px] text-zinc-400">Conexus</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <div class="w-2 h-2 rounded-full bg-build"></div>
+              <span class="text-[10px] text-zinc-400">NoteApp</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <div class="w-2 h-2 rounded-full bg-launch"></div>
+              <span class="text-[10px] text-zinc-400">Portfolio</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 mt-2">
+            <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+            <span class="text-[10px] text-zinc-400">Task Due</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Week Timeline Detail -->
+      <div class="bg-zinc-900/30 rounded-xl border border-zinc-800/50 overflow-hidden">
+        <!-- Week Header -->
+        <div class="px-4 py-3 border-b border-zinc-800/50 bg-zinc-900/50">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-sm font-semibold text-white">Week of January 19 - 25, 2026</h3>
+              <p class="text-xs text-zinc-500 mt-0.5">32 hours tracked • 18 activities</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-1 text-[10px] font-medium bg-blue-500/20 text-blue-400 rounded">This Week</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline Grid -->
+        <div class="p-4">
+          <!-- Time Headers -->
+          <div class="flex mb-2">
+            <div class="w-16 flex-shrink-0"></div>
+            <div class="flex-1 grid grid-cols-4 text-center">
+              <div>
+                <span class="text-[10px] font-medium text-zinc-500">Morning</span>
+                <span class="block text-[9px] text-zinc-600">6am - 12pm</span>
+              </div>
+              <div>
+                <span class="text-[10px] font-medium text-zinc-500">Afternoon</span>
+                <span class="block text-[9px] text-zinc-600">12pm - 5pm</span>
+              </div>
+              <div>
+                <span class="text-[10px] font-medium text-zinc-500">Evening</span>
+                <span class="block text-[9px] text-zinc-600">5pm - 9pm</span>
+              </div>
+              <div>
+                <span class="text-[10px] font-medium text-zinc-500">Night</span>
+                <span class="block text-[9px] text-zinc-600">9pm - 12am</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Day Rows -->
+          <div class="space-y-2">
+            <!-- Monday -->
+            <div class="flex items-center">
+              <div class="w-16 flex-shrink-0">
+                <div class="text-[10px] font-medium text-zinc-500">Mon</div>
+                <div class="text-sm font-semibold text-zinc-300">19</div>
+              </div>
+              <div class="flex-1 grid grid-cols-4 gap-1 h-10">
+                <div class="relative rounded bg-zinc-800/30">
+                  <div class="timeline-block absolute top-1 bottom-1 left-[10%] right-[30%] bg-engineering/80 rounded cursor-pointer flex items-center px-1.5 overflow-hidden" title="Conexus - 8:00 AM - 10:30 AM">
+                    <span class="text-[9px] font-medium text-white truncate">Conexus</span>
+                  </div>
+                </div>
+                <div class="relative rounded bg-zinc-800/30"></div>
+                <div class="relative rounded bg-zinc-800/30"></div>
+                <div class="relative rounded bg-zinc-800/30"></div>
+              </div>
+            </div>
+
+            <!-- Tuesday -->
+            <div class="flex items-center">
+              <div class="w-16 flex-shrink-0">
+                <div class="text-[10px] font-medium text-zinc-500">Tue</div>
+                <div class="text-sm font-semibold text-zinc-300">20</div>
+              </div>
+              <div class="flex-1 grid grid-cols-4 gap-1 h-10">
+                <div class="relative rounded bg-zinc-800/30">
+                  <div class="timeline-block absolute top-1 bottom-1 left-[20%] right-[5%] bg-design/80 rounded cursor-pointer flex items-center px-1.5 overflow-hidden" title="REPPIT - 9:00 AM - 11:45 AM">
+                    <span class="text-[9px] font-medium text-white truncate">REPPIT</span>
+                  </div>
+                </div>
+                <div class="relative rounded bg-zinc-800/30">
+                  <div class="timeline-block absolute top-1 bottom-1 left-[10%] right-[30%] bg-engineering/80 rounded cursor-pointer flex items-center px-1.5 overflow-hidden" title="Conexus - 12:30 PM - 3:00 PM">
+                    <span class="text-[9px] font-medium text-white truncate">Conexus</span>
+                  </div>
+                </div>
+                <div class="relative rounded bg-zinc-800/30"></div>
+                <div class="relative rounded bg-zinc-800/30">
+                  <div class="timeline-block absolute top-1 bottom-1 left-0 right-[40%] bg-build/80 rounded cursor-pointer flex items-center px-1.5 overflow-hidden" title="NoteApp - 9:00 PM - 11:00 PM">
+                    <span class="text-[9px] font-medium text-zinc-900 truncate">NoteApp</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Wednesday -->
+            <div class="flex items-center">
+              <div class="w-16 flex-shrink-0">
+                <div class="text-[10px] font-medium text-zinc-500">Wed</div>
+                <div class="text-sm font-semibold text-zinc-300">21</div>
+              </div>
+              <div class="flex-1 grid grid-cols-4 gap-1 h-10">
+                <div class="relative rounded bg-zinc-800/30">
+                  <div class="timeline-block absolute top-1 bottom-1 left-[5%] right-0 bg-launch/80 rounded-l cursor-pointer flex items-center px-1.5 overflow-hidden" title="Portfolio - 7:00 AM - 12:00 PM">
+                    <span class="text-[9px] font-medium text-zinc-900 truncate">Portfolio</span>
+                  </div>
+                </div>
+                <div class="relative rounded bg-zinc-800/30">
+                  <div class="timeline-block absolute top-1 bottom-1 left-0 right-[70%] bg-launch/80 rounded-r cursor-pointer" title="Portfolio continues"></div>
+                </div>
+                <div class="relative rounded bg-zinc-800/30">
+                  <div class="timeline-block absolute top-1 bottom-1 left-[25%] right-[10%] bg-design/80 rounded cursor-pointer flex items-center px-1.5 overflow-hidden" title="REPPIT - 6:00 PM - 8:30 PM">
+                    <span class="text-[9px] font-medium text-white truncate">REPPIT</span>
+                  </div>
+                </div>
+                <div class="relative rounded bg-zinc-800/30"></div>
+              </div>
+            </div>
+
+            <!-- Thursday -->
+            <div class="flex items-center">
+              <div class="w-16 flex-shrink-0">
+                <div class="text-[10px] font-medium text-zinc-500">Thu</div>
+                <div class="text-sm font-semibold text-zinc-300">22</div>
+              </div>
+              <div class="flex-1 grid grid-cols-4 gap-1 h-10">
+                <div class="relative rounded bg-zinc-800/30">
+                  <div class="timeline-block absolute top-1 bottom-1 left-[30%] right-0 bg-engineering/80 rounded-l cursor-pointer flex items-center px-1.5 overflow-hidden" title="Conexus - 9:30 AM - 12:00 PM">
+                    <span class="text-[9px] font-medium text-white truncate">Conexus</span>
+                  </div>
+                </div>
+                <div class="relative rounded bg-zinc-800/30">
+                  <div class="timeline-block absolute top-1 bottom-1 left-0 right-[40%] bg-engineering/80 rounded-r cursor-pointer" title="Conexus continues"></div>
+                </div>
+                <div class="relative rounded bg-zinc-800/30"></div>
+                <div class="relative rounded bg-zinc-800/30"></div>
+              </div>
+            </div>
+
+            <!-- Friday -->
+            <div class="flex items-center">
+              <div class="w-16 flex-shrink-0">
+                <div class="text-[10px] font-medium text-zinc-500">Fri</div>
+                <div class="text-sm font-semibold text-zinc-300">23</div>
+              </div>
+              <div class="flex-1 grid grid-cols-4 gap-1 h-10">
+                <div class="relative rounded bg-zinc-800/30">
+                  <div class="timeline-block absolute top-1 bottom-1 left-[20%] right-[10%] bg-build/80 rounded cursor-pointer flex items-center px-1.5 overflow-hidden" title="NoteApp - 8:00 AM - 11:00 AM">
+                    <span class="text-[9px] font-medium text-zinc-900 truncate">NoteApp</span>
+                  </div>
+                </div>
+                <div class="relative rounded bg-zinc-800/30">
+                  <div class="timeline-block absolute top-1 bottom-1 left-[20%] right-0 bg-design/80 rounded-l cursor-pointer flex items-center px-1.5 overflow-hidden" title="REPPIT - 1:00 PM - 5:00 PM">
+                    <span class="text-[9px] font-medium text-white truncate">REPPIT</span>
+                  </div>
+                </div>
+                <div class="relative rounded bg-zinc-800/30">
+                  <div class="timeline-block absolute top-1 bottom-1 left-0 right-[50%] bg-design/80 rounded-r cursor-pointer" title="REPPIT continues"></div>
+                </div>
+                <div class="relative rounded bg-zinc-800/30"></div>
+              </div>
+            </div>
+
+            <!-- Saturday - Today -->
+            <div class="flex items-center bg-blue-500/5 -mx-4 px-4 py-1 rounded-lg border border-blue-500/20">
+              <div class="w-16 flex-shrink-0">
+                <div class="text-[10px] font-medium text-blue-400">Sat</div>
+                <div class="text-sm font-semibold text-blue-300 flex items-center gap-1">
+                  25
+                  <span class="text-[8px] px-1 py-0.5 bg-blue-500/20 text-blue-400 rounded">TODAY</span>
+                </div>
+              </div>
+              <div class="flex-1 grid grid-cols-4 gap-1 h-10">
+                <div class="relative rounded bg-zinc-800/30">
+                  <div class="timeline-block absolute top-1 bottom-1 left-[30%] right-[10%] bg-design/80 rounded cursor-pointer flex items-center px-1.5 overflow-hidden" title="REPPIT - 9:00 AM - 11:30 AM">
+                    <span class="text-[9px] font-medium text-white truncate">REPPIT</span>
+                  </div>
+                </div>
+                <div class="relative rounded bg-zinc-800/30">
+                  <!-- Current time indicator -->
+                  <div class="absolute top-0 bottom-0 left-[40%] w-0.5 bg-red-500 z-10">
+                    <div class="absolute -top-1 -left-1 w-2 h-2 bg-red-500 rounded-full"></div>
+                  </div>
+                  <div class="timeline-block absolute top-1 bottom-1 left-0 right-[60%] bg-launch/80 rounded cursor-pointer flex items-center px-1.5 overflow-hidden" title="Portfolio - 12:00 PM - 1:30 PM">
+                    <span class="text-[9px] font-medium text-zinc-900 truncate">Portfolio</span>
+                  </div>
+                </div>
+                <div class="relative rounded bg-zinc-800/30"></div>
+                <div class="relative rounded bg-zinc-800/30"></div>
+              </div>
+            </div>
+
+            <!-- Sunday -->
+            <div class="flex items-center">
+              <div class="w-16 flex-shrink-0">
+                <div class="text-[10px] font-medium text-zinc-500">Sun</div>
+                <div class="text-sm font-semibold text-zinc-400">26</div>
+              </div>
+              <div class="flex-1 grid grid-cols-4 gap-1 h-10">
+                <div class="relative rounded bg-zinc-800/20"></div>
+                <div class="relative rounded bg-zinc-800/20"></div>
+                <div class="relative rounded bg-zinc-800/20">
+                  <div class="timeline-block absolute top-1 bottom-1 left-[40%] right-[10%] bg-engineering/60 rounded cursor-pointer flex items-center px-1.5 overflow-hidden opacity-50" title="Conexus - Planned">
+                    <span class="text-[9px] font-medium text-white truncate">Conexus?</span>
+                  </div>
+                </div>
+                <div class="relative rounded bg-zinc-800/20"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Selected Day Detail (Today) -->
+        <div class="border-t border-zinc-800/50 p-4 bg-zinc-900/30">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-xs font-semibold text-white">Saturday, January 25 - Activity Details</h4>
+            <span class="text-[10px] text-zinc-500">5.5 hours • 3 activities</span>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-start gap-3 p-2 rounded-lg bg-zinc-800/30 hover:bg-zinc-800/50 transition-colors">
+              <div class="w-2 h-2 rounded-full bg-design mt-1"></div>
+              <div class="flex-1">
+                <div class="text-xs text-zinc-200">Fixed workout timer pause/resume bug</div>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="text-[10px] text-design">REPPIT</span>
+                  <span class="text-[10px] text-zinc-600">•</span>
+                  <span class="text-[10px] text-zinc-500">9:30 AM - commit</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-2 rounded-lg bg-zinc-800/30 hover:bg-zinc-800/50 transition-colors">
+              <div class="w-2 h-2 rounded-full bg-design mt-1"></div>
+              <div class="flex-1">
+                <div class="text-xs text-zinc-200">Added exercise history export to CSV</div>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="text-[10px] text-design">REPPIT</span>
+                  <span class="text-[10px] text-zinc-600">•</span>
+                  <span class="text-[10px] text-zinc-500">11:15 AM - commit</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-2 rounded-lg bg-zinc-800/30 hover:bg-zinc-800/50 transition-colors">
+              <div class="w-2 h-2 rounded-full bg-launch mt-1"></div>
+              <div class="flex-1">
+                <div class="text-xs text-zinc-200">Updated project screenshots for resume page</div>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="text-[10px] text-launch">Portfolio</span>
+                  <span class="text-[10px] text-zinc-600">•</span>
+                  <span class="text-[10px] text-zinc-500">12:45 PM - commit</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upcoming Task Due -->
+          <div class="mt-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <div class="flex-1">
+                <div class="text-xs text-white">Complete REPPIT API integration tests</div>
+                <div class="text-[10px] text-amber-400/80 mt-0.5">Due in 3 days (Jan 28)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,5 +1,19 @@
 import { useState, useEffect } from 'react';
 import clsx from 'clsx';
+import { useAppStore } from '../../store';
+
+// Icon components
+const MoonIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+  </svg>
+);
+
+const SunIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+  </svg>
+);
 
 interface SettingsPanelProps {
   onClose: () => void;
@@ -78,6 +92,9 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
   const [saving, setSaving] = useState(false);
   const [showApiKey, setShowApiKey] = useState(false);
 
+  // Get theme from global store
+  const { theme, setTheme } = useAppStore();
+
   // Load config on mount
   useEffect(() => {
     loadConfig();
@@ -94,10 +111,10 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         if (savedOverrides) {
           const overrides = JSON.parse(savedOverrides);
           // Deep merge overrides into file config
-          const merged = deepMerge(fileConfig, overrides);
+          const merged = deepMerge(fileConfig, overrides) as unknown as Config;
           setConfig(merged);
         } else {
-          setConfig(fileConfig);
+          setConfig(fileConfig as Config);
         }
       } else {
         // Fallback to default config
@@ -184,10 +201,13 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
 
   const updateConfig = <K extends keyof Config>(section: K, updates: Partial<Config[K]>) => {
     if (!config) return;
-    setConfig({
-      ...config,
-      [section]: { ...config[section], ...updates },
-    });
+    const currentSection = config[section];
+    if (typeof currentSection === 'object' && currentSection !== null) {
+      setConfig({
+        ...config,
+        [section]: { ...currentSection, ...updates },
+      });
+    }
   };
 
   const handleSave = async () => {
@@ -812,13 +832,31 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
             {/* Appearance */}
             {activeTab === 'appearance' && (
               <div className="space-y-6">
-                <SectionHeader title="Theme" description="Currently dark theme only" />
+                <SectionHeader title="Theme" description="Choose your preferred appearance" />
                 <div className="flex gap-2">
-                  <button className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                  <button
+                    onClick={() => setTheme('dark')}
+                    className={clsx(
+                      'px-4 py-2 rounded-lg text-sm font-medium border transition-colors flex items-center gap-2',
+                      theme === 'dark'
+                        ? 'bg-blue-500/20 text-blue-400 border-blue-500/30'
+                        : 'bg-zinc-800 text-zinc-400 border-zinc-700 hover:bg-zinc-700'
+                    )}
+                  >
+                    <MoonIcon />
                     Dark
                   </button>
-                  <button className="px-4 py-2 rounded-lg text-sm font-medium bg-zinc-800 text-zinc-500 border border-zinc-700 cursor-not-allowed opacity-50">
-                    Light (Coming Soon)
+                  <button
+                    onClick={() => setTheme('light')}
+                    className={clsx(
+                      'px-4 py-2 rounded-lg text-sm font-medium border transition-colors flex items-center gap-2',
+                      theme === 'light'
+                        ? 'bg-blue-500/20 text-blue-400 border-blue-500/30'
+                        : 'bg-zinc-800 text-zinc-400 border-zinc-700 hover:bg-zinc-700'
+                    )}
+                  >
+                    <SunIcon />
+                    Light
                   </button>
                 </div>
 
@@ -1290,4 +1328,5 @@ function GithubIcon() {
     </svg>
   );
 }
+
 

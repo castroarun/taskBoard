@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Board - Color Palette Mockups</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .phase-column { min-width: 280px; max-width: 280px; }
+  </style>
+</head>
+<body class="text-zinc-100 p-8">
+
+  <!-- Header -->
+  <div class="mb-8 text-center">
+    <h1 class="text-2xl font-bold mb-2">Project Board - Color Palette Options</h1>
+    <p class="text-zinc-500">Compare different color schemes for the workflow phases</p>
+  </div>
+
+  <!-- Palette Selector -->
+  <div class="flex justify-center gap-4 mb-8">
+    <button onclick="showPalette('current')" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium transition" id="btn-current">Current</button>
+    <button onclick="showPalette('ocean')" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium transition" id="btn-ocean">Ocean Breeze</button>
+    <button onclick="showPalette('sunset')" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium transition" id="btn-sunset">Sunset Glow</button>
+    <button onclick="showPalette('neon')" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium transition" id="btn-neon">Neon Night</button>
+    <button onclick="showPalette('custom')" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium transition" id="btn-custom">Custom (Slate)</button>
+    <button onclick="showPalette('custom_purple')" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded-lg text-sm font-medium transition text-white" id="btn-custom_purple">★ Purple</button>
+    <button onclick="showPalette('custom_coral')" class="px-4 py-2 bg-pink-600 hover:bg-pink-500 rounded-lg text-sm font-medium transition text-white" id="btn-custom_coral">★ Coral</button>
+    <button onclick="showPalette('custom_teal')" class="px-4 py-2 bg-teal-600 hover:bg-teal-500 rounded-lg text-sm font-medium transition text-white" id="btn-custom_teal">★ Teal</button>
+  </div>
+
+  <!-- Color Swatches -->
+  <div class="flex justify-center gap-2 mb-8" id="swatches">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- Board Preview -->
+  <div class="max-w-[1500px] mx-auto">
+    <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide" id="board">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- Palette Details -->
+  <div class="mt-12 max-w-3xl mx-auto">
+    <h2 class="text-lg font-semibold mb-4" id="palette-title">Current Palette</h2>
+    <div class="bg-zinc-900 rounded-xl border border-zinc-800 p-6">
+      <div class="grid grid-cols-5 gap-4" id="palette-details">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const palettes = {
+      current: {
+        name: 'Current Palette',
+        description: 'The existing color scheme - purple/blue/green/orange/gray progression',
+        colors: {
+          design: { color: '#8b5cf6', name: 'Violet', desc: 'Creative, imaginative' },
+          engineering: { color: '#3b82f6', name: 'Blue', desc: 'Technical, precise' },
+          build: { color: '#22c55e', name: 'Green', desc: 'Growth, progress' },
+          launch: { color: '#f59e0b', name: 'Amber', desc: 'Energy, excitement' },
+          closure: { color: '#6b7280', name: 'Gray', desc: 'Completion, neutral' }
+        }
+      },
+      ocean: {
+        name: 'Ocean Breeze',
+        description: 'Cool, calming tones with a warm coral accent for Launch - professional and modern',
+        colors: {
+          design: { color: '#a78bfa', name: 'Lavender', desc: 'Soft creativity' },
+          engineering: { color: '#38bdf8', name: 'Sky Blue', desc: 'Clear thinking' },
+          build: { color: '#2dd4bf', name: 'Teal', desc: 'Balanced progress' },
+          launch: { color: '#fb7185', name: 'Coral', desc: 'Warm celebration' },
+          closure: { color: '#94a3b8', name: 'Slate', desc: 'Refined finish' }
+        }
+      },
+      sunset: {
+        name: 'Sunset Glow',
+        description: 'Warm gradient from rose to sage - feels organic and natural progression',
+        colors: {
+          design: { color: '#f472b6', name: 'Pink', desc: 'Fresh ideas' },
+          engineering: { color: '#fb923c', name: 'Orange', desc: 'Active planning' },
+          build: { color: '#facc15', name: 'Yellow', desc: 'Bright execution' },
+          launch: { color: '#4ade80', name: 'Emerald', desc: 'Go live!' },
+          closure: { color: '#a1a1aa', name: 'Zinc', desc: 'Peaceful end' }
+        }
+      },
+      neon: {
+        name: 'Neon Night',
+        description: 'Vibrant, high-contrast colors - energetic and modern tech feel',
+        colors: {
+          design: { color: '#e879f9', name: 'Fuchsia', desc: 'Bold creativity' },
+          engineering: { color: '#22d3ee', name: 'Cyan', desc: 'Digital precision' },
+          build: { color: '#34d399', name: 'Mint', desc: 'Fresh progress' },
+          launch: { color: '#fbbf24', name: 'Gold', desc: 'Celebration' },
+          closure: { color: '#a8a29e', name: 'Stone', desc: 'Grounded finish' }
+        }
+      },
+      custom: {
+        name: 'Custom Mix (Slate Closure)',
+        description: 'Sunset Glow for Design/Build/Launch + Ocean Breeze for Engineering',
+        colors: {
+          design: { color: '#f472b6', name: 'Pink', desc: 'Fresh ideas' },
+          engineering: { color: '#38bdf8', name: 'Sky Blue', desc: 'Clear thinking' },
+          build: { color: '#facc15', name: 'Yellow', desc: 'Bright execution' },
+          launch: { color: '#4ade80', name: 'Emerald', desc: 'Go live!' },
+          closure: { color: '#94a3b8', name: 'Slate', desc: 'Refined finish' }
+        }
+      },
+      custom_purple: {
+        name: '★ Custom Mix (Purple Closure)',
+        description: 'Soft Purple bookends with Design - feels like completing the loop',
+        colors: {
+          design: { color: '#f472b6', name: 'Pink', desc: 'Fresh ideas' },
+          engineering: { color: '#38bdf8', name: 'Sky Blue', desc: 'Clear thinking' },
+          build: { color: '#facc15', name: 'Yellow', desc: 'Bright execution' },
+          launch: { color: '#4ade80', name: 'Emerald', desc: 'Go live!' },
+          closure: { color: '#a78bfa', name: 'Lavender', desc: 'Full circle' }
+        }
+      },
+      custom_coral: {
+        name: '★ Custom Mix (Coral Closure)',
+        description: 'Warm Coral celebrates completion with a friendly, satisfied feel',
+        colors: {
+          design: { color: '#f472b6', name: 'Pink', desc: 'Fresh ideas' },
+          engineering: { color: '#38bdf8', name: 'Sky Blue', desc: 'Clear thinking' },
+          build: { color: '#facc15', name: 'Yellow', desc: 'Bright execution' },
+          launch: { color: '#4ade80', name: 'Emerald', desc: 'Go live!' },
+          closure: { color: '#fb7185', name: 'Coral', desc: 'Warm celebration' }
+        }
+      },
+      custom_teal: {
+        name: '★ Custom Mix (Teal Closure)',
+        description: 'Cool Teal provides calm contrast after the energetic Launch green',
+        colors: {
+          design: { color: '#f472b6', name: 'Pink', desc: 'Fresh ideas' },
+          engineering: { color: '#38bdf8', name: 'Sky Blue', desc: 'Clear thinking' },
+          build: { color: '#facc15', name: 'Yellow', desc: 'Bright execution' },
+          launch: { color: '#4ade80', name: 'Emerald', desc: 'Go live!' },
+          closure: { color: '#5eead4', name: 'Teal', desc: 'Calm wrap-up' }
+        }
+      }
+    };
+
+    const phases = ['design', 'engineering', 'build', 'launch', 'closure'];
+    const phaseNames = {
+      design: 'Design',
+      engineering: 'Engineering',
+      build: 'Build',
+      launch: 'Launch',
+      closure: 'Closure'
+    };
+    const stages = {
+      design: ['conception', 'discovery', 'requirements'],
+      engineering: ['architecture', 'qa-planning', 'review'],
+      build: ['development', 'testing', 'staging'],
+      launch: ['ship', 'announce', 'walkthrough'],
+      closure: ['documentation', 'portfolio', 'retrospective']
+    };
+
+    // Sample projects for preview
+    const sampleProjects = {
+      build: [
+        { name: "Arun's Task Board", desc: "File-based project orchestration system...", stage: 'development', progress: 55, tasks: '8/17', tech: ['Tauri 2.0', 'React 18'] },
+        { name: "PRIMMO", desc: "AI Strength Coach Agent. An agentic AI s...", stage: 'development', progress: 30, tasks: '7/25', tech: ['Claude API', 'Supabase'] }
+      ],
+      launch: [
+        { name: "Castronix Portfolio", desc: "A three-part portfolio suite: Portfolio, Dig...", stage: 'ship', progress: 95, tasks: '14/15', tech: ['HTML5', 'CSS3'] },
+        { name: "REPPIT", desc: "Track Your Reps. Build Your Strength. A m...", stage: 'ship', progress: 85, tasks: '26/30', tech: ['Next.js 16', 'TypeScript'] }
+      ],
+      closure: [
+        { name: "AnyCalc", desc: "Calculate everything. Plan anything. 19+...", stage: 'announce', progress: 100, tasks: '25/25', tech: ['Next.js 14', 'TypeScript'] },
+        { name: "NoteApp", desc: "Clean & simple note-taking. A fast, clean...", stage: 'documentation', progress: 90, tasks: '18/20', tech: ['Next.js 16', 'TypeScript'] }
+      ]
+    };
+
+    function showPalette(paletteId) {
+      const palette = palettes[paletteId];
+
+      // Update buttons
+      document.querySelectorAll('[id^="btn-"]').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white');
+        btn.classList.add('bg-zinc-800');
+      });
+      document.getElementById(`btn-${paletteId}`).classList.remove('bg-zinc-800');
+      document.getElementById(`btn-${paletteId}`).classList.add('bg-blue-600', 'text-white');
+
+      // Update swatches
+      const swatchesHtml = phases.map(phase => {
+        const { color, name } = palette.colors[phase];
+        return `
+          <div class="flex flex-col items-center gap-1">
+            <div class="w-12 h-12 rounded-lg shadow-lg" style="background: ${color}"></div>
+            <span class="text-[10px] text-zinc-500">${phaseNames[phase]}</span>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('swatches').innerHTML = swatchesHtml;
+
+      // Update board
+      const boardHtml = phases.map(phase => {
+        const { color } = palette.colors[phase];
+        const count = sampleProjects[phase]?.length || 0;
+        const projectsHtml = (sampleProjects[phase] || []).map(p => `
+          <div class="bg-zinc-900 rounded-lg border border-zinc-800 p-3 hover:border-zinc-700 transition cursor-pointer">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="font-medium text-sm text-zinc-100">${p.name}</h3>
+              <div class="w-2 h-2 rounded-full" style="background: ${color}"></div>
+            </div>
+            <p class="text-xs text-zinc-500 mb-2 line-clamp-1">${p.desc}</p>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-[10px] text-zinc-500">${p.stage}</span>
+              <span class="text-[10px] text-zinc-400 ml-auto">${p.progress}%</span>
+            </div>
+            <div class="h-1 bg-zinc-800 rounded-full overflow-hidden mb-3">
+              <div class="h-full rounded-full" style="width: ${p.progress}%; background: ${color}"></div>
+            </div>
+            <div class="flex items-center gap-1 flex-wrap">
+              ${p.tech.map(t => `<span class="px-1.5 py-0.5 bg-zinc-800 text-zinc-400 text-[10px] rounded">${t}</span>`).join('')}
+              <span class="text-[10px] text-zinc-600 ml-auto">${p.tasks} tasks</span>
+            </div>
+          </div>
+        `).join('');
+
+        const emptyState = count === 0 ? '<div class="text-center py-12 text-zinc-600 text-sm">No projects</div>' : '';
+
+        return `
+          <div class="phase-column flex-shrink-0">
+            <div class="rounded-xl border border-zinc-800 overflow-hidden" style="background: linear-gradient(180deg, ${color}08 0%, transparent 100%)">
+              <div class="p-3 border-b border-zinc-800/50">
+                <div class="flex items-center justify-between mb-2">
+                  <h2 class="font-semibold text-sm" style="color: ${color}">${phaseNames[phase]}</h2>
+                  <span class="px-2 py-0.5 text-xs rounded-full" style="background: ${color}20; color: ${color}">${count}</span>
+                </div>
+                <div class="flex flex-wrap gap-1">
+                  ${stages[phase].map(s => `<span class="px-2 py-0.5 text-[10px] rounded-full bg-zinc-800/50 text-zinc-500">${s}</span>`).join('')}
+                </div>
+              </div>
+              <div class="p-2 space-y-2 min-h-[200px]">
+                ${projectsHtml}
+                ${emptyState}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('board').innerHTML = boardHtml;
+
+      // Update palette details
+      document.getElementById('palette-title').textContent = palette.name;
+      const detailsHtml = phases.map(phase => {
+        const { color, name, desc } = palette.colors[phase];
+        return `
+          <div class="text-center">
+            <div class="w-full h-16 rounded-lg mb-2 shadow-lg" style="background: ${color}"></div>
+            <div class="text-xs font-medium text-zinc-200">${phaseNames[phase]}</div>
+            <div class="text-[10px] text-zinc-500">${name}</div>
+            <div class="text-[10px] text-zinc-600 mt-1">${color}</div>
+            <div class="text-[10px] text-zinc-600 italic mt-0.5">${desc}</div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('palette-details').innerHTML = detailsHtml;
+    }
+
+    // Initialize with purple closure option
+    showPalette('custom_purple');
+  </script>
+
+</body>
+</html>

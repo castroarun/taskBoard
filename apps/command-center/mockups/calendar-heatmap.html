@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar - Activity Heatmap View</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            design: { DEFAULT: '#ec4899', light: '#fce7f3', dark: '#9d174d' },
+            engineering: { DEFAULT: '#818CF8', light: '#c7d2fe', dark: '#4338ca' },
+            build: { DEFAULT: '#facc15', light: '#fef9c3', dark: '#a16207' },
+            launch: { DEFAULT: '#4ade80', light: '#dcfce7', dark: '#166534' },
+            closure: { DEFAULT: '#2dd4bf', light: '#ccfbf1', dark: '#0f766e' },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .font-display { font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif; }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #27272a; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: #52525b; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #71717a; }
+
+    /* Heatmap cell styles */
+    .heatmap-cell {
+      transition: all 0.15s ease;
+    }
+    .heatmap-cell:hover {
+      transform: scale(1.2);
+      z-index: 10;
+    }
+
+    /* Intensity levels */
+    .intensity-0 { background-color: #27272a; }
+    .intensity-1 { background-color: #3f3f46; }
+    .intensity-2 { background-color: #6366f1; opacity: 0.4; }
+    .intensity-3 { background-color: #6366f1; opacity: 0.6; }
+    .intensity-4 { background-color: #6366f1; opacity: 0.8; }
+    .intensity-5 { background-color: #6366f1; }
+
+    /* Tooltip */
+    .heatmap-cell[data-tooltip]:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 6px 10px;
+      background: #18181b;
+      border: 1px solid #3f3f46;
+      border-radius: 6px;
+      font-size: 11px;
+      color: #fafafa;
+      white-space: nowrap;
+      z-index: 100;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 min-h-screen">
+
+  <!-- Main Container -->
+  <div class="max-w-6xl mx-auto p-6">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-display font-bold text-white mb-1">Calendar</h1>
+        <p class="text-sm text-zinc-500">Track your project work history</p>
+      </div>
+
+      <!-- View Toggle -->
+      <div class="flex items-center gap-2 bg-zinc-900/50 rounded-lg p-1 border border-zinc-800">
+        <button class="px-3 py-1.5 text-xs font-medium text-zinc-400 hover:text-white rounded transition-colors">
+          Month
+        </button>
+        <button class="px-3 py-1.5 text-xs font-medium text-zinc-400 hover:text-white rounded transition-colors">
+          Week
+        </button>
+        <button class="px-3 py-1.5 text-xs font-medium bg-zinc-800 text-white rounded transition-colors">
+          Heatmap
+        </button>
+      </div>
+    </div>
+
+    <!-- Streak & Stats Banner -->
+    <div class="grid grid-cols-4 gap-4 mb-6">
+      <div class="bg-zinc-900/30 rounded-xl border border-zinc-800/50 p-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
+            <span class="text-xl">🔥</span>
+          </div>
+          <div>
+            <div class="text-2xl font-bold text-white">14</div>
+            <div class="text-xs text-zinc-500">Current Streak</div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-zinc-900/30 rounded-xl border border-zinc-800/50 p-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center">
+            <span class="text-xl">🏆</span>
+          </div>
+          <div>
+            <div class="text-2xl font-bold text-white">23</div>
+            <div class="text-xs text-zinc-500">Longest Streak</div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-zinc-900/30 rounded-xl border border-zinc-800/50 p-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="text-2xl font-bold text-white">156</div>
+            <div class="text-xs text-zinc-500">Total Activities</div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-zinc-900/30 rounded-xl border border-zinc-800/50 p-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="text-2xl font-bold text-white">18</div>
+            <div class="text-xs text-zinc-500">Active Days (Jan)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Heatmap Container -->
+    <div class="bg-zinc-900/30 rounded-xl border border-zinc-800/50 p-6">
+
+      <!-- Year Navigation -->
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <button class="p-1.5 hover:bg-zinc-800/50 rounded transition-colors text-zinc-400 hover:text-white">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <h2 class="text-sm font-semibold text-white">2025 - 2026</h2>
+          <button class="p-1.5 hover:bg-zinc-800/50 rounded transition-colors text-zinc-400 hover:text-white">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Project Filter -->
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-zinc-500">Show:</span>
+          <div class="flex items-center gap-1.5">
+            <button class="px-2 py-1 text-[10px] font-medium bg-indigo-500/20 text-indigo-400 rounded border border-indigo-500/30">
+              All
+            </button>
+            <button class="px-2 py-1 text-[10px] font-medium text-zinc-400 hover:text-white rounded border border-transparent hover:border-zinc-700 transition-colors">
+              REPPIT
+            </button>
+            <button class="px-2 py-1 text-[10px] font-medium text-zinc-400 hover:text-white rounded border border-transparent hover:border-zinc-700 transition-colors">
+              Conexus
+            </button>
+            <button class="px-2 py-1 text-[10px] font-medium text-zinc-400 hover:text-white rounded border border-transparent hover:border-zinc-700 transition-colors">
+              NoteApp
+            </button>
+            <button class="px-2 py-1 text-[10px] font-medium text-zinc-400 hover:text-white rounded border border-transparent hover:border-zinc-700 transition-colors">
+              Portfolio
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Month Labels -->
+      <div class="flex mb-2 ml-8">
+        <div class="flex-1 grid grid-cols-12 text-[10px] text-zinc-500">
+          <span>Feb</span>
+          <span>Mar</span>
+          <span>Apr</span>
+          <span>May</span>
+          <span>Jun</span>
+          <span>Jul</span>
+          <span>Aug</span>
+          <span>Sep</span>
+          <span>Oct</span>
+          <span>Nov</span>
+          <span>Dec</span>
+          <span>Jan</span>
+        </div>
+      </div>
+
+      <!-- Heatmap Grid -->
+      <div class="flex gap-2">
+        <!-- Day Labels -->
+        <div class="flex flex-col justify-around text-[10px] text-zinc-500 w-6">
+          <span>Mon</span>
+          <span></span>
+          <span>Wed</span>
+          <span></span>
+          <span>Fri</span>
+          <span></span>
+          <span>Sun</span>
+        </div>
+
+        <!-- Grid of weeks -->
+        <div class="flex-1 overflow-x-auto">
+          <div class="flex gap-[3px]" style="min-width: 700px;">
+            <!-- Generate ~52 weeks of cells -->
+            <!-- Week 1 (Feb start) -->
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative" data-tooltip="Feb 3: 2 activities"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative" data-tooltip="Feb 4: No activity"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative" data-tooltip="Feb 5: 4 activities"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative" data-tooltip="Feb 6: 1 activity"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative" data-tooltip="Feb 7: 6 activities"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative" data-tooltip="Feb 8: No activity"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative" data-tooltip="Feb 9: 1 activity"></div>
+            </div>
+            <!-- Week 2 -->
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <!-- Week 3 -->
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+            </div>
+            <!-- Week 4 -->
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+            </div>
+            <!-- Continue pattern... (simplified for demo) -->
+            <!-- Weeks 5-8 (March) -->
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <!-- Weeks 9-12 (April) -->
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+            </div>
+            <!-- Weeks 13-17 (May) -->
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <!-- More weeks continuing pattern... (Jun-Dec) -->
+            <!-- Week 18-21 (June) -->
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+            </div>
+            <!-- Weeks 22-26 (Jul-Aug) -->
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <!-- Weeks 27-30 (Aug-Sep) -->
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+            </div>
+            <!-- Weeks 31-35 (Oct) -->
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <!-- Weeks 36-39 (Nov) -->
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+            </div>
+            <!-- Weeks 40-43 (Dec) -->
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <!-- Weeks 44-47 (Jan 2026) -->
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-3 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-1 cursor-pointer relative"></div>
+            </div>
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-2 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+            <!-- Current week (with today marker) -->
+            <div class="flex flex-col gap-[3px]">
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-4 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-5 cursor-pointer relative"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm ring-2 ring-blue-500 intensity-3 cursor-pointer relative" data-tooltip="Today: 3 activities"></div>
+              <div class="heatmap-cell w-3 h-3 rounded-sm intensity-0 cursor-pointer relative"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="flex items-center justify-between mt-6 pt-4 border-t border-zinc-800/50">
+        <span class="text-xs text-zinc-500">Less</span>
+        <div class="flex items-center gap-1">
+          <div class="w-3 h-3 rounded-sm intensity-0"></div>
+          <div class="w-3 h-3 rounded-sm intensity-1"></div>
+          <div class="w-3 h-3 rounded-sm intensity-2"></div>
+          <div class="w-3 h-3 rounded-sm intensity-3"></div>
+          <div class="w-3 h-3 rounded-sm intensity-4"></div>
+          <div class="w-3 h-3 rounded-sm intensity-5"></div>
+        </div>
+        <span class="text-xs text-zinc-500">More</span>
+      </div>
+    </div>
+
+    <!-- Selected Day Detail -->
+    <div class="mt-6 bg-zinc-900/30 rounded-xl border border-zinc-800/50 p-5">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="text-sm font-semibold text-white">Saturday, January 25, 2026</h3>
+          <p class="text-xs text-zinc-500 mt-0.5">3 activities across 2 projects</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-1 text-[10px] font-medium bg-blue-500/20 text-blue-400 rounded">Today</span>
+        </div>
+      </div>
+
+      <!-- Activity by Project -->
+      <div class="grid grid-cols-2 gap-4">
+        <!-- REPPIT -->
+        <div class="bg-zinc-900/50 rounded-lg p-4 border border-zinc-800/30">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-2 h-2 rounded-full bg-design"></div>
+            <span class="text-xs font-medium text-white">REPPIT</span>
+            <span class="text-[10px] text-zinc-500 ml-auto">2 activities</span>
+          </div>
+          <div class="space-y-2">
+            <div class="flex items-start gap-2">
+              <div class="w-1 h-1 rounded-full bg-zinc-600 mt-1.5"></div>
+              <div>
+                <p class="text-xs text-zinc-300">Fixed workout timer not pausing correctly</p>
+                <span class="text-[10px] text-zinc-500">9:30 AM - commit</span>
+              </div>
+            </div>
+            <div class="flex items-start gap-2">
+              <div class="w-1 h-1 rounded-full bg-zinc-600 mt-1.5"></div>
+              <div>
+                <p class="text-xs text-zinc-300">Added exercise history export feature</p>
+                <span class="text-[10px] text-zinc-500">11:15 AM - commit</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Portfolio -->
+        <div class="bg-zinc-900/50 rounded-lg p-4 border border-zinc-800/30">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-2 h-2 rounded-full bg-launch"></div>
+            <span class="text-xs font-medium text-white">Portfolio</span>
+            <span class="text-[10px] text-zinc-500 ml-auto">1 activity</span>
+          </div>
+          <div class="space-y-2">
+            <div class="flex items-start gap-2">
+              <div class="w-1 h-1 rounded-full bg-zinc-600 mt-1.5"></div>
+              <div>
+                <p class="text-xs text-zinc-300">Updated project screenshots for resume</p>
+                <span class="text-[10px] text-zinc-500">2:45 PM - commit</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tasks Due Today -->
+      <div class="mt-4 pt-4 border-t border-zinc-800/30">
+        <h4 class="text-xs font-medium text-zinc-400 mb-3">Tasks Due Today</h4>
+        <div class="flex items-center gap-3 p-3 bg-amber-500/10 rounded-lg border border-amber-500/20">
+          <svg class="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+          <div class="flex-1">
+            <p class="text-xs text-white">Complete calendar view mockups</p>
+            <p class="text-[10px] text-zinc-500">Taskboard - Command Center</p>
+          </div>
+          <span class="px-2 py-1 text-[10px] bg-amber-500/20 text-amber-400 rounded font-medium">Due Today</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Breakdown (Year Summary) -->
+    <div class="mt-6 grid grid-cols-4 gap-4">
+      <div class="bg-zinc-900/30 rounded-xl border border-zinc-800/50 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="w-3 h-3 rounded bg-design"></div>
+          <span class="text-xs font-medium text-white">REPPIT</span>
+        </div>
+        <div class="text-2xl font-bold text-white mb-1">47</div>
+        <div class="text-[10px] text-zinc-500">activities this year</div>
+        <div class="mt-2 h-1 bg-zinc-800 rounded-full overflow-hidden">
+          <div class="h-full bg-design rounded-full" style="width: 45%"></div>
+        </div>
+      </div>
+      <div class="bg-zinc-900/30 rounded-xl border border-zinc-800/50 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="w-3 h-3 rounded bg-engineering"></div>
+          <span class="text-xs font-medium text-white">Conexus</span>
+        </div>
+        <div class="text-2xl font-bold text-white mb-1">38</div>
+        <div class="text-[10px] text-zinc-500">activities this year</div>
+        <div class="mt-2 h-1 bg-zinc-800 rounded-full overflow-hidden">
+          <div class="h-full bg-engineering rounded-full" style="width: 36%"></div>
+        </div>
+      </div>
+      <div class="bg-zinc-900/30 rounded-xl border border-zinc-800/50 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="w-3 h-3 rounded bg-build"></div>
+          <span class="text-xs font-medium text-white">NoteApp</span>
+        </div>
+        <div class="text-2xl font-bold text-white mb-1">29</div>
+        <div class="text-[10px] text-zinc-500">activities this year</div>
+        <div class="mt-2 h-1 bg-zinc-800 rounded-full overflow-hidden">
+          <div class="h-full bg-build rounded-full" style="width: 28%"></div>
+        </div>
+      </div>
+      <div class="bg-zinc-900/30 rounded-xl border border-zinc-800/50 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="w-3 h-3 rounded bg-launch"></div>
+          <span class="text-xs font-medium text-white">Portfolio</span>
+        </div>
+        <div class="text-2xl font-bold text-white mb-1">42</div>
+        <div class="text-[10px] text-zinc-500">activities this year</div>
+        <div class="mt-2 h-1 bg-zinc-800 rounded-full overflow-hidden">
+          <div class="h-full bg-launch rounded-full" style="width: 40%"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

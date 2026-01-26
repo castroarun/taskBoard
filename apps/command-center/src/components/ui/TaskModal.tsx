@@ -33,7 +33,7 @@ export function TaskModal({ projectId, task, defaultStage, onClose }: TaskModalP
   const [priority, setPriority] = useState<Priority>(task?.priority || 'P2');
   const [complexity, setComplexity] = useState<Complexity>(task?.complexity || 'M');
   const [status, setStatus] = useState<TaskStatus>(task?.status || 'todo');
-  const [stage, setStage] = useState<ProjectStage>(task?.stage || defaultStage || 'development');
+  const [stage, _setStage] = useState<ProjectStage>(task?.stage || defaultStage || 'development');
 
   // Voice state
   const [isTranscribing, setIsTranscribing] = useState(false);
