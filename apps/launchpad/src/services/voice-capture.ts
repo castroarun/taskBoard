@@ -1,175 +1,85 @@
 /**
- * Voice Capture Service for Launchpad (Mobile)
+ * Voice Capture Service for Orbit (Mobile)
  *
- * Flow:
- * 1. User gets notification about stale project
- * 2. User opens Launchpad, taps "Quick Instruct"
- * 3. Records voice → Android Speech-to-Text → raw text
- * 4. Raw text → Groq → structured instruction
- * 5. Structured instruction → saved to inbox (synced)
- * 6. Command Center's Claude agent picks up later
+ * MVP Flow (text-based, no native voice yet):
+ * 1. User types or pastes text
+ * 2. Text → Groq LLaMA → structured task
+ * 3. Structured task → saved to inbox
+ * 4. Command Center's Claude agent picks up later
+ *
+ * Future: Replace with expo-av recording + Groq Whisper transcription
+ * when using development client build.
  */
 
-import Voice, {
-  SpeechResultsEvent,
-  SpeechErrorEvent,
-} from '@react-native-voice/voice';
-import { structureVoiceInput, StructuredInstruction } from '@taskboard/shared/llm';
+import { structureVoiceText, StructuredTask } from './groq';
 
-interface VoiceState {
-  isListening: boolean;
-  isProcessing: boolean;
+export type CaptureState = 'idle' | 'recording' | 'processing' | 'review' | 'success';
+
+interface VoiceCaptureState {
+  state: CaptureState;
+  rawText: string;
+  structured: StructuredTask | null;
   error: string | null;
-  partialResults: string[];
 }
 
+const initialState: VoiceCaptureState = {
+  state: 'idle',
+  rawText: '',
+  structured: null,
+  error: null,
+};
+
 class VoiceCaptureService {
-  private state: VoiceState = {
-    isListening: false,
-    isProcessing: false,
-    error: null,
-    partialResults: [],
-  };
+  private currentState: VoiceCaptureState = { ...initialState };
+  private listeners: Set<(state: VoiceCaptureState) => void> = new Set();
 
-  private listeners: Set<(state: VoiceState) => void> = new Set();
-  private onResultCallback: ((text: string) => void) | null = null;
-
-  constructor() {
-    this.setupVoiceListeners();
+  private updateState(partial: Partial<VoiceCaptureState>) {
+    this.currentState = { ...this.currentState, ...partial };
+    this.listeners.forEach((listener) => listener(this.currentState));
   }
 
-  private setupVoiceListeners() {
-    Voice.onSpeechStart = () => {
-      this.updateState({ isListening: true, error: null });
-    };
-
-    Voice.onSpeechEnd = () => {
-      this.updateState({ isListening: false });
-    };
-
-    Voice.onSpeechResults = (event: SpeechResultsEvent) => {
-      const text = event.value?.[0] || '';
-      if (text && this.onResultCallback) {
-        this.onResultCallback(text);
-      }
-    };
-
-    Voice.onSpeechPartialResults = (event: SpeechResultsEvent) => {
-      this.updateState({ partialResults: event.value || [] });
-    };
-
-    Voice.onSpeechError = (event: SpeechErrorEvent) => {
-      this.updateState({
-        isListening: false,
-        error: event.error?.message || 'Speech recognition error',
-      });
-    };
-  }
-
-  private updateState(partial: Partial<VoiceState>) {
-    this.state = { ...this.state, ...partial };
-    this.listeners.forEach((listener) => listener(this.state));
-  }
-
-  subscribe(listener: (state: VoiceState) => void) {
+  subscribe(listener: (state: VoiceCaptureState) => void) {
     this.listeners.add(listener);
-    return () => this.listeners.delete(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
   }
 
-  getState(): VoiceState {
-    return this.state;
+  getState(): VoiceCaptureState {
+    return this.currentState;
   }
 
-  /**
-   * Start listening for voice input
-   */
-  async startListening(): Promise<void> {
-    try {
-      await Voice.start('en-US');
-    } catch (error) {
-      this.updateState({
-        error: error instanceof Error ? error.message : 'Failed to start voice',
-      });
-    }
+  startCapture() {
+    this.updateState({ state: 'recording', rawText: '', structured: null, error: null });
   }
 
-  /**
-   * Stop listening and get the result
-   */
-  async stopListening(): Promise<string> {
-    return new Promise((resolve, reject) => {
-      this.onResultCallback = (text) => {
-        this.onResultCallback = null;
-        resolve(text);
-      };
-
-      Voice.stop().catch(reject);
-
-      // Timeout after 5 seconds
-      setTimeout(() => {
-        if (this.onResultCallback) {
-          this.onResultCallback = null;
-          resolve(this.state.partialResults[0] || '');
-        }
-      }, 5000);
-    });
+  setRawText(text: string) {
+    this.updateState({ rawText: text });
   }
 
-  /**
-   * Cancel voice capture
-   */
-  async cancel(): Promise<void> {
-    await Voice.cancel();
-    this.updateState({ isListening: false, partialResults: [] });
-  }
-
-  /**
-   * Full flow: Record → Transcribe → Structure → Save
-   */
-  async captureAndStructure(
-    projectContext?: string
-  ): Promise<StructuredInstruction> {
-    // Start recording
-    await this.startListening();
-
-    // Wait for user to stop (handled by UI)
-    // This is called after stopListening() returns the text
-
-    throw new Error('Use startListening/stopListening flow instead');
-  }
-
-  /**
-   * Process raw text into structured instruction
-   */
-  async processVoiceText(
-    rawText: string,
-    projectContext?: string
-  ): Promise<StructuredInstruction> {
-    this.updateState({ isProcessing: true });
+  async processText(projectContext?: string): Promise<StructuredTask> {
+    this.updateState({ state: 'processing', error: null });
 
     try {
-      const structured = await structureVoiceInput(
-        rawText,
-        projectContext,
-        true // isMobile = true, always use Groq
+      const structured = await structureVoiceText(
+        this.currentState.rawText,
+        projectContext
       );
-
-      this.updateState({ isProcessing: false });
+      this.updateState({ state: 'review', structured });
       return structured;
     } catch (error) {
-      this.updateState({
-        isProcessing: false,
-        error: error instanceof Error ? error.message : 'Failed to process',
-      });
+      const message = error instanceof Error ? error.message : 'Failed to structure text';
+      this.updateState({ state: 'recording', error: message });
       throw error;
     }
   }
 
-  /**
-   * Cleanup
-   */
-  async destroy(): Promise<void> {
-    await Voice.destroy();
+  reset() {
+    this.currentState = { ...initialState };
+    this.listeners.forEach((listener) => listener(this.currentState));
+  }
+
+  destroy() {
     this.listeners.clear();
   }
 }

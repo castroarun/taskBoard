@@ -110,6 +110,28 @@ pub fn write_inbox_json(data: String, state: State<'_, Mutex<AppState>>) -> Resu
         .map_err(|e| format!("Failed to write inbox.json: {}", e))
 }
 
+/// Read sync-config.json (gist sync settings)
+#[tauri::command]
+pub fn read_sync_config(state: State<'_, Mutex<AppState>>) -> Result<String, String> {
+    let path = get_data_dir(&state).join("sync-config.json");
+
+    if !path.exists() {
+        return Err("sync-config.json not found".to_string());
+    }
+
+    fs::read_to_string(&path)
+        .map_err(|e| format!("Failed to read sync-config.json: {}", e))
+}
+
+/// Write sync-config.json (gist sync settings)
+#[tauri::command]
+pub fn write_sync_config(data: String, state: State<'_, Mutex<AppState>>) -> Result<(), String> {
+    let path = get_data_dir(&state).join("sync-config.json");
+
+    fs::write(&path, data)
+        .map_err(|e| format!("Failed to write sync-config.json: {}", e))
+}
+
 /// Read any markdown document
 #[tauri::command]
 pub fn read_document(path: String) -> Result<String, String> {

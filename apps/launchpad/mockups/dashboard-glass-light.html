@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Launchpad - Light Glassmorphism Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            inter: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            primary: '#6366f1',
+            success: '#22c55e',
+            warning: '#f59e0b',
+            error: '#f43f5e',
+            'text-primary': '#1a1a2e',
+            'text-secondary': '#4a4a6a',
+            'text-muted': '#8888a8',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #e8eaf6;
+      background-image:
+        radial-gradient(at 20% 30%, rgba(102, 126, 234, 0.4) 0%, transparent 50%),
+        radial-gradient(at 80% 20%, rgba(118, 75, 162, 0.3) 0%, transparent 50%),
+        radial-gradient(at 50% 80%, rgba(240, 147, 251, 0.3) 0%, transparent 50%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 16px;
+      box-shadow:
+        0 8px 32px 0 rgba(31, 38, 135, 0.37),
+        inset 0 4px 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .glass-card-strong {
+      background: rgba(255, 255, 255, 0.35);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 16px;
+      box-shadow:
+        0 8px 32px 0 rgba(31, 38, 135, 0.37),
+        inset 0 4px 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 -4px 24px rgba(31, 38, 135, 0.1);
+    }
+
+    .glass-icon-btn {
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow:
+        0 4px 16px rgba(31, 38, 135, 0.15),
+        inset 0 2px 8px rgba(255, 255, 255, 0.3);
+    }
+
+    .progress-track {
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .attention-card {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 16px;
+      box-shadow:
+        0 8px 32px 0 rgba(31, 38, 135, 0.37),
+        inset 0 4px 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .fab {
+      background: #6366f1;
+      box-shadow:
+        0 8px 32px rgba(99, 102, 241, 0.4),
+        inset 0 2px 8px rgba(255, 255, 255, 0.2);
+    }
+
+    .letter-tight {
+      letter-spacing: -0.02em;
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Frame -->
+  <div class="relative w-full max-w-[430px] min-h-screen overflow-x-hidden pb-28">
+
+    <!-- Status Bar -->
+    <div class="flex items-center justify-between px-6 pt-3 pb-1">
+      <span class="text-[15px] font-semibold text-text-primary">9:41</span>
+      <div class="flex items-center gap-1.5">
+        <!-- Signal -->
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+          <rect x="0" y="8" width="3" height="4" rx="0.5" fill="#1a1a2e"/>
+          <rect x="4.5" y="5.5" width="3" height="6.5" rx="0.5" fill="#1a1a2e"/>
+          <rect x="9" y="3" width="3" height="9" rx="0.5" fill="#1a1a2e"/>
+          <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="#1a1a2e"/>
+        </svg>
+        <!-- WiFi -->
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <path d="M8 10.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5z" fill="#1a1a2e"/>
+          <path d="M5.17 8.83a4 4 0 0 1 5.66 0" stroke="#1a1a2e" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M2.64 6.3a7 7 0 0 1 10.72 0" stroke="#1a1a2e" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M0.5 3.8a10 10 0 0 1 15 0" stroke="#1a1a2e" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <!-- Battery -->
+        <svg width="27" height="13" viewBox="0 0 27 13" fill="none">
+          <rect x="0.5" y="0.5" width="22" height="12" rx="2.5" stroke="#1a1a2e" stroke-opacity="0.5"/>
+          <rect x="2" y="2" width="19" height="9" rx="1.5" fill="#1a1a2e"/>
+          <path d="M24 4.5v4a2 2 0 0 0 0-4z" fill="#1a1a2e" fill-opacity="0.5"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="flex items-start justify-between px-6 pt-5 pb-2">
+      <div>
+        <h1 class="text-[28px] font-bold text-text-primary letter-tight leading-tight">Good evening, Arun</h1>
+        <p class="text-[14px] text-text-muted mt-1">Tuesday, January 28</p>
+      </div>
+      <!-- Notification Bell -->
+      <div class="relative mt-1">
+        <button class="glass-icon-btn w-11 h-11 rounded-full flex items-center justify-center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a4a6a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </button>
+        <!-- Badge -->
+        <span class="absolute -top-0.5 -right-0.5 w-5 h-5 bg-error rounded-full flex items-center justify-center text-[11px] font-semibold text-white">3</span>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="grid grid-cols-2 gap-3 px-6 mt-4">
+      <!-- Current Streak -->
+      <div class="glass-card p-4">
+        <div class="flex items-center gap-2 mb-2.5">
+          <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+          </div>
+          <span class="text-[12px] font-medium text-text-secondary">Current Streak</span>
+        </div>
+        <p class="text-[28px] font-bold text-text-primary letter-tight leading-none">7 <span class="text-[14px] font-medium text-text-muted">days</span></p>
+        <p class="text-[12px] text-text-muted mt-1.5">Best: 12 days</p>
+      </div>
+
+      <!-- Deep Work -->
+      <div class="glass-card p-4">
+        <div class="flex items-center gap-2 mb-2.5">
+          <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <span class="text-[12px] font-medium text-text-secondary">Deep Work</span>
+        </div>
+        <p class="text-[28px] font-bold text-text-primary letter-tight leading-none">3 <span class="text-[14px] font-medium text-text-muted">days</span></p>
+        <p class="text-[12px] text-text-muted mt-1.5">This week</p>
+      </div>
+    </div>
+
+    <!-- Continue Card -->
+    <div class="px-6 mt-4">
+      <div class="glass-card-strong p-5">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-[12px] font-medium text-text-muted uppercase tracking-wider">Continue</span>
+          <span class="text-[12px] font-semibold text-primary">72%</span>
+        </div>
+        <h3 class="text-[16px] font-semibold text-text-primary mt-1">Command Center</h3>
+        <p class="text-[13px] text-text-secondary mt-0.5">Engineering phase</p>
+
+        <!-- Progress Bar -->
+        <div class="progress-track h-2.5 mt-4">
+          <div class="h-full rounded-full bg-primary" style="width: 72%;"></div>
+        </div>
+
+        <!-- CTA Button -->
+        <button class="mt-4 w-full py-2.5 rounded-full bg-primary text-white text-[14px] font-semibold tracking-wide shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
+          Continue
+        </button>
+      </div>
+    </div>
+
+    <!-- Pipeline Section -->
+    <div class="px-6 mt-6">
+      <h2 class="text-[18px] font-semibold text-text-primary mb-3">Pipeline</h2>
+      <div class="glass-card p-4">
+        <!-- Design -->
+        <div class="flex items-center justify-between py-2.5">
+          <div class="flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6]"></span>
+            <span class="text-[14px] font-medium text-text-primary">Design</span>
+          </div>
+          <span class="text-[14px] font-semibold text-text-secondary">1</span>
+        </div>
+        <div class="w-full h-px bg-white/20"></div>
+
+        <!-- Engineering -->
+        <div class="flex items-center justify-between py-2.5">
+          <div class="flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#6366f1]"></span>
+            <span class="text-[14px] font-medium text-text-primary">Engineering</span>
+          </div>
+          <span class="text-[14px] font-semibold text-text-secondary">2</span>
+        </div>
+        <div class="w-full h-px bg-white/20"></div>
+
+        <!-- Build -->
+        <div class="flex items-center justify-between py-2.5">
+          <div class="flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b]"></span>
+            <span class="text-[14px] font-medium text-text-primary">Build</span>
+          </div>
+          <span class="text-[14px] font-semibold text-text-secondary">1</span>
+        </div>
+        <div class="w-full h-px bg-white/20"></div>
+
+        <!-- Launch -->
+        <div class="flex items-center justify-between py-2.5">
+          <div class="flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#22c55e]"></span>
+            <span class="text-[14px] font-medium text-text-primary">Launch</span>
+          </div>
+          <span class="text-[14px] font-semibold text-text-muted">0</span>
+        </div>
+        <div class="w-full h-px bg-white/20"></div>
+
+        <!-- Closure -->
+        <div class="flex items-center justify-between py-2.5">
+          <div class="flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#8888a8]"></span>
+            <span class="text-[14px] font-medium text-text-primary">Closure</span>
+          </div>
+          <span class="text-[14px] font-semibold text-text-muted">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Needs Attention Section -->
+    <div class="px-6 mt-6">
+      <h2 class="text-[18px] font-semibold text-text-primary mb-3">Needs Attention</h2>
+      <div class="flex flex-col gap-3">
+
+        <!-- PRIMMO - Stale -->
+        <div class="attention-card flex items-center p-4" style="border-left: 3px solid #f59e0b;">
+          <div class="flex-1 min-w-0">
+            <h4 class="text-[14px] font-semibold text-text-primary">PRIMMO</h4>
+            <p class="text-[12px] text-warning font-medium mt-0.5">Stale 14 days</p>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8888a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+
+        <!-- Personal Portfolio - Blocker -->
+        <div class="attention-card flex items-center p-4" style="border-left: 3px solid #f43f5e;">
+          <div class="flex-1 min-w-0">
+            <h4 class="text-[14px] font-semibold text-text-primary">Personal Portfolio</h4>
+            <p class="text-[12px] text-error font-medium mt-0.5">Blocker</p>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8888a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+
+        <!-- NoteApp - Due Soon -->
+        <div class="attention-card flex items-center p-4" style="border-left: 3px solid #6366f1;">
+          <div class="flex-1 min-w-0">
+            <h4 class="text-[14px] font-semibold text-text-primary">NoteApp</h4>
+            <p class="text-[12px] text-primary font-medium mt-0.5">Due in 3 days</p>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8888a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="fixed bottom-24 right-6 z-50" style="max-width: 430px;">
+      <button class="fab w-14 h-14 rounded-full flex items-center justify-center">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-40">
+      <nav class="glass-nav px-2 pt-2 pb-6">
+        <div class="flex items-center justify-around">
+          <!-- Home (Active) -->
+          <div class="flex flex-col items-center gap-0.5 py-1 px-3">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span class="text-[11px] font-semibold text-primary">Home</span>
+          </div>
+
+          <!-- Projects -->
+          <div class="flex flex-col items-center gap-0.5 py-1 px-3">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8888a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span class="text-[11px] font-medium text-text-muted">Projects</span>
+          </div>
+
+          <!-- Inbox -->
+          <div class="flex flex-col items-center gap-0.5 py-1 px-3">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8888a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+              <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+            </svg>
+            <span class="text-[11px] font-medium text-text-muted">Inbox</span>
+          </div>
+
+          <!-- Settings -->
+          <div class="flex flex-col items-center gap-0.5 py-1 px-3">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8888a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            <span class="text-[11px] font-medium text-text-muted">Settings</span>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+  </div>
+
+  <!-- Mockup Label -->
+  <div class="fixed bottom-1 left-1/2 -translate-x-1/2 z-50">
+    <p class="text-[11px] text-text-muted/60 whitespace-nowrap">Mockup: Light Glassmorphism (Apple-inspired)</p>
+  </div>
+
+</body>
+</html>

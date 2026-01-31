@@ -56,6 +56,17 @@ function getWeekDates(weekStart: Date): Date[] {
   return dates;
 }
 
+// Map hour of day to percentage position across the 4 equal-width time period columns
+// Morning (6am-12pm) = 0-25%, Afternoon (12pm-5pm) = 25-50%, Evening (5pm-9pm) = 50-75%, Night (9pm-12am) = 75-100%
+function hourToPercent(hour: number): number {
+  if (hour <= 6) return 0;
+  if (hour >= 24) return 100;
+  if (hour < 12) return ((hour - 6) / 6) * 25;       // Morning: 6h span → 0-25%
+  if (hour < 17) return 25 + ((hour - 12) / 5) * 25;  // Afternoon: 5h span → 25-50%
+  if (hour < 21) return 50 + ((hour - 17) / 4) * 25;  // Evening: 4h span → 50-75%
+  return 75 + ((hour - 21) / 3) * 25;                  // Night: 3h span → 75-100%
+}
+
 interface DayActivities {
   activities: Activity[];
   projects: Map<string, { project: Project; activities: Activity[] }>;
@@ -260,8 +271,8 @@ export function CalendarView() {
   return (
     <div className="h-[calc(100vh-3.5rem)] flex flex-col">
       {/* Header */}
-      <div className="flex-shrink-0 border-b border-zinc-800 bg-zinc-900/50 px-6 py-4">
-        <div className="flex items-center justify-between max-w-6xl mx-auto">
+      <div className="flex-shrink-0 border-b border-zinc-800 bg-zinc-900/50 px-5 py-4">
+        <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-display font-bold text-white">Calendar</h1>
             <p className="text-sm text-zinc-500">Track your project work history</p>
@@ -306,46 +317,46 @@ export function CalendarView() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-auto p-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-[320px_1fr] gap-6">
+      <div className="flex-1 overflow-auto p-5">
+        <div>
+          <div className="grid grid-cols-[570px_1fr] gap-4">
 
             {/* LEFT: Month Grid */}
-            <div className="bg-zinc-900/30 rounded-xl border border-zinc-800/50 p-4">
+            <div className="bg-zinc-900/30 rounded-xl border border-zinc-800/50 p-5">
               {/* Month Navigation */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-5">
                 <button
                   onClick={prevMonth}
-                  className="p-1.5 hover:bg-zinc-800/50 rounded transition-colors text-zinc-400 hover:text-white"
+                  className="p-2 hover:bg-zinc-800/50 rounded-lg transition-colors text-zinc-400 hover:text-white"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/>
                   </svg>
                 </button>
-                <h2 className="text-sm font-semibold text-white">
+                <h2 className="text-base font-semibold text-white">
                   {monthNames[currentMonth]} {currentYear}
                 </h2>
                 <button
                   onClick={nextMonth}
-                  className="p-1.5 hover:bg-zinc-800/50 rounded transition-colors text-zinc-400 hover:text-white"
+                  className="p-2 hover:bg-zinc-800/50 rounded-lg transition-colors text-zinc-400 hover:text-white"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
                   </svg>
                 </button>
               </div>
 
               {/* Day Headers */}
-              <div className="grid grid-cols-7 gap-1 mb-2">
+              <div className="grid grid-cols-7 gap-1.5 mb-3">
                 {dayNames.map(day => (
-                  <div key={day} className="text-center text-[10px] font-medium text-zinc-500 py-1">
+                  <div key={day} className="text-center text-xs font-medium text-zinc-500 py-1.5">
                     {day}
                   </div>
                 ))}
               </div>
 
               {/* Calendar Grid */}
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 {monthGrid.map((week, weekIdx) => {
                   const weekStart = getWeekStart(week[0].date);
                   const isSelectedWeek = isSameDay(weekStart, selectedWeekStart);
@@ -355,14 +366,13 @@ export function CalendarView() {
                       key={weekIdx}
                       onClick={() => {
                         setSelectedWeekStart(weekStart);
-                        // Also select first day of week in current month
                         const firstCurrentMonthDay = week.find(d => d.currentMonth);
                         if (firstCurrentMonthDay) {
                           setSelectedDate(firstCurrentMonthDay.date);
                         }
                       }}
                       className={clsx(
-                        'grid grid-cols-7 gap-1 rounded-lg p-0.5 cursor-pointer transition-colors',
+                        'grid grid-cols-7 gap-1.5 rounded-lg p-1 cursor-pointer transition-colors',
                         isSelectedWeek
                           ? 'bg-blue-500/10 border border-blue-500/30'
                           : 'hover:bg-zinc-800/30'
@@ -375,8 +385,7 @@ export function CalendarView() {
                         const hasActivity = dayData.activities.length > 0;
                         const hasTaskDue = dayData.tasksDue.length > 0;
 
-                        // Get unique projects for this day (max 4 dots)
-                        const projectDots = Array.from(dayData.projects.values()).slice(0, 4);
+                        const projectDots = Array.from(dayData.projects.values()).slice(0, 5);
 
                         return (
                           <div
@@ -387,31 +396,31 @@ export function CalendarView() {
                               setSelectedWeekStart(getWeekStart(date));
                             }}
                             className={clsx(
-                              'aspect-square rounded flex flex-col items-center justify-center cursor-pointer transition-colors',
+                              'aspect-square rounded-md flex flex-col items-center justify-center cursor-pointer transition-colors',
                               !currentMonth && 'opacity-40',
                               isSelected && 'bg-blue-500/20 border border-blue-500/50',
                               isToday && !isSelected && 'border border-blue-500/30 bg-blue-500/10'
                             )}
                           >
                             <span className={clsx(
-                              'text-xs',
-                              isToday ? 'text-blue-400 font-medium' : currentMonth ? 'text-zinc-300' : 'text-zinc-600'
+                              'text-sm font-medium',
+                              isToday ? 'text-blue-400' : currentMonth ? 'text-zinc-200' : 'text-zinc-600'
                             )}>
                               {date.getDate()}
                             </span>
                             {(hasActivity || hasTaskDue) && (
-                              <div className="flex gap-0.5 mt-0.5">
+                              <div className="flex gap-0.5 mt-1">
                                 {projectDots.map(({ project }) => {
                                   const colors = PHASE_COLORS[project.currentPhase] || PHASE_COLORS.design;
                                   return (
                                     <div
                                       key={project.id}
-                                      className={clsx('w-1 h-1 rounded-full', colors.dot)}
+                                      className={clsx('w-1.5 h-1.5 rounded-full', colors.dot)}
                                     />
                                   );
                                 })}
                                 {hasTaskDue && (
-                                  <div className="w-1 h-1 rounded-full bg-amber-500" />
+                                  <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                                 )}
                               </div>
                             )}
@@ -424,32 +433,32 @@ export function CalendarView() {
               </div>
 
               {/* Today Button */}
-              <div className="mt-4 pt-4 border-t border-zinc-800/50">
+              <div className="mt-5 pt-4 border-t border-zinc-800/50">
                 <button
                   onClick={goToToday}
-                  className="w-full px-3 py-2 text-xs font-medium bg-zinc-800/50 hover:bg-zinc-800 text-zinc-300 rounded-lg border border-zinc-700/50 transition-colors"
+                  className="w-full px-3 py-2.5 text-sm font-medium bg-zinc-800/50 hover:bg-zinc-800 text-zinc-300 rounded-lg border border-zinc-700/50 transition-colors"
                 >
                   Go to Today
                 </button>
               </div>
 
               {/* Legend */}
-              <div className="mt-4 pt-3 border-t border-zinc-800/50">
-                <div className="text-[10px] text-zinc-500 mb-2">Projects</div>
-                <div className="grid grid-cols-2 gap-2">
-                  {activeProjects.slice(0, 4).map(project => {
+              <div className="mt-4 pt-4 border-t border-zinc-800/50">
+                <div className="text-xs text-zinc-500 mb-3 font-medium">Projects</div>
+                <div className="grid grid-cols-2 gap-2.5">
+                  {activeProjects.slice(0, 6).map(project => {
                     const colors = PHASE_COLORS[project.currentPhase] || PHASE_COLORS.design;
                     return (
-                      <div key={project.id} className="flex items-center gap-1.5">
-                        <div className={clsx('w-2 h-2 rounded-full', colors.dot)} />
-                        <span className="text-[10px] text-zinc-400 truncate">{project.name}</span>
+                      <div key={project.id} className="flex items-center gap-2">
+                        <div className={clsx('w-2.5 h-2.5 rounded-full', colors.dot)} />
+                        <span className="text-xs text-zinc-400 truncate">{project.name}</span>
                       </div>
                     );
                   })}
                 </div>
-                <div className="flex items-center gap-1.5 mt-2">
-                  <div className="w-2 h-2 rounded-full bg-amber-500" />
-                  <span className="text-[10px] text-zinc-400">Task Due</span>
+                <div className="flex items-center gap-2 mt-3">
+                  <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                  <span className="text-xs text-zinc-400">Task Due</span>
                 </div>
               </div>
             </div>
@@ -519,7 +528,7 @@ export function CalendarView() {
                 </div>
 
                 {/* Day Rows */}
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   {weekDates.map((date, idx) => {
                     const isToday = isSameDay(date, today);
                     const isSelected = isSameDay(date, selectedDate);
@@ -577,6 +586,67 @@ export function CalendarView() {
 
                     const hasDeepWork = deepWorkProjects.size > 0;
 
+                    // Calculate continuous spans for each project across the timeline
+                    const projectSpans: Array<{
+                      project: Project;
+                      activities: Activity[];
+                      startPct: number;
+                      endPct: number;
+                      isDeepWork: boolean;
+                      lane: number;
+                    }> = [];
+
+                    dayData.projects.forEach((data) => {
+                      const hours = data.activities.map(a => {
+                        const d = new Date(a.timestamp);
+                        return d.getHours() + d.getMinutes() / 60;
+                      });
+                      let minHour = Math.min(...hours);
+                      let maxHour = Math.max(...hours);
+                      // Ensure minimum 1.5h span for visibility
+                      if (maxHour - minHour < 1.5) {
+                        const mid = (minHour + maxHour) / 2;
+                        minHour = mid - 0.75;
+                        maxHour = mid + 0.75;
+                      }
+                      projectSpans.push({
+                        project: data.project,
+                        activities: data.activities,
+                        startPct: hourToPercent(minHour),
+                        endPct: hourToPercent(maxHour),
+                        isDeepWork: deepWorkProjects.has(data.project.id),
+                        lane: 0,
+                      });
+                    });
+
+                    // Sort by start position, then wider spans first
+                    projectSpans.sort((a, b) => a.startPct - b.startPct || (b.endPct - b.startPct) - (a.endPct - a.startPct));
+
+                    // Greedy lane assignment for overlapping blocks
+                    const lanes: Array<number[]> = [];
+                    projectSpans.forEach((span, idx) => {
+                      let assigned = false;
+                      for (let l = 0; l < lanes.length; l++) {
+                        const canFit = lanes[l].every(existingIdx => {
+                          const existing = projectSpans[existingIdx];
+                          return span.startPct >= existing.endPct || span.endPct <= existing.startPct;
+                        });
+                        if (canFit) {
+                          lanes[l].push(idx);
+                          span.lane = l;
+                          assigned = true;
+                          break;
+                        }
+                      }
+                      if (!assigned) {
+                        span.lane = lanes.length;
+                        lanes.push([idx]);
+                      }
+                    });
+
+                    const laneCount = Math.max(lanes.length, 1);
+                    const laneHeight = 26;
+
                     return (
                       <div
                         key={date.getTime()}
@@ -614,85 +684,51 @@ export function CalendarView() {
                             </div>
                           )}
                         </div>
-                        <div className="flex-1 grid grid-cols-4 gap-1 py-2 pr-2">
-                          {periods.map(period => {
-                            const blocks = timeBlocks[period];
-
-                            // Period time ranges for calculating position
-                            const periodRanges = {
-                              morning: { start: 6, end: 12 },
-                              afternoon: { start: 12, end: 17 },
-                              evening: { start: 17, end: 21 },
-                              night: { start: 21, end: 24 },
-                            };
-                            const range = periodRanges[period];
-                            const periodDuration = range.end - range.start;
-
-                            // Show only the primary block (most activities)
-                            const primaryBlock = blocks.length > 0
-                              ? blocks.reduce((max, b) => b.activities.length > max.activities.length ? b : max, blocks[0])
-                              : null;
-
-                            // Calculate varied position based on actual timestamp
-                            let leftPercent = 5;
-                            let rightPercent = 5;
-
-                            if (primaryBlock) {
-                              const firstActivity = primaryBlock.activities[0];
-                              const lastActivity = primaryBlock.activities[primaryBlock.activities.length - 1];
-
-                              const startHour = new Date(firstActivity.timestamp).getHours();
-                              const startMin = new Date(firstActivity.timestamp).getMinutes();
-                              const endHour = new Date(lastActivity.timestamp).getHours();
-                              const endMin = new Date(lastActivity.timestamp).getMinutes();
-
-                              // Calculate start position within period
-                              const startInPeriod = Math.max(0, startHour - range.start) + startMin / 60;
-                              leftPercent = Math.min(60, Math.max(0, (startInPeriod / periodDuration) * 80));
-
-                              // Calculate end position - use activity count to vary width
-                              const activitySpread = Math.min(primaryBlock.activities.length * 10, 40);
-                              const endInPeriod = Math.max(0, endHour - range.start) + endMin / 60;
-                              const endPercent = Math.min(95, (endInPeriod / periodDuration) * 80 + 20);
-                              rightPercent = Math.max(5, 100 - endPercent - activitySpread);
-                            }
-
-                            const colors = primaryBlock
-                              ? PHASE_COLORS[primaryBlock.project.currentPhase] || PHASE_COLORS.design
-                              : null;
-                            const isDeepWork = primaryBlock && deepWorkProjects.has(primaryBlock.project.id);
-                            const otherCount = blocks.length - 1;
-
+                        {/* Continuous timeline - blocks span across time periods */}
+                        <div className="flex-1 relative py-2 pr-2" style={{ minHeight: `${laneCount * laneHeight + 8}px` }}>
+                          {/* Period dividers aligned with header columns */}
+                          <div className="absolute inset-0 flex">
+                            {[0, 1, 2, 3].map(i => (
+                              <div key={i} className={clsx('flex-1 rounded mx-0.5', i < 3 && 'border-r border-zinc-800/20')} />
+                            ))}
+                          </div>
+                          {/* Empty state background */}
+                          {projectSpans.length === 0 && (
+                            <div className="absolute inset-0 flex gap-1">
+                              {[0, 1, 2, 3].map(i => (
+                                <div key={i} className="flex-1 rounded bg-zinc-800/20" />
+                              ))}
+                            </div>
+                          )}
+                          {/* Project blocks positioned across the continuous timeline */}
+                          {projectSpans.map((span) => {
+                            const colors = PHASE_COLORS[span.project.currentPhase] || PHASE_COLORS.design;
+                            const activityCount = span.activities.length;
+                            const widthPct = Math.max(span.endPct - span.startPct, 3);
                             return (
                               <div
-                                key={period}
-                                className="relative h-10 rounded bg-zinc-800/30"
-                              >
-                                {primaryBlock && colors && (
-                                  <div
-                                    className={clsx(
-                                      'absolute top-1 bottom-1 rounded flex items-center px-1.5 overflow-hidden transition-all hover:brightness-110 cursor-pointer',
-                                      colors.bg,
-                                      isDeepWork && 'ring-1 ring-orange-400/50'
-                                    )}
-                                    style={{
-                                      left: `${leftPercent}%`,
-                                      right: `${rightPercent}%`,
-                                    }}
-                                    title={`${primaryBlock.project.name} - ${primaryBlock.activities.length} activities${isDeepWork ? ' (Deep Work 6h+)' : ''}${otherCount > 0 ? ` (+${otherCount} more)` : ''}`}
-                                  >
-                                    <span className="text-[9px] font-medium text-white truncate">
-                                      {primaryBlock.project.name}
-                                    </span>
-                                    {isDeepWork && (
-                                      <span className="ml-auto text-[8px]">🔥</span>
-                                    )}
-                                  </div>
+                                key={span.project.id}
+                                className={clsx(
+                                  'absolute rounded flex items-center gap-1.5 px-2 overflow-hidden transition-all hover:brightness-110 cursor-pointer',
+                                  colors.bg,
+                                  span.isDeepWork && 'ring-1 ring-orange-400/50'
                                 )}
-                                {otherCount > 0 && (
-                                  <div className="absolute bottom-0 right-1 text-[7px] text-zinc-500">
-                                    +{otherCount}
-                                  </div>
+                                style={{
+                                  left: `${span.startPct}%`,
+                                  width: `${widthPct}%`,
+                                  top: `${span.lane * laneHeight + 4}px`,
+                                  height: `${laneHeight - 4}px`,
+                                }}
+                                title={`${span.project.name} - ${activityCount} activities${span.isDeepWork ? ' (Deep Work 6h+)' : ''}`}
+                              >
+                                <span className="text-[10px] font-semibold text-white truncate flex-1">
+                                  {span.project.name}
+                                </span>
+                                <span className="text-[9px] text-white/70 flex-shrink-0">
+                                  {activityCount}
+                                </span>
+                                {span.isDeepWork && (
+                                  <span className="text-[9px] flex-shrink-0">🔥</span>
                                 )}
                               </div>
                             );

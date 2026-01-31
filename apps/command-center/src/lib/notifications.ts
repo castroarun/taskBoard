@@ -280,6 +280,18 @@ export function notifySystem(title: string, body: string): void {
   });
 }
 
+/**
+ * Notify new inbox items synced from Launchpad mobile
+ */
+export function notifyNewInboxItems(count: number, preview?: string): void {
+  showNotification({
+    type: 'system',
+    title: `${count} new item${count > 1 ? 's' : ''} from Launchpad`,
+    body: preview || 'Open Inbox to view',
+    tag: 'inbox-sync',
+  });
+}
+
 // ============================================================================
 // Reminder scheduler (checks for stale projects, pending approvals, etc.)
 // ============================================================================

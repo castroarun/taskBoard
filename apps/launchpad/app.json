@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "Orbit",
+    "slug": "orbit",
+    "version": "0.1.0",
+    "scheme": "orbit",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.klarity.orbit"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#000000"
+      },
+      "package": "com.klarity.orbit"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-font"
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "fc4d65d7-2397-4950-b3ff-b448126ab2d2"
+      }
+    },
+    "owner": "castroarun",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/fc4d65d7-2397-4950-b3ff-b448126ab2d2"
+    }
+  }
+}

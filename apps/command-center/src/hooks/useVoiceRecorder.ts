@@ -10,6 +10,7 @@ import { useState, useRef, useCallback } from 'react';
 interface UseVoiceRecorderResult {
   isRecording: boolean;
   isSupported: boolean;
+  recordingDuration: number;
   startRecording: () => Promise<void>;
   stopRecording: () => Promise<Blob | null>;
   error: string | null;
@@ -18,8 +19,11 @@ interface UseVoiceRecorderResult {
 export function useVoiceRecorder(): UseVoiceRecorderResult {
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [recordingDuration, setRecordingDuration] = useState(0);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const startTimeRef = useRef<number>(0);
+  const durationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Check if MediaRecorder is supported
   const isSupported = typeof MediaRecorder !== 'undefined' && !!navigator.mediaDevices?.getUserMedia;
@@ -33,6 +37,7 @@ export function useVoiceRecorder(): UseVoiceRecorderResult {
     try {
       setError(null);
       chunksRef.current = [];
+      setRecordingDuration(0);
 
       // Request microphone access
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -60,7 +65,13 @@ export function useVoiceRecorder(): UseVoiceRecorderResult {
       };
 
       mediaRecorder.start(100); // Collect data every 100ms
+      startTimeRef.current = Date.now();
       setIsRecording(true);
+
+      // Update duration every 100ms
+      durationIntervalRef.current = setInterval(() => {
+        setRecordingDuration(Math.floor((Date.now() - startTimeRef.current) / 1000));
+      }, 100);
     } catch (err) {
       console.error('[useVoiceRecorder] Failed to start:', err);
       if (err instanceof Error) {
@@ -78,11 +89,33 @@ export function useVoiceRecorder(): UseVoiceRecorderResult {
   }, [isSupported]);
 
   const stopRecording = useCallback(async (): Promise<Blob | null> => {
+    // Clear duration interval
+    if (durationIntervalRef.current) {
+      clearInterval(durationIntervalRef.current);
+      durationIntervalRef.current = null;
+    }
+
+    const elapsed = Date.now() - startTimeRef.current;
+
+    // Reject recordings shorter than 1 second — Whisper hallucinates on very short audio
+    if (elapsed < 1000) {
+      const mediaRecorder = mediaRecorderRef.current;
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      }
+      setIsRecording(false);
+      setRecordingDuration(0);
+      setError('Recording too short. Hold for at least 1 second.');
+      return null;
+    }
+
     return new Promise((resolve) => {
       const mediaRecorder = mediaRecorderRef.current;
 
       if (!mediaRecorder || mediaRecorder.state === 'inactive') {
         setIsRecording(false);
+        setRecordingDuration(0);
         resolve(null);
         return;
       }
@@ -97,6 +130,7 @@ export function useVoiceRecorder(): UseVoiceRecorderResult {
         });
 
         setIsRecording(false);
+        setRecordingDuration(0);
         resolve(blob);
       };
 
@@ -107,6 +141,7 @@ export function useVoiceRecorder(): UseVoiceRecorderResult {
   return {
     isRecording,
     isSupported,
+    recordingDuration,
     startRecording,
     stopRecording,
     error,

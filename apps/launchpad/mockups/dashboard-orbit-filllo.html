@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orbit — Premium Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'SF Pro Display', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
+      background: #0F0F14;
+      -webkit-font-smoothing: antialiased;
+    }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .surface { background: #18181F; border: 1px solid #25252E; }
+    .surface-elevated { background: #1E1E28; border: 1px solid #2A2A36; }
+    .accent-blue { color: #3B82F6; }
+    .accent-bg-blue { background: rgba(59, 130, 246, 0.12); }
+    .accent-bg-green { background: rgba(16, 185, 129, 0.12); }
+    .accent-bg-amber { background: rgba(251, 191, 36, 0.12); }
+    .accent-bg-red { background: rgba(248, 113, 113, 0.12); }
+    .progress-track { background: rgba(255, 255, 255, 0.06); }
+  </style>
+</head>
+<body class="min-h-screen flex items-start justify-center">
+
+  <!-- Phone Frame -->
+  <div class="w-full max-w-[430px] min-h-screen relative overflow-hidden" style="background: #0F0F14;">
+
+    <!-- ==================== STATUS BAR ==================== -->
+    <div class="flex items-center justify-between px-6 pt-3 pb-1">
+      <span class="text-sm font-semibold text-white tracking-tight">9:41</span>
+      <div class="flex items-center gap-1.5">
+        <svg width="18" height="14" viewBox="0 0 18 14" fill="none">
+          <rect x="0" y="10" width="3" height="4" rx="1" fill="white"/>
+          <rect x="5" y="7" width="3" height="7" rx="1" fill="white"/>
+          <rect x="10" y="3" width="3" height="11" rx="1" fill="white"/>
+          <rect x="15" y="0" width="3" height="14" rx="1" fill="white"/>
+        </svg>
+        <svg width="17" height="14" viewBox="0 0 17 14" fill="none">
+          <path d="M8.5 12.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z" fill="white"/>
+          <path d="M4.5 10.2a5.5 5.5 0 018 0" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M1.5 7a10 10 0 0114 0" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg width="28" height="14" viewBox="0 0 28 14" fill="none">
+          <rect x="0.5" y="1" width="23" height="12" rx="3" stroke="white" stroke-opacity="0.35" stroke-width="1.2"/>
+          <rect x="2.5" y="3" width="17" height="8" rx="2" fill="#3B82F6"/>
+          <path d="M25 5.5v3a1.5 1.5 0 000-3z" fill="white" fill-opacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ==================== SAFE AREA CONTENT ==================== -->
+    <div class="px-5 pb-28 hide-scrollbar overflow-y-auto" style="max-height: calc(100vh - 44px);">
+
+      <!-- ==================== HEADER ==================== -->
+      <div class="flex items-center justify-between mt-5 mb-6">
+        <div class="flex items-center gap-3">
+          <!-- Orbit Logo -->
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="4" fill="white"/>
+              <circle cx="12" cy="12" r="9" stroke="white" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-lg font-bold text-white leading-none">Orbit</h1>
+            <p class="text-[11px] font-medium text-gray-500 mt-0.5">5 active projects</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <button class="relative w-10 h-10 rounded-xl surface flex items-center justify-center">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 01-3.46 0"/>
+            </svg>
+            <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2" style="border-color: #0F0F14;"></span>
+          </button>
+          <button class="w-10 h-10 rounded-xl surface flex items-center justify-center">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================== OVERVIEW METRICS ==================== -->
+      <div class="grid grid-cols-3 gap-2.5 mb-6">
+        <div class="surface rounded-2xl p-3.5 text-center">
+          <p class="text-2xl font-bold text-blue-400">12</p>
+          <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mt-1">Tasks</p>
+        </div>
+        <div class="surface rounded-2xl p-3.5 text-center">
+          <p class="text-2xl font-bold text-emerald-400">5</p>
+          <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mt-1">Done</p>
+        </div>
+        <div class="surface rounded-2xl p-3.5 text-center">
+          <p class="text-2xl font-bold text-amber-400">3</p>
+          <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mt-1">Overdue</p>
+        </div>
+      </div>
+
+      <!-- ==================== ACTIVE PROJECTS ==================== -->
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-base font-bold text-white">Active Projects</h2>
+        <button class="text-xs font-semibold text-blue-400">See all</button>
+      </div>
+
+      <div class="space-y-3 mb-6">
+
+        <!-- Project: Command Center -->
+        <div class="surface-elevated rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background: rgba(16, 185, 129, 0.15);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2"/>
+                  <line x1="8" y1="21" x2="16" y2="21"/>
+                  <line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-white">Command Center</h3>
+                <p class="text-[11px] text-gray-500 font-medium">Engineering</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 text-[10px] font-bold rounded-lg accent-bg-green text-emerald-400 uppercase tracking-wider">72%</span>
+          </div>
+          <div class="progress-track w-full h-1.5 rounded-full overflow-hidden">
+            <div class="h-full rounded-full" style="width: 72%; background: linear-gradient(90deg, #059669, #10b981);"></div>
+          </div>
+          <div class="flex items-center justify-between mt-3">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[11px] text-gray-500 font-medium">8 tasks</span>
+              <span class="text-gray-700">·</span>
+              <span class="text-[11px] text-emerald-400 font-medium">3 done</span>
+            </div>
+            <span class="text-[11px] text-gray-500 font-medium">Due Feb 5</span>
+          </div>
+        </div>
+
+        <!-- Project: PRIMMO -->
+        <div class="surface-elevated rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background: rgba(248, 113, 113, 0.15);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 20V10"/>
+                  <path d="M12 20V4"/>
+                  <path d="M6 20v-6"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-white">PRIMMO</h3>
+                <p class="text-[11px] text-gray-500 font-medium">Stale · 14 days</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 text-[10px] font-bold rounded-lg accent-bg-red text-red-400 uppercase tracking-wider">35%</span>
+          </div>
+          <div class="progress-track w-full h-1.5 rounded-full overflow-hidden">
+            <div class="h-full rounded-full" style="width: 35%; background: linear-gradient(90deg, #DC2626, #F87171);"></div>
+          </div>
+          <div class="flex items-center justify-between mt-3">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[11px] text-gray-500 font-medium">12 tasks</span>
+              <span class="text-gray-700">·</span>
+              <span class="text-[11px] text-red-400 font-medium">needs attention</span>
+            </div>
+            <span class="text-[11px] text-amber-400 font-medium">Overdue</span>
+          </div>
+        </div>
+
+        <!-- Project: NoteApp -->
+        <div class="surface-elevated rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background: rgba(59, 130, 246, 0.15);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-white">NoteApp</h3>
+                <p class="text-[11px] text-gray-500 font-medium">Building</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 text-[10px] font-bold rounded-lg accent-bg-blue text-blue-400 uppercase tracking-wider">48%</span>
+          </div>
+          <div class="progress-track w-full h-1.5 rounded-full overflow-hidden">
+            <div class="h-full rounded-full" style="width: 48%; background: linear-gradient(90deg, #1D4ED8, #3B82F6);"></div>
+          </div>
+          <div class="flex items-center justify-between mt-3">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[11px] text-gray-500 font-medium">6 tasks</span>
+              <span class="text-gray-700">·</span>
+              <span class="text-[11px] text-blue-400 font-medium">2 done</span>
+            </div>
+            <span class="text-[11px] text-gray-500 font-medium">Due Feb 10</span>
+          </div>
+        </div>
+
+        <!-- Project: Orbit -->
+        <div class="surface-elevated rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background: rgba(167, 139, 250, 0.15);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="3.5" stroke="#A78BFA" stroke-width="2"/>
+                  <circle cx="12" cy="12" r="8" stroke="#A78BFA" stroke-width="1.5" stroke-dasharray="3 3"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-white">Orbit</h3>
+                <p class="text-[11px] text-gray-500 font-medium">Design</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 text-[10px] font-bold rounded-lg text-violet-400 uppercase tracking-wider" style="background: rgba(167, 139, 250, 0.12);">15%</span>
+          </div>
+          <div class="progress-track w-full h-1.5 rounded-full overflow-hidden">
+            <div class="h-full rounded-full" style="width: 15%; background: linear-gradient(90deg, #7C3AED, #A78BFA);"></div>
+          </div>
+          <div class="flex items-center justify-between mt-3">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[11px] text-gray-500 font-medium">4 tasks</span>
+              <span class="text-gray-700">·</span>
+              <span class="text-[11px] text-violet-400 font-medium">0 done</span>
+            </div>
+            <span class="text-[11px] text-gray-500 font-medium">Due Jan 30</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==================== RECENT ACTIVITY ==================== -->
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-base font-bold text-white">Recent Activity</h2>
+      </div>
+
+      <div class="surface rounded-2xl p-4 mb-4">
+        <div class="space-y-4">
+          <div class="flex items-start gap-3">
+            <div class="w-2 h-2 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0"></div>
+            <div>
+              <p class="text-sm text-gray-300 font-medium">Completed <span class="text-white font-semibold">pipeline view layout</span></p>
+              <p class="text-[11px] text-gray-600 mt-0.5">Command Center · 2h ago</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-2 h-2 rounded-full bg-blue-400 mt-1.5 flex-shrink-0"></div>
+            <div>
+              <p class="text-sm text-gray-300 font-medium">Created task <span class="text-white font-semibold">design onboarding screens</span></p>
+              <p class="text-[11px] text-gray-600 mt-0.5">Orbit · 4h ago</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-2 h-2 rounded-full bg-amber-400 mt-1.5 flex-shrink-0"></div>
+            <div>
+              <p class="text-sm text-gray-300 font-medium"><span class="text-white font-semibold">PRIMMO</span> marked as stale</p>
+              <p class="text-[11px] text-gray-600 mt-0.5">System · 1d ago</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== MOCKUP LABEL ==================== -->
+      <p class="text-center text-[11px] text-gray-700 font-medium pb-2 tracking-wide">Orbit — Filllo-inspired</p>
+
+    </div>
+
+    <!-- ==================== BOTTOM NAV BAR ==================== -->
+    <div class="absolute bottom-0 left-0 right-0 border-t" style="background: rgba(15, 15, 20, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-color: #1E1E28;">
+      <div class="flex items-center justify-around py-2.5 pb-5">
+        <!-- Dashboard (active) -->
+        <button class="flex flex-col items-center gap-1">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+          </svg>
+          <span class="text-[10px] font-semibold text-blue-400">Dashboard</span>
+        </button>
+        <!-- Tasks -->
+        <button class="flex flex-col items-center gap-1">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"/>
+            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+          </svg>
+          <span class="text-[10px] font-semibold text-gray-600">Tasks</span>
+        </button>
+        <!-- Inbox -->
+        <button class="flex flex-col items-center gap-1 relative">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+            <path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/>
+          </svg>
+          <span class="text-[10px] font-semibold text-gray-600">Inbox</span>
+          <span class="absolute -top-0.5 right-2 w-4 h-4 bg-red-500 text-white text-[8px] font-bold flex items-center justify-center rounded-full">3</span>
+        </button>
+        <!-- Settings -->
+        <button class="flex flex-col items-center gap-1">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+          </svg>
+          <span class="text-[10px] font-semibold text-gray-600">Settings</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

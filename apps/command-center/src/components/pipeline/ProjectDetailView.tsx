@@ -92,7 +92,7 @@ export function ProjectDetailView({ project, onBack }: ProjectDetailViewProps) {
   const [lastVoiceSuccess, setLastVoiceSuccess] = useState(false);
   const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
   const [editingReviewContent, setEditingReviewContent] = useState('');
-  const { isRecording, isSupported, startRecording, stopRecording, error: recorderError } = useVoiceRecorder();
+  const { isRecording, isSupported, recordingDuration, startRecording, stopRecording, error: recorderError } = useVoiceRecorder();
 
   // Task modal state
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
@@ -1124,7 +1124,7 @@ export function ProjectDetailView({ project, onBack }: ProjectDetailViewProps) {
                       ) : (
                         '🎤'
                       )}
-                      {isTranscribing ? 'Transcribing...' : isRecording ? 'Stop' : 'Voice'}
+                      {isTranscribing ? 'Transcribing...' : isRecording ? `Stop ${recordingDuration}s` : 'Voice'}
                       <span className="absolute -top-1 -right-1 w-3 h-3 bg-purple-500 rounded-full flex items-center justify-center">
                         <span className="text-[8px] text-white font-bold">AI</span>
                       </span>
@@ -1214,7 +1214,7 @@ export function ProjectDetailView({ project, onBack }: ProjectDetailViewProps) {
             )}
 
             {/* Document Content */}
-            <div className="bg-zinc-800/50 rounded-xl border border-zinc-700/50 p-4 max-h-80 overflow-y-auto">
+            <div className="bg-zinc-800/50 rounded-xl border border-zinc-700/50 p-4">
               {isLoading ? (
                 <div className="flex items-center justify-center py-8">
                   <div className="w-6 h-6 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
@@ -1381,7 +1381,7 @@ export function ProjectDetailView({ project, onBack }: ProjectDetailViewProps) {
                     ) : (
                       '🎤'
                     )}
-                    {isTranscribing ? 'Transcribing...' : isRecording ? 'Stop' : 'Voice'}
+                    {isTranscribing ? 'Transcribing...' : isRecording ? `Stop ${recordingDuration}s` : 'Voice'}
                     <span className="absolute -top-1 -right-1 w-3 h-3 bg-purple-500 rounded-full flex items-center justify-center">
                       <span className="text-[8px] text-white font-bold">AI</span>
                     </span>

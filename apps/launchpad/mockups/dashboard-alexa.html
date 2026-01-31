@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Launchpad Dashboard — Alexa Style</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'alexa-navy': '#232F3E',
+            'alexa-deep': '#1A1A2E',
+            'alexa-surface': '#37475A',
+            'alexa-blue': '#31C4F3',
+            'alexa-cyan': '#00CAFF',
+            'alexa-card': 'rgba(255,255,255,0.08)',
+            'alexa-card-hover': 'rgba(255,255,255,0.12)',
+            'alexa-border': 'rgba(255,255,255,0.06)',
+            'alexa-text': '#FAFAFA',
+            'alexa-muted': '#8899AA',
+          },
+          fontFamily: {
+            ember: ['"Amazon Ember"', 'Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Amazon Ember', 'Inter', system-ui, sans-serif; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-neutral-900 flex items-start justify-center min-h-screen py-6">
+
+  <!-- Phone Frame -->
+  <div class="w-[430px] min-h-[932px] bg-alexa-deep rounded-[40px] shadow-2xl shadow-black/60 overflow-hidden relative flex flex-col border border-alexa-border">
+
+    <!-- ==================== STATUS BAR ==================== -->
+    <div class="flex items-center justify-between px-8 pt-4 pb-1">
+      <span class="text-alexa-text text-sm font-semibold tracking-tight">9:41</span>
+      <div class="flex items-center gap-1.5">
+        <!-- Signal -->
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <rect x="0" y="8" width="3" height="4" rx="0.5" fill="#FAFAFA"/>
+          <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="#FAFAFA"/>
+          <rect x="9" y="2" width="3" height="10" rx="0.5" fill="#FAFAFA"/>
+          <rect x="13" y="0" width="3" height="12" rx="0.5" fill="#FAFAFA"/>
+        </svg>
+        <!-- WiFi -->
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <path d="M8 10.5a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z" fill="#FAFAFA" transform="translate(0,-2)"/>
+          <path d="M4.5 8.5a5 5 0 017 0" stroke="#FAFAFA" stroke-width="1.3" stroke-linecap="round" fill="none" transform="translate(0,-2)"/>
+          <path d="M2 5.5a8.5 8.5 0 0112 0" stroke="#FAFAFA" stroke-width="1.3" stroke-linecap="round" fill="none" transform="translate(0,-2)"/>
+        </svg>
+        <!-- Battery -->
+        <svg width="27" height="12" viewBox="0 0 27 12" fill="none">
+          <rect x="0.5" y="0.5" width="23" height="11" rx="2" stroke="#FAFAFA" stroke-opacity="0.4"/>
+          <rect x="2" y="2" width="18" height="8" rx="1" fill="#FAFAFA"/>
+          <rect x="25" y="3.5" width="2" height="5" rx="0.5" fill="#FAFAFA" fill-opacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ==================== DYNAMIC ISLAND ==================== -->
+    <div class="flex justify-center pt-1 pb-3">
+      <div class="w-[126px] h-[36px] bg-black rounded-full"></div>
+    </div>
+
+    <!-- ==================== SCROLLABLE CONTENT ==================== -->
+    <div class="flex-1 overflow-y-auto hide-scrollbar pb-28 px-5">
+
+      <!-- ==================== HEADER ==================== -->
+      <div class="flex items-start justify-between mt-2 mb-6">
+        <div>
+          <p class="text-alexa-muted text-xs font-medium tracking-wide uppercase">Thursday, Jan 30</p>
+          <h1 class="text-alexa-text text-[26px] font-bold leading-tight mt-1">Good evening, Arun</h1>
+        </div>
+        <div class="flex items-center gap-3 mt-1">
+          <!-- Notification Bell -->
+          <div class="w-10 h-10 rounded-full bg-alexa-card flex items-center justify-center relative border border-alexa-border">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FAFAFA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 01-3.46 0"/>
+            </svg>
+            <!-- Notification dot -->
+            <div class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-alexa-blue rounded-full border-2 border-alexa-deep"></div>
+          </div>
+          <!-- Settings Gear -->
+          <div class="w-10 h-10 rounded-full bg-alexa-card flex items-center justify-center border border-alexa-border">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FAFAFA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== CATEGORY PILLS ==================== -->
+      <div class="flex gap-2.5 mb-6 overflow-x-auto hide-scrollbar -mx-1 px-1">
+        <!-- All (Active) -->
+        <div class="flex-shrink-0 px-5 py-2 rounded-full bg-alexa-blue text-alexa-deep text-sm font-semibold cursor-pointer">
+          All
+        </div>
+        <!-- Active -->
+        <div class="flex-shrink-0 px-5 py-2 rounded-full border border-alexa-muted/30 text-alexa-muted text-sm font-medium cursor-pointer">
+          Active
+        </div>
+        <!-- Stale -->
+        <div class="flex-shrink-0 px-5 py-2 rounded-full border border-alexa-muted/30 text-alexa-muted text-sm font-medium cursor-pointer">
+          Stale
+        </div>
+        <!-- Blocked -->
+        <div class="flex-shrink-0 px-5 py-2 rounded-full border border-alexa-muted/30 text-alexa-muted text-sm font-medium cursor-pointer">
+          Blocked
+        </div>
+        <!-- Shipped -->
+        <div class="flex-shrink-0 px-5 py-2 rounded-full border border-alexa-muted/30 text-alexa-muted text-sm font-medium cursor-pointer">
+          Shipped
+        </div>
+      </div>
+
+      <!-- ==================== STATS TILES (2x1 Grid) ==================== -->
+      <div class="grid grid-cols-2 gap-3 mb-5">
+
+        <!-- Streak Tile -->
+        <div class="bg-alexa-card rounded-2xl p-4 border border-alexa-border relative overflow-hidden">
+          <!-- Subtle glow accent -->
+          <div class="absolute -top-6 -right-6 w-20 h-20 bg-alexa-blue/10 rounded-full blur-2xl"></div>
+          <div class="flex items-center gap-2.5 mb-3">
+            <div class="w-9 h-9 rounded-xl bg-alexa-blue/15 flex items-center justify-center">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#31C4F3"/>
+              </svg>
+            </div>
+            <span class="text-alexa-muted text-xs font-medium uppercase tracking-wider">Streak</span>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <span class="text-alexa-text text-3xl font-bold">7</span>
+            <span class="text-alexa-muted text-sm font-medium">days</span>
+          </div>
+          <!-- Active indicator dot -->
+          <div class="absolute top-4 right-4 w-2 h-2 rounded-full bg-alexa-blue"></div>
+        </div>
+
+        <!-- Deep Work Tile -->
+        <div class="bg-alexa-card rounded-2xl p-4 border border-alexa-border relative overflow-hidden">
+          <div class="absolute -top-6 -right-6 w-20 h-20 bg-alexa-cyan/10 rounded-full blur-2xl"></div>
+          <div class="flex items-center gap-2.5 mb-3">
+            <div class="w-9 h-9 rounded-xl bg-alexa-cyan/15 flex items-center justify-center">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="#00CAFF" stroke-width="2"/>
+                <path d="M12 6v6l4 2" stroke="#00CAFF" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="text-alexa-muted text-xs font-medium uppercase tracking-wider">Deep Work</span>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <span class="text-alexa-text text-3xl font-bold">3</span>
+            <span class="text-alexa-muted text-sm font-medium">days</span>
+          </div>
+          <div class="absolute top-4 right-4 w-2 h-2 rounded-full bg-alexa-cyan"></div>
+        </div>
+      </div>
+
+      <!-- ==================== CONTINUE CARD (Full Width) ==================== -->
+      <div class="bg-alexa-surface rounded-2xl p-5 mb-5 border border-alexa-border relative overflow-hidden">
+        <!-- Background accent glow -->
+        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-alexa-blue/8 rounded-full blur-3xl"></div>
+
+        <div class="flex items-center justify-between mb-3 relative z-10">
+          <div class="flex items-center gap-2.5">
+            <!-- Folder icon -->
+            <div class="w-10 h-10 rounded-xl bg-alexa-blue/20 flex items-center justify-center">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z" fill="#31C4F3" fill-opacity="0.6"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-alexa-text text-base font-semibold">Command Center</h3>
+              <p class="text-alexa-muted text-xs mt-0.5">Last active 2h ago</p>
+            </div>
+          </div>
+          <!-- Phase tag -->
+          <div class="px-3 py-1 rounded-full bg-alexa-blue/15 border border-alexa-blue/30">
+            <span class="text-alexa-blue text-xs font-semibold">Engineering</span>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="mb-4 relative z-10">
+          <div class="flex justify-between mb-1.5">
+            <span class="text-alexa-muted text-xs font-medium">Progress</span>
+            <span class="text-alexa-blue text-xs font-semibold">72%</span>
+          </div>
+          <div class="w-full h-2 rounded-full bg-alexa-deep/60">
+            <div class="h-full rounded-full bg-gradient-to-r from-alexa-blue to-alexa-cyan" style="width: 72%"></div>
+          </div>
+        </div>
+
+        <!-- Continue Button -->
+        <div class="relative z-10">
+          <div class="w-full py-3 rounded-xl bg-alexa-blue text-alexa-deep text-center text-sm font-bold cursor-pointer">
+            Continue
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== PIPELINE GRID ("Rooms" style) ==================== -->
+      <div class="mb-5">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-alexa-text text-lg font-bold">Pipeline</h2>
+          <span class="text-alexa-muted text-xs font-medium">5 phases</span>
+        </div>
+
+        <!-- Grid: 3 + 2 layout -->
+        <div class="grid grid-cols-3 gap-2.5 mb-2.5">
+
+          <!-- Design -->
+          <div class="bg-alexa-card rounded-xl p-3.5 border border-alexa-border text-center relative">
+            <div class="w-2 h-2 rounded-full bg-violet-400 mx-auto mb-2.5"></div>
+            <span class="text-alexa-text text-2xl font-bold block">1</span>
+            <span class="text-alexa-muted text-[11px] font-medium mt-1 block">Design</span>
+          </div>
+
+          <!-- Engineering -->
+          <div class="bg-alexa-card rounded-xl p-3.5 border border-alexa-blue/30 text-center relative">
+            <div class="absolute inset-0 rounded-xl bg-alexa-blue/5"></div>
+            <div class="relative z-10">
+              <div class="w-2 h-2 rounded-full bg-alexa-blue mx-auto mb-2.5"></div>
+              <span class="text-alexa-text text-2xl font-bold block">2</span>
+              <span class="text-alexa-blue text-[11px] font-semibold mt-1 block">Engineering</span>
+            </div>
+          </div>
+
+          <!-- Build -->
+          <div class="bg-alexa-card rounded-xl p-3.5 border border-alexa-border text-center relative">
+            <div class="w-2 h-2 rounded-full bg-amber-400 mx-auto mb-2.5"></div>
+            <span class="text-alexa-text text-2xl font-bold block">1</span>
+            <span class="text-alexa-muted text-[11px] font-medium mt-1 block">Build</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+
+          <!-- Launch -->
+          <div class="bg-alexa-card rounded-xl p-3.5 border border-alexa-border text-center">
+            <div class="w-2 h-2 rounded-full bg-emerald-400 mx-auto mb-2.5"></div>
+            <span class="text-alexa-text text-2xl font-bold block">0</span>
+            <span class="text-alexa-muted text-[11px] font-medium mt-1 block">Launch</span>
+          </div>
+
+          <!-- Closure -->
+          <div class="bg-alexa-card rounded-xl p-3.5 border border-alexa-border text-center">
+            <div class="w-2 h-2 rounded-full bg-slate-500 mx-auto mb-2.5"></div>
+            <span class="text-alexa-text text-2xl font-bold block">0</span>
+            <span class="text-alexa-muted text-[11px] font-medium mt-1 block">Closure</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== NEEDS ATTENTION ==================== -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-alexa-text text-lg font-bold">Needs Attention</h2>
+          <span class="text-alexa-muted text-xs font-medium">3 items</span>
+        </div>
+
+        <div class="flex flex-col gap-2.5">
+
+          <!-- PRIMMO — Stale -->
+          <div class="bg-alexa-card rounded-xl border border-alexa-border flex items-center px-4 py-3.5 gap-3.5">
+            <!-- Left color accent -->
+            <div class="w-1 h-10 rounded-full bg-amber-400 flex-shrink-0"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <h4 class="text-alexa-text text-sm font-semibold truncate">PRIMMO</h4>
+                <span class="px-2 py-0.5 rounded-full bg-amber-400/15 text-amber-400 text-[10px] font-semibold uppercase tracking-wide flex-shrink-0">Stale</span>
+              </div>
+              <p class="text-alexa-muted text-xs mt-0.5">No activity for 14 days</p>
+            </div>
+            <!-- Chevron -->
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8899AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </div>
+
+          <!-- Personal Portfolio — Blocker -->
+          <div class="bg-alexa-card rounded-xl border border-alexa-border flex items-center px-4 py-3.5 gap-3.5">
+            <div class="w-1 h-10 rounded-full bg-red-400 flex-shrink-0"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <h4 class="text-alexa-text text-sm font-semibold truncate">Personal Portfolio</h4>
+                <span class="px-2 py-0.5 rounded-full bg-red-400/15 text-red-400 text-[10px] font-semibold uppercase tracking-wide flex-shrink-0">Blocker</span>
+              </div>
+              <p class="text-alexa-muted text-xs mt-0.5">Deployment pipeline issue</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8899AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </div>
+
+          <!-- NoteApp — Due Soon -->
+          <div class="bg-alexa-card rounded-xl border border-alexa-border flex items-center px-4 py-3.5 gap-3.5">
+            <div class="w-1 h-10 rounded-full bg-alexa-blue flex-shrink-0"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <h4 class="text-alexa-text text-sm font-semibold truncate">NoteApp</h4>
+                <span class="px-2 py-0.5 rounded-full bg-alexa-blue/15 text-alexa-blue text-[10px] font-semibold uppercase tracking-wide flex-shrink-0">Due Soon</span>
+              </div>
+              <p class="text-alexa-muted text-xs mt-0.5">Due in 3 days</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8899AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== MOCKUP LABEL ==================== -->
+      <div class="text-center pb-4">
+        <span class="text-alexa-muted/40 text-[10px] font-medium tracking-widest uppercase">Mockup: Alexa-inspired</span>
+      </div>
+
+    </div>
+
+    <!-- ==================== FLOATING ACTION BUTTON ==================== -->
+    <div class="absolute bottom-8 right-7 z-50">
+      <div class="w-14 h-14 rounded-full bg-alexa-blue flex items-center justify-center shadow-lg shadow-alexa-blue/30 cursor-pointer">
+        <!-- Microphone Icon -->
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <rect x="9" y="2" width="6" height="12" rx="3" fill="#232F3E"/>
+          <path d="M5 10a7 7 0 0014 0" stroke="#232F3E" stroke-width="2" stroke-linecap="round"/>
+          <line x1="12" y1="17" x2="12" y2="21" stroke="#232F3E" stroke-width="2" stroke-linecap="round"/>
+          <line x1="9" y1="21" x2="15" y2="21" stroke="#232F3E" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <!-- Subtle pulse ring -->
+      <div class="absolute inset-0 w-14 h-14 rounded-full border-2 border-alexa-blue/20 animate-ping" style="animation-duration: 3s;"></div>
+    </div>
+
+    <!-- ==================== HOME INDICATOR ==================== -->
+    <div class="absolute bottom-2 left-1/2 -translate-x-1/2">
+      <div class="w-36 h-1 rounded-full bg-white/20"></div>
+    </div>
+
+  </div>
+
+</body>
+</html>

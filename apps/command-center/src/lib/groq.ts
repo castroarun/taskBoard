@@ -90,6 +90,37 @@ function getFileExtension(mimeType: string): string {
 }
 
 /**
+ * Known Whisper hallucination phrases.
+ * Whisper outputs these when audio is silent, too short, or unintelligible.
+ */
+const WHISPER_HALLUCINATIONS = new Set([
+  'thank you.',
+  'thank you',
+  'thanks.',
+  'thanks',
+  'thanks for watching.',
+  'thanks for watching',
+  'thank you for watching.',
+  'thank you for watching',
+  'please subscribe.',
+  'please subscribe',
+  'like and subscribe.',
+  'like and subscribe',
+  'bye.',
+  'bye',
+  'you',
+  '.',
+  '',
+]);
+
+/**
+ * Check if transcription is a known Whisper hallucination
+ */
+function isWhisperHallucination(text: string): boolean {
+  return WHISPER_HALLUCINATIONS.has(text.trim().toLowerCase());
+}
+
+/**
  * Transcribe audio blob using Groq Whisper API
  */
 export async function transcribeAudio(audioBlob: Blob): Promise<TranscriptionResult> {
@@ -99,6 +130,15 @@ export async function transcribeAudio(audioBlob: Blob): Promise<TranscriptionRes
     return {
       text: '',
       error: 'Groq API key not configured. Add it in Settings.',
+    };
+  }
+
+  // Reject very small audio blobs (likely silence or mic not working)
+  if (audioBlob.size < 1000) {
+    console.warn('[groq] Audio blob too small:', audioBlob.size, 'bytes');
+    return {
+      text: '',
+      error: 'No audio captured. Check your microphone.',
     };
   }
 
@@ -118,7 +158,8 @@ export async function transcribeAudio(audioBlob: Blob): Promise<TranscriptionRes
     formData.append('file', audioBlob, fileName);
     formData.append('model', 'whisper-large-v3');
     formData.append('language', 'en');
-    formData.append('response_format', 'json');
+    formData.append('response_format', 'verbose_json');
+    formData.append('temperature', '0');
 
     const response = await fetch(GROQ_WHISPER_URL, {
       method: 'POST',
@@ -138,9 +179,18 @@ export async function transcribeAudio(audioBlob: Blob): Promise<TranscriptionRes
     }
 
     const data = await response.json();
-    return {
-      text: data.text || '',
-    };
+    const text = (data.text || '').trim();
+
+    // Filter out known Whisper hallucinations
+    if (!text || isWhisperHallucination(text)) {
+      console.warn('[groq] Whisper hallucination detected:', text);
+      return {
+        text: '',
+        error: 'No speech detected. Please speak clearly and try again.',
+      };
+    }
+
+    return { text };
   } catch (error) {
     console.error('[groq] Transcription failed:', error);
     return {

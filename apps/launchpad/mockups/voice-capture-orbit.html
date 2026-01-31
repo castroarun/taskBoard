@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orbit — Voice Capture</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            black: '#000000',
+            'surface-card': '#1C1C1E',
+            'surface-border': '#2A2A2A',
+            'surface-input': '#252528',
+            accent: '#10b981',
+            'accent-dark': '#059669',
+            'text-primary': '#FFFFFF',
+            'text-secondary': '#9CA3AF',
+            'text-muted': '#6B7280',
+          },
+          fontFamily: {
+            sans: ['Inter', 'SF Pro Display', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    * { -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
+      background: #000;
+      -webkit-font-smoothing: antialiased;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.85); opacity: 0.5; }
+      50% { transform: scale(1.15); opacity: 0; }
+      100% { transform: scale(0.85); opacity: 0.5; }
+    }
+    .pulse-ring { animation: pulse-ring 1.5s ease-out infinite; }
+    @keyframes wave {
+      0%, 100% { height: 8px; }
+      50% { height: 32px; }
+    }
+    .wave-bar { animation: wave 0.5s ease-in-out infinite; }
+    .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+    .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+    .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+    .wave-bar:nth-child(6) { animation-delay: 0.5s; }
+    .wave-bar:nth-child(7) { animation-delay: 0.15s; }
+    .wave-bar:nth-child(8) { animation-delay: 0.25s; }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin { animation: spin 1s linear infinite; }
+  </style>
+</head>
+<body class="min-h-screen flex items-start justify-center">
+
+  <!-- Phone Frame -->
+  <div class="w-full max-w-[430px] min-h-screen bg-black relative overflow-hidden">
+
+    <!-- ============================================ -->
+    <!-- STATE 1: RECORDING (Active by default)       -->
+    <!-- ============================================ -->
+
+    <!-- Overlay -->
+    <div class="fixed inset-0 max-w-[430px] mx-auto" style="background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);"></div>
+
+    <!-- Recording Modal -->
+    <div class="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-[398px] mx-auto rounded-3xl overflow-hidden shadow-2xl" style="background: #1C1C1E; border: 1px solid #2A2A2A;">
+
+      <!-- Header -->
+      <div class="px-6 py-4 flex items-center justify-between" style="border-bottom: 1px solid #2A2A2A;">
+        <h2 class="text-lg font-bold text-white">Quick Capture</h2>
+        <button class="w-8 h-8 rounded-full flex items-center justify-center" style="background: #252528;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Project Context -->
+      <div class="px-6 py-3 flex items-center gap-2" style="background: rgba(16, 185, 129, 0.08); border-bottom: 1px solid rgba(16, 185, 129, 0.15);">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+        </svg>
+        <span class="text-sm font-medium" style="color: #10b981;">Command Center</span>
+        <button class="ml-auto text-xs font-medium underline" style="color: rgba(16, 185, 129, 0.7);">Change</button>
+      </div>
+
+      <!-- Recording Area -->
+      <div class="px-6 py-10 text-center">
+        <!-- Microphone with Pulse -->
+        <div class="relative inline-block mb-6">
+          <!-- Pulse rings -->
+          <div class="absolute inset-0 w-28 h-28 -m-2 rounded-full pulse-ring" style="background: rgba(16, 185, 129, 0.2);"></div>
+          <div class="absolute inset-0 w-28 h-28 -m-2 rounded-full pulse-ring" style="background: rgba(16, 185, 129, 0.1); animation-delay: 0.5s;"></div>
+          <!-- Mic button -->
+          <button class="relative w-24 h-24 rounded-full flex items-center justify-center text-white" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="white">
+              <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z"/>
+              <path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Recording status -->
+        <div class="flex items-center justify-center gap-2 mb-2">
+          <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+          <p class="font-semibold" style="color: #10b981;">Listening...</p>
+          <span class="text-text-muted text-sm">0:04</span>
+        </div>
+        <p class="text-text-muted text-sm">Speak your task or idea</p>
+
+        <!-- Audio waveform -->
+        <div class="flex items-center justify-center gap-1 mt-6 h-10">
+          <div class="w-1 rounded-full wave-bar" style="background: #10b981;"></div>
+          <div class="w-1 rounded-full wave-bar" style="background: #10b981;"></div>
+          <div class="w-1 rounded-full wave-bar" style="background: #10b981;"></div>
+          <div class="w-1 rounded-full wave-bar" style="background: #10b981;"></div>
+          <div class="w-1 rounded-full wave-bar" style="background: #10b981;"></div>
+          <div class="w-1 rounded-full wave-bar" style="background: #34d399;"></div>
+          <div class="w-1 rounded-full wave-bar" style="background: #34d399;"></div>
+          <div class="w-1 rounded-full wave-bar" style="background: #6ee7b7;"></div>
+        </div>
+      </div>
+
+      <!-- Live Transcription Preview -->
+      <div class="px-6 py-4" style="background: #141414; border-top: 1px solid #2A2A2A;">
+        <div class="flex items-center gap-2 mb-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <span class="text-[11px] text-text-muted uppercase tracking-wider font-semibold">Live transcript</span>
+        </div>
+        <p class="text-text-secondary text-sm leading-relaxed italic">
+          "I need to fix that bug in the login page where users can't reset..."
+        </p>
+      </div>
+
+      <!-- Actions -->
+      <div class="px-6 py-4 flex gap-3" style="border-top: 1px solid #2A2A2A;">
+        <button class="flex-1 py-3 rounded-xl font-semibold text-sm" style="background: #252528; color: #9CA3AF;">
+          Cancel
+        </button>
+        <button class="flex-1 py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 text-white" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+          Done
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ============================================ -->
+    <!-- STATE 2: PROCESSING                          -->
+    <!-- ============================================ -->
+    <!--
+    <div class="fixed inset-0 max-w-[430px] mx-auto" style="background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(12px);"></div>
+    <div class="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-[398px] mx-auto rounded-3xl overflow-hidden shadow-2xl" style="background: #1C1C1E; border: 1px solid #2A2A2A;">
+      <div class="px-6 py-4" style="border-bottom: 1px solid #2A2A2A;">
+        <h2 class="text-lg font-bold text-white">Processing...</h2>
+      </div>
+      <div class="px-6 py-16 text-center">
+        <div class="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center" style="background: rgba(16, 185, 129, 0.15);">
+          <svg class="w-8 h-8 animate-spin" viewBox="0 0 24 24" fill="none">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#10b981" stroke-width="4"></circle>
+            <path class="opacity-75" fill="#10b981" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </div>
+        <p class="text-white font-semibold mb-2">Structuring your input...</p>
+        <p class="text-text-muted text-sm">AI is extracting title, description, and priority</p>
+        <div class="mt-5 flex items-center justify-center gap-2">
+          <span class="px-2.5 py-1 rounded text-[11px] font-bold tracking-wide" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">Groq LLaMA</span>
+        </div>
+      </div>
+    </div>
+    -->
+
+    <!-- ============================================ -->
+    <!-- STATE 3: REVIEW STRUCTURED RESULT            -->
+    <!-- ============================================ -->
+    <!--
+    <div class="fixed inset-0 max-w-[430px] mx-auto" style="background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(12px);"></div>
+    <div class="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-[398px] mx-auto rounded-3xl overflow-hidden shadow-2xl" style="background: #1C1C1E; border: 1px solid #2A2A2A; max-height: 90vh; overflow-y: auto;">
+
+      <div class="px-6 py-4 flex items-center justify-between sticky top-0 z-10" style="background: #1C1C1E; border-bottom: 1px solid #2A2A2A;">
+        <div class="flex items-center gap-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#10b981">
+            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd"/>
+          </svg>
+          <h2 class="text-lg font-bold text-white">Review & Confirm</h2>
+        </div>
+        <button class="w-8 h-8 rounded-full flex items-center justify-center" style="background: #252528;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="px-6 py-2 flex items-center gap-2" style="background: rgba(16, 185, 129, 0.06); border-bottom: 1px solid rgba(16, 185, 129, 0.1);">
+        <span class="px-2 py-0.5 rounded text-[10px] font-bold" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">AI Structured</span>
+        <span class="text-xs" style="color: rgba(16, 185, 129, 0.6);">Edit any field below</span>
+      </div>
+
+      <div class="px-6 py-5 space-y-4">
+        <div>
+          <label class="text-[11px] text-text-muted uppercase tracking-wider font-semibold mb-1.5 block">Title</label>
+          <input type="text" value="Fix password reset on login page" class="w-full px-4 py-3 rounded-xl text-white text-sm focus:outline-none" style="background: #252528; border: 1px solid #2A2A2A;" />
+        </div>
+        <div>
+          <label class="text-[11px] text-text-muted uppercase tracking-wider font-semibold mb-1.5 block">Description</label>
+          <textarea rows="3" class="w-full px-4 py-3 rounded-xl text-white text-sm focus:outline-none resize-none" style="background: #252528; border: 1px solid #2A2A2A;">Users are unable to reset passwords from the login page. This has been a recurring issue affecting user experience.</textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-[11px] text-text-muted uppercase tracking-wider font-semibold mb-1.5 block">Priority</label>
+            <select class="w-full px-4 py-3 rounded-xl text-white text-sm" style="background: #252528; border: 1px solid #2A2A2A;">
+              <option value="P0">P0 - Critical</option>
+              <option value="P1" selected>P1 - High</option>
+              <option value="P2">P2 - Medium</option>
+              <option value="P3">P3 - Low</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[11px] text-text-muted uppercase tracking-wider font-semibold mb-1.5 block">Complexity</label>
+            <select class="w-full px-4 py-3 rounded-xl text-white text-sm" style="background: #252528; border: 1px solid #2A2A2A;">
+              <option value="XS">XS - Trivial</option>
+              <option value="S" selected>S - Small</option>
+              <option value="M">M - Medium</option>
+              <option value="L">L - Large</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="text-[11px] text-text-muted uppercase tracking-wider font-semibold mb-1.5 block">Save To</label>
+          <div class="flex gap-2">
+            <button class="flex-1 py-3 px-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2" style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; color: #10b981;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+                <path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/>
+              </svg>
+              Inbox
+            </button>
+            <button class="flex-1 py-3 px-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2" style="background: #252528; border: 1px solid #2A2A2A; color: #9CA3AF;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+              Task
+            </button>
+          </div>
+        </div>
+        <div>
+          <label class="text-[11px] text-text-muted uppercase tracking-wider font-semibold mb-1.5 block">Project</label>
+          <select class="w-full px-4 py-3 rounded-xl text-white text-sm" style="background: #252528; border: 1px solid #2A2A2A;">
+            <option value="">No project (General inbox)</option>
+            <option value="command-center" selected>Command Center</option>
+            <option value="orbit">Orbit</option>
+            <option value="primmo">PRIMMO</option>
+            <option value="noteapp">NoteApp</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 sticky bottom-0" style="background: #141414; border-top: 1px solid #2A2A2A;">
+        <div class="flex gap-3">
+          <button class="flex-1 py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2" style="background: #252528; color: #9CA3AF; border: 1px solid #2A2A2A;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/>
+            </svg>
+            Re-record
+          </button>
+          <button class="flex-1 py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 text-white" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Save
+          </button>
+        </div>
+        <p class="text-[11px] text-text-muted text-center mt-2">Claude will pick this up in your next desktop session</p>
+      </div>
+    </div>
+    -->
+
+    <!-- ============================================ -->
+    <!-- SUCCESS TOAST                                -->
+    <!-- ============================================ -->
+    <!--
+    <div class="fixed bottom-8 inset-x-4 max-w-[398px] mx-auto rounded-2xl p-4 flex items-center gap-3 shadow-lg" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+      <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <div>
+        <p class="font-semibold text-white">Saved to Inbox!</p>
+        <p class="text-sm text-white/70">Synced &middot; Claude will process on desktop</p>
+      </div>
+    </div>
+    -->
+
+  </div>
+
+</body>
+</html>

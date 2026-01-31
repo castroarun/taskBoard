@@ -96,7 +96,74 @@
         }
       ],
 
-      "reviews": []
+      "reviews": [
+        {
+          "id": "r-ac-001",
+          "type": "feedback",
+          "author": "arun",
+          "createdAt": "2026-01-05T22:30:00Z",
+          "content": "The dual mode on SIP calculator is great but the Plan for Goal mode needs better label — users might not understand what target corpus means. Use something like your goal amount instead.",
+          "forClaude": true,
+          "resolved": true,
+          "source": "voice"
+        },
+        {
+          "id": "r-ac-002",
+          "type": "approval",
+          "author": "arun",
+          "createdAt": "2026-01-12T09:15:00Z",
+          "content": "Real estate capital gains calculator looks solid. The CII indexation table is correct and the Section 54 exemption logic handles edge cases well. Approved for production.",
+          "forClaude": true,
+          "resolved": true,
+          "source": "voice"
+        },
+        {
+          "id": "r-ac-003",
+          "type": "feedback",
+          "author": "arun",
+          "createdAt": "2026-01-14T20:45:00Z",
+          "content": "Export to PDF is working but the chart rendering cuts off on mobile. Check the viewport width calculation in the export function. Also the notes section should be included in the PDF export.",
+          "forClaude": true,
+          "resolved": true,
+          "source": "voice"
+        },
+        {
+          "id": "r-ac-004",
+          "type": "question",
+          "author": "arun",
+          "createdAt": "2026-01-16T11:00:00Z",
+          "content": "Should we add a disclaimer at the bottom of the tax calculator? Something like calculations are for estimation purposes only, consult a tax advisor for actual filing. This is probably important for legal reasons.",
+          "forClaude": true,
+          "resolved": true,
+          "source": "text"
+        },
+        {
+          "id": "r-ac-005",
+          "type": "feedback",
+          "author": "arun",
+          "documentPath": "C:/Users/Castro/Documents/Projects/any_calculator/docs/DEVELOPMENT-PLAN.md",
+          "documentName": "DEVELOPMENT-PLAN.md",
+          "createdAt": "2026-01-26T10:30:00Z",
+          "content": "Claude, update the Phase 2 Roadmap section — add a retirement planner calculator as the next priority. It should support SWP withdrawals and inflation-adjusted corpus calculation. Mark it as the first item in the New Calculators list.",
+          "forClaude": true,
+          "resolved": false,
+          "approved": false,
+          "source": "voice"
+        },
+        {
+          "id": "r-ac-006",
+          "type": "feedback",
+          "author": "arun",
+          "documentPath": "C:/Users/Castro/Documents/Projects/any_calculator/docs/DEVELOPMENT-PLAN.md",
+          "documentName": "DEVELOPMENT-PLAN.md",
+          "createdAt": "2026-01-26T10:35:00Z",
+          "content": "Claude, the dependencies table is outdated — we upgraded to Next.js 15 and Tailwind v4 last week. Update the versions in the development plan and add the new @tanstack/react-query dependency we added for the currency converter API caching.",
+          "forClaude": true,
+          "resolved": false,
+          "approved": false,
+          "source": "voice"
+        }
+      ]
     },
     {
       "id": "taskboard",
@@ -181,7 +248,48 @@
           "createdAt": "2026-01-18T12:00:00Z",
           "content": "UI mockups approved. Proceed with the dark theme as shown in pipeline-view-v2-updated.html",
           "forClaude": true,
-          "resolved": true
+          "resolved": true,
+          "source": "text"
+        },
+        {
+          "id": "r-002",
+          "type": "feedback",
+          "author": "arun",
+          "createdAt": "2026-01-20T23:15:00Z",
+          "content": "The pipeline view is looking really good. One thing — the project cards feel a bit cramped when there's more than four projects in a single phase. Maybe add horizontal scrolling or a compact mode for phases with many cards.",
+          "forClaude": true,
+          "resolved": true,
+          "source": "voice"
+        },
+        {
+          "id": "r-003",
+          "type": "blocker",
+          "author": "arun",
+          "createdAt": "2026-01-22T08:30:00Z",
+          "content": "Voice capture is recording but always transcribing as thank you instead of actual speech. This is blocking the inbox and project review voice features. Need to fix the Whisper hallucination issue before we can ship voice capture.",
+          "forClaude": true,
+          "resolved": true,
+          "source": "text"
+        },
+        {
+          "id": "r-004",
+          "type": "feedback",
+          "author": "arun",
+          "createdAt": "2026-01-24T21:00:00Z",
+          "content": "Quick launch with Control K is super fast. I think we should add recent projects at the top of the search results so I don't have to type the full name every time. Also the keyboard shortcuts section in help could use some spacing fixes.",
+          "forClaude": true,
+          "resolved": false,
+          "source": "voice"
+        },
+        {
+          "id": "r-005",
+          "type": "approval",
+          "author": "arun",
+          "createdAt": "2026-01-25T10:00:00Z",
+          "content": "Calendar view mockups look great. Going with the month grid design — it's clean and shows project activity at a glance. The colored dots per project per day is exactly what I wanted. Proceed with implementation.",
+          "forClaude": true,
+          "resolved": false,
+          "source": "voice"
         }
       ]
     },
@@ -378,7 +486,28 @@
       },
 
       "stageHistory": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "r-rp-001",
+          "type": "feedback",
+          "author": "arun",
+          "createdAt": "2025-12-20T22:00:00Z",
+          "content": "Just finished a workout and tested the rep logging. The strength level calculation feels right for bench press but the overhead press thresholds might be too high. Most intermediate lifters won't hit 60 kilos on OHP. Check the strength standards data.",
+          "forClaude": true,
+          "resolved": true,
+          "source": "voice"
+        },
+        {
+          "id": "r-rp-002",
+          "type": "feedback",
+          "author": "arun",
+          "createdAt": "2026-01-05T19:30:00Z",
+          "content": "The workout history chart is great but it only shows the last 30 days. For strength training you want to see longer trends — maybe 3 months or 6 months. Also can we add a personal record indicator? Like a small badge when you hit a new PR.",
+          "forClaude": true,
+          "resolved": true,
+          "source": "voice"
+        }
+      ]
     },
     {
       "id": "covered-calls",

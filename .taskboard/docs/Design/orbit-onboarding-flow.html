@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbit — User Onboarding Flow</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0f;
+            color: #e4e4e7;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #71717a;
+        }
+
+        .flow-container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Vertical line connecting steps */
+        .flow-container::before {
+            content: '';
+            position: absolute;
+            left: 28px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6, #06b6d4, #10b981);
+            opacity: 0.3;
+        }
+
+        .phase {
+            margin-bottom: 40px;
+        }
+
+        .phase-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #60a5fa;
+            margin-bottom: 16px;
+            margin-left: 56px;
+        }
+
+        .phase-label.agent {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+        }
+
+        .phase-label.user-action {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: rgba(6, 182, 212, 0.2);
+            color: #22d3ee;
+        }
+
+        .phase-label.complete {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 12px;
+        }
+
+        .step-number {
+            width: 56px;
+            min-width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-number.user {
+            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+            color: #fff;
+        }
+
+        .step-number.agent {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: #fff;
+        }
+
+        .step-number.system {
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            color: #fff;
+        }
+
+        .step-number.done {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff;
+        }
+
+        .step-number.optional {
+            background: transparent;
+            border: 2px dashed #52525b;
+            color: #71717a;
+        }
+
+        .step-card {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 16px 20px;
+            transition: all 0.2s;
+        }
+
+        .step-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .step-card h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .step-card p {
+            font-size: 13px;
+            color: #a1a1aa;
+            line-height: 1.5;
+        }
+
+        .step-card .detail {
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 12px;
+            color: #71717a;
+            line-height: 1.6;
+        }
+
+        .step-card .detail code {
+            color: #a78bfa;
+        }
+
+        .step-card .screen-mock {
+            margin-top: 12px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .screen-mock .mock-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .screen-mock .mock-subtitle {
+            font-size: 12px;
+            color: #71717a;
+            margin-bottom: 14px;
+        }
+
+        .screen-mock .mock-btn {
+            display: inline-block;
+            padding: 10px 24px;
+            background: #fff;
+            color: #000;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .screen-mock .mock-btn.secondary {
+            background: transparent;
+            color: #71717a;
+            border: 1px solid #333;
+            margin-left: 8px;
+        }
+
+        .consent-box {
+            margin-top: 12px;
+            padding: 14px 16px;
+            background: rgba(139, 92, 246, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            border-radius: 10px;
+        }
+
+        .consent-box .consent-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #a78bfa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .consent-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .consent-box li {
+            font-size: 12px;
+            color: #a1a1aa;
+            padding: 3px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .consent-box li::before {
+            content: '→';
+            color: #6d28d9;
+        }
+
+        .project-list {
+            margin-top: 12px;
+        }
+
+        .project-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 4px;
+        }
+
+        .project-item .checkbox {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 2px solid #3b82f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        .project-item .checkbox.checked {
+            background: #3b82f6;
+            color: #fff;
+        }
+
+        .project-item .pname {
+            font-size: 13px;
+            color: #e4e4e7;
+            font-weight: 500;
+        }
+
+        .project-item .ptags {
+            margin-left: auto;
+            display: flex;
+            gap: 4px;
+        }
+
+        .project-item .ptag {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+        }
+
+        .project-item .ptag.stale {
+            background: rgba(245, 158, 11, 0.1);
+            color: #fbbf24;
+        }
+
+        .connector {
+            display: flex;
+            align-items: center;
+            margin: 8px 0 8px 56px;
+            gap: 8px;
+        }
+
+        .connector .arrow {
+            color: #3f3f46;
+            font-size: 18px;
+        }
+
+        .connector .label {
+            font-size: 11px;
+            color: #52525b;
+        }
+
+        .branch {
+            margin-left: 76px;
+            padding: 16px;
+            border-left: 2px dashed rgba(255, 255, 255, 0.08);
+            margin-bottom: 16px;
+        }
+
+        .branch-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #52525b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .branch .step-card {
+            opacity: 0.6;
+            border-style: dashed;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .summary-stat {
+            text-align: center;
+            padding: 12px;
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            border-radius: 10px;
+        }
+
+        .summary-stat .num {
+            font-size: 24px;
+            font-weight: 700;
+            color: #34d399;
+        }
+
+        .summary-stat .lbl {
+            font-size: 11px;
+            color: #71717a;
+            margin-top: 2px;
+        }
+
+        .legend {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #71717a;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.user { background: linear-gradient(135deg, #0ea5e9, #06b6d4); }
+        .legend-dot.agent { background: linear-gradient(135deg, #8b5cf6, #a855f7); }
+        .legend-dot.system { background: linear-gradient(135deg, #3b82f6, #6366f1); }
+        .legend-dot.done { background: linear-gradient(135deg, #10b981, #059669); }
+        .legend-dot.opt {
+            background: transparent;
+            border: 2px dashed #52525b;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 32px;
+            font-size: 11px;
+            color: #3f3f46;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Orbit — Onboarding Flow</h1>
+        <p>User journey from download to dashboard, showing where agents activate</p>
+    </div>
+
+    <div class="flow-container">
+
+        <!-- PHASE: DISCOVERY -->
+        <div class="phase">
+            <div class="phase-label">Phase 1 — Discovery & Install</div>
+
+            <div class="step">
+                <div class="step-number user">1</div>
+                <div class="step-card">
+                    <h3>Download Orbit from Google Play Store</h3>
+                    <p>User finds Orbit on the Play Store, reads description, installs the app.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number user">2</div>
+                <div class="step-card">
+                    <h3>Open app → Welcome screen</h3>
+                    <p>First launch shows what Orbit does: track projects, capture ideas, stay in flow.</p>
+                    <div class="screen-mock">
+                        <div style="font-size: 32px; margin-bottom: 8px;">🪐</div>
+                        <div class="mock-title">Welcome to Orbit</div>
+                        <div class="mock-subtitle">Your entire dev life, in your pocket.</div>
+                        <div class="mock-btn">Get Started</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE: AUTH -->
+        <div class="phase">
+            <div class="phase-label user-action">Phase 2 — Connect GitHub</div>
+
+            <div class="step">
+                <div class="step-number user">3</div>
+                <div class="step-card">
+                    <h3>Sign in with GitHub</h3>
+                    <p>OAuth flow. User authorizes Orbit to read their repos and create the .taskboard repo.</p>
+                    <div class="screen-mock">
+                        <div class="mock-title">Connect your GitHub</div>
+                        <div class="mock-subtitle">Orbit reads your repos to build your project dashboard.</div>
+                        <div class="mock-btn">Sign in with GitHub</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number system">4</div>
+                <div class="step-card">
+                    <h3>Create .taskboard private repo</h3>
+                    <p>Orbit asks permission, then creates <code>github.com/user/.taskboard</code> (private) to store project data.</p>
+                    <div class="screen-mock">
+                        <div class="mock-title" style="font-size: 14px;">Orbit needs a private repo to store your project data.</div>
+                        <div class="mock-subtitle" style="margin-top: 8px;">
+                            We'll create: <strong style="color: #e4e4e7;">github.com/you/.taskboard</strong> (private)<br>
+                            Only you can see this. It stores your project list, tasks, and notes.
+                        </div>
+                        <div style="margin-top: 12px;">
+                            <div class="mock-btn">Create & Continue</div>
+                            <div class="mock-btn secondary">Learn More</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE: SCANNER AGENT -->
+        <div class="phase">
+            <div class="phase-label agent">⚡ Phase 3 — Scanner Agent</div>
+
+            <div class="step">
+                <div class="step-number agent">5</div>
+                <div class="step-card">
+                    <h3>Scanner Agent activates</h3>
+                    <p>Fetches all repos from user's GitHub account. Analyzes each one: tech stack, last activity, status, open issues.</p>
+                    <div class="detail">
+                        <code>GET /user/repos</code> → fetch all repos<br>
+                        <code>GET /repos/{owner}/{repo}/languages</code> → detect tech stack<br>
+                        <code>GET /repos/{owner}/{repo}/commits</code> → activity signals<br>
+                        <code>GET /repos/{owner}/{repo}/readme</code> → project description
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number agent">6</div>
+                <div class="step-card">
+                    <h3>Scanner presents findings</h3>
+                    <p>Shows categorized project list with inferred status. User reviews what was found.</p>
+                    <div class="project-list">
+                        <div class="project-item">
+                            <div class="checkbox checked">✓</div>
+                            <div class="pname">my-saas-app</div>
+                            <div class="ptags">
+                                <span class="ptag">Next.js</span>
+                                <span class="ptag">TypeScript</span>
+                            </div>
+                        </div>
+                        <div class="project-item">
+                            <div class="checkbox checked">✓</div>
+                            <div class="pname">cli-tool</div>
+                            <div class="ptags">
+                                <span class="ptag">Rust</span>
+                            </div>
+                        </div>
+                        <div class="project-item">
+                            <div class="checkbox"></div>
+                            <div class="pname">old-blog</div>
+                            <div class="ptags">
+                                <span class="ptag stale">stale · 6mo</span>
+                            </div>
+                        </div>
+                        <div class="project-item">
+                            <div class="checkbox"></div>
+                            <div class="pname">dotfiles</div>
+                            <div class="ptags">
+                                <span class="ptag stale">skip</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE: USER CONSENT -->
+        <div class="phase">
+            <div class="phase-label user-action">Phase 4 — User Review & Consent</div>
+
+            <div class="step">
+                <div class="step-number user">7</div>
+                <div class="step-card">
+                    <h3>User selects projects to track</h3>
+                    <p>Toggle projects on/off. Scanner pre-selects active repos, skips stale/utility repos.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number user">8</div>
+                <div class="step-card">
+                    <h3>Review what Orbit will create</h3>
+                    <p>Before writing anything, show exactly what data will be stored in the .taskboard repo.</p>
+                    <div class="consent-box">
+                        <div class="consent-title">Orbit will create these files in your .taskboard repo</div>
+                        <ul>
+                            <li><strong>projects.json</strong> — 5 projects you selected</li>
+                            <li><strong>tasks.json</strong> — empty, you'll add tasks as you go</li>
+                            <li><strong>inbox.json</strong> — empty, for capturing ideas</li>
+                            <li><strong>config.json</strong> — your preferences</li>
+                        </ul>
+                    </div>
+                    <div class="screen-mock" style="margin-top: 12px;">
+                        <div class="mock-btn">Looks good, set it up</div>
+                        <div class="mock-btn secondary">Go back</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE: BUILDER AGENT -->
+        <div class="phase">
+            <div class="phase-label agent">⚡ Phase 5 — Builder Agent</div>
+
+            <div class="step">
+                <div class="step-number agent">9</div>
+                <div class="step-card">
+                    <h3>Builder Agent activates</h3>
+                    <p>Takes the approved project list. Generates structured JSON files. Commits to .taskboard repo.</p>
+                    <div class="detail">
+                        <code>PUT /repos/{user}/.taskboard/contents/projects.json</code><br>
+                        <code>PUT /repos/{user}/.taskboard/contents/tasks.json</code><br>
+                        <code>PUT /repos/{user}/.taskboard/contents/inbox.json</code><br>
+                        <code>PUT /repos/{user}/.taskboard/contents/config.json</code><br>
+                        <br>
+                        Commit message: <code>"Initial Orbit setup — 5 projects"</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE: COMPLETE -->
+        <div class="phase">
+            <div class="phase-label complete">Phase 6 — Done</div>
+
+            <div class="step">
+                <div class="step-number done">10</div>
+                <div class="step-card">
+                    <h3>Setup summary</h3>
+                    <p>Quick overview of everything that was created. Transparent, nothing hidden.</p>
+                    <div class="summary-grid">
+                        <div class="summary-stat">
+                            <div class="num">5</div>
+                            <div class="lbl">Projects tracked</div>
+                        </div>
+                        <div class="summary-stat">
+                            <div class="num">4</div>
+                            <div class="lbl">Files created</div>
+                        </div>
+                        <div class="summary-stat">
+                            <div class="num">1</div>
+                            <div class="lbl">Private repo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number done">11</div>
+                <div class="step-card">
+                    <h3>Land on Orbit dashboard</h3>
+                    <p>User sees their projects, ready to capture tasks, track progress, and stay in flow.</p>
+                    <div class="screen-mock">
+                        <div style="font-size: 24px; margin-bottom: 4px;">🪐</div>
+                        <div class="mock-title">You're all set</div>
+                        <div class="mock-subtitle">5 projects loaded. Start tracking.</div>
+                        <div class="mock-btn">Open Dashboard</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OPTIONAL: KLARITY -->
+        <div class="phase">
+            <div class="phase-label" style="background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); color: #71717a;">
+                Optional — Klarity Desktop
+            </div>
+
+            <div class="step">
+                <div class="step-number optional">+</div>
+                <div class="step-card" style="opacity: 0.6; border-style: dashed;">
+                    <h3>Also use Klarity on desktop?</h3>
+                    <p>After setup, Orbit shows an optional prompt: "Use Klarity on your laptop too? Run this command to sync your workspace."</p>
+                    <div class="detail">
+                        <code>npx orbit-setup</code><br>
+                        <br>
+                        Clones .taskboard repo to <code>~/.taskboard/</code><br>
+                        Klarity reads from the local clone. Both apps stay in sync via git.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LEGEND -->
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-dot user"></div>
+            User action
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot agent"></div>
+            Agent (Scanner / Builder)
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot system"></div>
+            System (GitHub API)
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot done"></div>
+            Complete
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot opt"></div>
+            Optional
+        </div>
+    </div>
+
+    <div class="footer">
+        Orbit Onboarding Flow v1.0 — Architecture Document — Jan 2026
+    </div>
+</body>
+</html>

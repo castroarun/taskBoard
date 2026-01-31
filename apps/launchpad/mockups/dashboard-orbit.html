@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orbit — Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            black: '#000000',
+            surface: '#141414',
+            'surface-light': '#1C1C1E',
+            'surface-border': '#2A2A2A',
+            accent: '#10b981',
+            'accent-dark': '#059669',
+            'card-blue': '#3B82F6',
+            'card-coral': '#F87171',
+            'card-amber': '#FBBF24',
+            'card-purple': '#A78BFA',
+            'text-primary': '#FFFFFF',
+            'text-secondary': '#9CA3AF',
+            'text-muted': '#6B7280',
+          },
+          fontFamily: {
+            sans: ['Inter', 'SF Pro Display', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    * { -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
+      background: #000;
+      -webkit-font-smoothing: antialiased;
+    }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="min-h-screen flex items-start justify-center">
+
+  <!-- Phone Frame -->
+  <div class="w-full max-w-[430px] min-h-screen bg-black relative overflow-hidden">
+
+    <!-- ==================== STATUS BAR ==================== -->
+    <div class="flex items-center justify-between px-6 pt-3 pb-1">
+      <span class="text-sm font-semibold text-white tracking-tight">9:41</span>
+      <div class="flex items-center gap-1.5">
+        <svg width="18" height="14" viewBox="0 0 18 14" fill="none">
+          <rect x="0" y="10" width="3" height="4" rx="1" fill="white"/>
+          <rect x="5" y="7" width="3" height="7" rx="1" fill="white"/>
+          <rect x="10" y="3" width="3" height="11" rx="1" fill="white"/>
+          <rect x="15" y="0" width="3" height="14" rx="1" fill="white"/>
+        </svg>
+        <svg width="17" height="14" viewBox="0 0 17 14" fill="none">
+          <path d="M8.5 12.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z" fill="white"/>
+          <path d="M4.5 10.2a5.5 5.5 0 018 0" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M1.5 7a10 10 0 0114 0" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg width="28" height="14" viewBox="0 0 28 14" fill="none">
+          <rect x="0.5" y="1" width="23" height="12" rx="3" stroke="white" stroke-opacity="0.35" stroke-width="1.2"/>
+          <rect x="2.5" y="3" width="17" height="8" rx="2" fill="#10b981"/>
+          <path d="M25 5.5v3a1.5 1.5 0 000-3z" fill="white" fill-opacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ==================== SAFE AREA CONTENT ==================== -->
+    <div class="px-5 pb-28 hide-scrollbar overflow-y-auto" style="max-height: calc(100vh - 44px);">
+
+      <!-- ==================== HEADER ==================== -->
+      <div class="flex items-center justify-between mt-4 mb-7">
+        <div class="flex items-center gap-2.5">
+          <!-- Orbit Logo -->
+          <div class="w-9 h-9 rounded-full flex items-center justify-center" style="background: rgba(16, 185, 129, 0.15);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="4" fill="#10b981"/>
+              <circle cx="12" cy="12" r="9" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 3"/>
+            </svg>
+          </div>
+          <span class="text-lg font-bold text-white tracking-tight">Orbit</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <!-- Notification Bell -->
+          <button class="relative">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 01-3.46 0"/>
+            </svg>
+            <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-card-coral rounded-full border-2 border-black"></span>
+          </button>
+          <!-- Profile Avatar -->
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-accent to-card-blue flex items-center justify-center">
+            <span class="text-xs font-bold text-white">A</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== YOUR PROJECTS ==================== -->
+      <div class="mb-6">
+        <h2 class="text-[22px] font-bold text-white mb-4">Your Projects</h2>
+
+        <div class="space-y-3">
+
+          <!-- Project Card: Command Center — Emerald (Engineering) -->
+          <div class="rounded-2xl p-5 relative overflow-hidden" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+            <div class="relative">
+              <h3 class="text-[17px] font-bold text-white leading-snug">Command Center</h3>
+              <p class="text-sm text-white/70 font-medium mt-1">Desktop app with Tauri + React</p>
+              <div class="flex items-center justify-between mt-4">
+                <!-- Avatar -->
+                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <span class="text-xs font-bold text-white">AC</span>
+                </div>
+                <!-- Status Pill -->
+                <span class="px-3 py-1.5 text-[11px] font-bold rounded-full bg-black/25 text-white tracking-wide">engineering</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Card: PRIMMO — Coral (Stale) -->
+          <div class="rounded-2xl p-5 relative overflow-hidden" style="background: linear-gradient(135deg, #DC2626 0%, #F87171 100%);">
+            <div class="relative">
+              <h3 class="text-[17px] font-bold text-white leading-snug">PRIMMO</h3>
+              <p class="text-sm text-white/70 font-medium mt-1">AI-powered fitness tracker</p>
+              <div class="flex items-center justify-between mt-4">
+                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <span class="text-xs font-bold text-white">AC</span>
+                </div>
+                <span class="px-3 py-1.5 text-[11px] font-bold rounded-full bg-black/25 text-white tracking-wide">stale</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Card: NoteApp — Blue (Building) -->
+          <div class="rounded-2xl p-5 relative overflow-hidden" style="background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);">
+            <div class="relative">
+              <h3 class="text-[17px] font-bold text-white leading-snug">NoteApp</h3>
+              <p class="text-sm text-white/70 font-medium mt-1">Markdown editor with AI assist</p>
+              <div class="flex items-center justify-between mt-4">
+                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <span class="text-xs font-bold text-white">AC</span>
+                </div>
+                <span class="px-3 py-1.5 text-[11px] font-bold rounded-full bg-black/25 text-white tracking-wide">building</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Card: Personal Portfolio — Dark surface (Blocker) -->
+          <div class="rounded-2xl p-5 relative overflow-hidden border" style="background: #1C1C1E; border-color: #2A2A2A;">
+            <div class="relative">
+              <h3 class="text-[17px] font-bold text-white leading-snug">Personal Portfolio</h3>
+              <p class="text-sm text-text-secondary font-medium mt-1">Digital resume and project showcase</p>
+              <div class="flex items-center justify-between mt-4">
+                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                  <span class="text-xs font-bold text-text-secondary">AC</span>
+                </div>
+                <span class="px-3 py-1.5 text-[11px] font-bold rounded-full tracking-wide" style="background: rgba(248, 113, 113, 0.15); color: #F87171;">blocker</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Card: Orbit — Purple (Design phase) -->
+          <div class="rounded-2xl p-5 relative overflow-hidden" style="background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);">
+            <div class="relative">
+              <h3 class="text-[17px] font-bold text-white leading-snug">Orbit</h3>
+              <p class="text-sm text-white/70 font-medium mt-1">Mobile project orchestration app</p>
+              <div class="flex items-center justify-between mt-4">
+                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <span class="text-xs font-bold text-white">AC</span>
+                </div>
+                <span class="px-3 py-1.5 text-[11px] font-bold rounded-full bg-black/25 text-white tracking-wide">design</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== PIPELINE SUMMARY ==================== -->
+      <div class="mb-6">
+        <h3 class="text-base font-bold text-white mb-3">Pipeline</h3>
+        <div class="rounded-2xl p-4 border" style="background: #1C1C1E; border-color: #2A2A2A;">
+          <div class="grid grid-cols-4 gap-3 text-center">
+            <div>
+              <p class="text-2xl font-bold text-card-blue">1</p>
+              <p class="text-[10px] font-semibold text-text-muted uppercase tracking-wider mt-0.5">Design</p>
+            </div>
+            <div>
+              <p class="text-2xl font-bold text-accent">2</p>
+              <p class="text-[10px] font-semibold text-text-muted uppercase tracking-wider mt-0.5">Build</p>
+            </div>
+            <div>
+              <p class="text-2xl font-bold text-card-amber">1</p>
+              <p class="text-[10px] font-semibold text-text-muted uppercase tracking-wider mt-0.5">Testing</p>
+            </div>
+            <div>
+              <p class="text-2xl font-bold text-text-muted">0</p>
+              <p class="text-[10px] font-semibold text-text-muted uppercase tracking-wider mt-0.5">Live</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== RESOURCES ==================== -->
+      <div class="mb-6">
+        <h3 class="text-base font-bold text-white mb-3">Resources</h3>
+        <div class="flex gap-2.5">
+          <!-- + Create Button -->
+          <button class="px-5 py-2.5 rounded-full bg-accent text-white text-sm font-bold flex items-center gap-1.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Create
+          </button>
+          <!-- Quick link pills -->
+          <button class="px-4 py-2.5 rounded-full text-sm font-semibold border" style="background: #1C1C1E; border-color: #2A2A2A; color: #9CA3AF;">
+            Inbox
+            <span class="inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold bg-card-coral text-white rounded-full ml-1.5">3</span>
+          </button>
+          <button class="px-4 py-2.5 rounded-full text-sm font-semibold border" style="background: #1C1C1E; border-color: #2A2A2A; color: #9CA3AF;">
+            Voice
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================== MOCKUP LABEL ==================== -->
+      <p class="text-center text-[11px] text-text-muted/40 font-medium pb-2 tracking-wide">Orbit — ProjectHub inspired</p>
+
+    </div>
+
+    <!-- ==================== BOTTOM NAV BAR ==================== -->
+    <div class="absolute bottom-0 left-0 right-0 border-t" style="background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-color: #1C1C1E;">
+      <div class="flex items-center justify-around py-2.5 pb-5">
+        <!-- Home (active) -->
+        <button class="flex flex-col items-center gap-1">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#10b981" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22" stroke="black"/>
+          </svg>
+          <span class="text-[10px] font-semibold text-accent">Home</span>
+        </button>
+        <!-- Search -->
+        <button class="flex flex-col items-center gap-1">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <span class="text-[10px] font-semibold text-text-muted">Search</span>
+        </button>
+        <!-- Calendar -->
+        <button class="flex flex-col items-center gap-1">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <span class="text-[10px] font-semibold text-text-muted">Calendar</span>
+        </button>
+        <!-- Profile -->
+        <button class="flex flex-col items-center gap-1">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span class="text-[10px] font-semibold text-text-muted">Profile</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

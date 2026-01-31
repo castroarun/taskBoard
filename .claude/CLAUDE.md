@@ -18,10 +18,17 @@ This is **Arun's Task Board** - a file-based project orchestration system with a
 **Human-readable**: `~/.taskboard/inbox.md` (auto-generated from JSON)
 
 **At session start:**
-1. Read `inbox.json` to see all pending items
-2. Check for items with `status: "pending"` that need response
-3. Add your reply to the item's `replies` array
-4. Set `read: false` so the user sees the badge notification
+1. **Pull latest from GitHub first** — run `bash ~/.taskboard/sync-pull.sh` to get Orbit's latest messages (Klarity may not have been running)
+2. Read `inbox.json` to see all pending items
+3. **Show ALL unread/pending inbox messages** to the user immediately (summary table)
+4. Check for items with `status: "pending"` that need response
+5. Add your reply to the item's `replies` array
+6. Set `read: false` so the user sees the badge notification
+
+**Project-specific agent behavior:**
+- When working on a specific project (e.g. `taskboard`, `klarity`, `orbit`), agents should ONLY alert about inbox items where `project` matches the current project
+- Design agents, QA agents, and other specialized agents should filter inbox by project and surface relevant items
+- Example: QA agent working on `klarity` should check `inbox.json` for items where `project === "klarity"` and `type === "task"` with keywords like "bug", "test", "fix"
 
 **To respond to an inbox item**, edit `inbox.json` and add to the item's replies:
 ```json
@@ -67,6 +74,28 @@ This is **Arun's Task Board** - a file-based project orchestration system with a
 - After adding a reply, set `item.read = false` so user sees notification
 - Mark `item.status = "done"` when task is complete
 - The app auto-generates `inbox.md` from JSON for human readability
+
+### Pushing Responses to GitHub (Required)
+
+After writing your reply to local `~/.taskboard/inbox.json`, you **MUST** also push the updated file directly to the `.taskboard` GitHub repo. This ensures Orbit (phone app) gets your response even if Klarity (desktop) is not running.
+
+**Use the sync script:**
+```bash
+bash ~/.taskboard/sync-push.sh
+```
+
+This script:
+1. Reads your GitHub token + owner from `~/.taskboard/sync-config.json`
+2. Gets the current file SHA from GitHub
+3. Pushes the updated `inbox.json` via GitHub Contents API
+4. Is idempotent — safe to run multiple times
+
+**When to push:**
+- After adding a reply to any inbox item
+- After marking an item as `done` or `skipped`
+- After any status change that Orbit should see
+
+**Do NOT rely on Klarity to relay your responses.** Orbit must function independently.
 
 ### 2. Project Reviews (Project-Level Feedback)
 ```
@@ -165,6 +194,9 @@ Claude: [Completes task 3, shows final status table]
 |------|---------|
 | `~/.taskboard/inbox.json` | **Primary inbox data** - structured JSON for Claude replies |
 | `~/.taskboard/inbox.md` | Human-readable inbox (auto-generated from JSON) |
+| `~/.taskboard/sync-pull.sh` | **Pull latest inbox from GitHub** (run at session start) |
+| `~/.taskboard/sync-push.sh` | **Push inbox to GitHub** (run after every reply) |
+| `~/.taskboard/sync-config.json` | GitHub token + owner for sync scripts |
 | `~/.taskboard/projects.json` | Project data + reviews |
 | `~/.taskboard/tasks.json` | Task data + comments |
 | `~/.taskboard/config.json` | System configuration |

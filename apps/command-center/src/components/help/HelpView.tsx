@@ -25,23 +25,23 @@ export function HelpView() {
   return (
     <div className="flex h-[calc(100vh-3.5rem)]">
       {/* Sidebar Navigation */}
-      <nav className="w-48 border-r border-zinc-800 p-3 overflow-y-auto">
-        <div className="mb-3">
-          <h2 className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">Documentation</h2>
+      <nav className="w-64 ml-20 border-r border-zinc-800 p-4 overflow-y-auto">
+        <div className="mb-4">
+          <h2 className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider pl-3">Documentation</h2>
         </div>
-        <ul className="space-y-0.5">
+        <ul className="space-y-1">
           {sections.map((section) => (
             <li key={section.id}>
               <button
                 onClick={() => setActiveSection(section.id)}
                 className={clsx(
-                  'w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs transition-colors text-left',
+                  'w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors text-left',
                   activeSection === section.id
                     ? 'bg-blue-500/10 text-blue-400'
                     : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
                 )}
               >
-                <span className="w-3.5 h-3.5">{section.icon}</span>
+                <span className="w-4 h-4">{section.icon}</span>
                 {section.label}
               </button>
             </li>
@@ -50,8 +50,8 @@ export function HelpView() {
       </nav>
 
       {/* Content Area */}
-      <main className="flex-1 overflow-y-auto p-4">
-        <div className={activeSection === 'agents' ? 'max-w-4xl' : 'max-w-xl'}>
+      <main className="flex-1 overflow-y-auto px-16 py-6">
+        <div className={activeSection === 'agents' ? 'max-w-4xl mx-auto' : 'max-w-2xl mx-auto'}>
           {activeSection === 'getting-started' && <GettingStartedSection />}
           {activeSection === 'features' && <FeaturesSection />}
           {activeSection === 'workflow' && <WorkflowSection />}

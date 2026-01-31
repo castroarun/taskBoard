@@ -246,6 +246,84 @@ Want me to create a detailed comparison doc with pricing and code examples?`,
     parentId: null,
     replies: [],
   },
+  {
+    id: 'inbox-8',
+    text: 'Set up CI/CD pipeline for staging. Need GitHub Actions workflow with auto-deploy to Vercel preview.',
+    type: 'task',
+    project: 'taskboard',
+    priority: 'P1',
+    status: 'pending',
+    createdAt: new Date(Date.now() - 4 * 86400000).toISOString(),
+    read: true,
+    author: 'user',
+    parentId: null,
+    replies: [],
+  },
+  {
+    id: 'inbox-9',
+    text: 'Explore Supabase Edge Functions for real-time sync between Launchpad and Command Center',
+    type: 'idea',
+    project: 'launchpad',
+    priority: null,
+    status: 'pending',
+    createdAt: new Date(Date.now() - 5 * 86400000).toISOString(),
+    read: true,
+    author: 'user',
+    parentId: null,
+    replies: [],
+  },
+  {
+    id: 'inbox-10',
+    text: 'Bug: Calendar view crashes when no activities exist for selected week',
+    type: 'task',
+    project: 'taskboard',
+    priority: 'P0',
+    status: 'pending',
+    createdAt: new Date(Date.now() - 6 * 86400000).toISOString(),
+    read: true,
+    author: 'user',
+    parentId: null,
+    replies: [],
+  },
+  {
+    id: 'inbox-11',
+    text: 'Write unit tests for inbox CRUD operations. Cover add, update, delete, and reply flows.',
+    type: 'task',
+    project: 'taskboard',
+    priority: 'P2',
+    status: 'pending',
+    createdAt: new Date(Date.now() - 7 * 86400000).toISOString(),
+    read: true,
+    author: 'user',
+    parentId: null,
+    replies: [],
+  },
+  {
+    id: 'inbox-12',
+    text: 'Add dark/light theme toggle to settings panel',
+    type: 'task',
+    project: 'taskboard',
+    priority: null,
+    status: 'pending',
+    createdAt: new Date(Date.now() - 9 * 86400000).toISOString(),
+    read: true,
+    author: 'user',
+    parentId: null,
+    replies: [],
+  },
+  {
+    id: 'inbox-13',
+    text: 'Research React Native Expo push notifications for Launchpad mobile companion app',
+    type: 'idea',
+    project: 'launchpad',
+    priority: null,
+    status: 'pending',
+    createdAt: new Date(Date.now() - 14 * 86400000).toISOString(),
+    read: true,
+    author: 'user',
+    parentId: null,
+    replies: [],
+  },
 ];
 
 /**
@@ -271,6 +349,48 @@ export async function writeInboxJson(data: InboxData): Promise<void> {
   }
 
   await invoke('write_inbox_json', { data: JSON.stringify(data, null, 2) });
+}
+
+// Sync config for mobile ↔ desktop sync
+export interface SyncConfig {
+  // Gist-based sync (legacy)
+  gistToken: string;
+  gistId: string;
+  pollIntervalMs?: number;
+  // GitHub repo sync (Orbit ↔ Klarity via .taskboard repo)
+  github?: {
+    token: string;
+    owner: string;
+    pollIntervalMs?: number;
+  };
+}
+
+/**
+ * Read sync config from ~/.taskboard/sync-config.json
+ */
+export async function readSyncConfig(): Promise<SyncConfig | null> {
+  if (!isTauri()) {
+    return null; // No sync in dev mode
+  }
+
+  try {
+    const data = await invoke<string>('read_sync_config');
+    return JSON.parse(data);
+  } catch {
+    return null; // File doesn't exist yet
+  }
+}
+
+/**
+ * Write sync config to ~/.taskboard/sync-config.json
+ */
+export async function writeSyncConfig(config: SyncConfig): Promise<void> {
+  if (!isTauri()) {
+    console.log('Mock: Writing sync config', config);
+    return;
+  }
+
+  await invoke('write_sync_config', { data: JSON.stringify(config, null, 2) });
 }
 
 /**
@@ -339,46 +459,384 @@ export function generateInboxMarkdown(items: InboxItem[]): string {
 }
 
 /**
- * Read a markdown document
+ * Dev mode dummy document content keyed by filename
  */
-export async function readDocument(path: string): Promise<string> {
-  if (!isTauri()) {
-    // In browser dev mode, show the actual file path with instructions
-    const fileName = path.split(/[/\\]/).pop() || path;
-    return `# 📄 ${fileName}
+function getDevDocContent(lowerName: string, fileName: string, path: string): string {
+  if (lowerName.includes('architecture')) {
+    return `# Architecture
+
+## Overview
+
+This document describes the technical architecture of the project — a desktop-class application built with **Tauri 2.0** on the backend and **React 18** on the frontend. The system follows a layered architecture with clear separation between the native shell, the UI layer, and data persistence.
+
+## System Diagram
+
+\`\`\`
+┌──────────────────────────────────────────────────────────┐
+│                    Tauri Window (WebView2)                │
+│  ┌────────────────────────────────────────────────────┐  │
+│  │               React 18 + Vite                      │  │
+│  │  ┌──────────┐ ┌──────────┐ ┌───────────────────┐  │  │
+│  │  │ Pipeline │ │  Inbox   │ │     Calendar      │  │  │
+│  │  │   View   │ │   View   │ │       View        │  │  │
+│  │  └────┬─────┘ └────┬─────┘ └────────┬──────────┘  │  │
+│  │       │             │                │             │  │
+│  │  ┌────▼─────────────▼────────────────▼──────────┐  │  │
+│  │  │            Zustand Store                     │  │  │
+│  │  │  projects | tasks | inbox | activities       │  │  │
+│  │  └────────────────────┬─────────────────────────┘  │  │
+│  └───────────────────────┼────────────────────────────┘  │
+│                          │ invoke()                       │
+│  ┌───────────────────────▼────────────────────────────┐  │
+│  │              Rust Backend (Tauri)                   │  │
+│  │  ┌────────────┐  ┌────────────┐  ┌─────────────┐  │  │
+│  │  │  data.rs   │  │  voice.rs  │  │  main.rs    │  │  │
+│  │  │ read/write │  │  capture   │  │  app state  │  │  │
+│  │  └─────┬──────┘  └────────────┘  └─────────────┘  │  │
+│  └────────┼───────────────────────────────────────────┘  │
+│           │                                               │
+│  ┌────────▼───────────────────────────────────────────┐  │
+│  │          ~/.taskboard/  (File System)               │  │
+│  │  projects.json │ tasks.json │ inbox.json │ docs/   │  │
+│  └────────────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────────────┘
+\`\`\`
+
+## Tech Stack
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **Shell** | Tauri 2.0 | Native window, file system, IPC |
+| **Frontend** | React 18 | Component UI |
+| **Bundler** | Vite 6 | Dev server, HMR, production builds |
+| **State** | Zustand | Lightweight global state |
+| **Styling** | Tailwind CSS | Utility-first dark theme |
+| **Language** | TypeScript 5.x | Type safety across frontend |
+| **Backend** | Rust | System-level operations |
+
+## Data Flow
+
+### Read Path
+1. App boots → Tauri \`main.rs\` initialises \`AppState\` with data dir
+2. React \`useDataLoader\` hook calls \`invoke('read_projects')\`
+3. Rust reads \`~/.taskboard/projects.json\` from disk
+4. JSON returned to frontend via IPC bridge
+5. Zustand store updated → components re-render
+
+### Write Path
+1. User action triggers store mutation (e.g. \`updateTask\`)
+2. \`useDataLoader\` auto-save effect detects change (500 ms debounce)
+3. Serialised JSON sent to Rust via \`invoke('write_tasks', { data })\`
+4. Rust writes atomically to disk
+
+## Key Design Decisions
+
+### File-Based Storage
+All data lives in \`~/.taskboard/\` as plain JSON and Markdown files. This makes it trivial for Claude Code (or any CLI tool) to read and write project state without a database.
+
+### No Database
+Intentionally avoided SQLite or Supabase for this app. The dataset is small (< 50 projects, < 500 tasks) and file-based storage keeps the system inspectable and portable.
+
+### Dual Persistence for Inbox
+- \`inbox.json\` — structured data for the app
+- \`inbox.md\` — human/Claude-readable markdown generated on every save
+
+### Tauri IPC over Direct FS
+Even though Tauri exposes \`tauri-plugin-fs\`, all file operations go through custom Rust commands. This gives us a single place for validation, error handling, and logging.
+
+## Module Map
+
+| Module | Location | Responsibility |
+|--------|----------|---------------|
+| \`store/index.ts\` | Frontend | Zustand store with all slices |
+| \`hooks/useDataLoader.ts\` | Frontend | Load/save data on mount and change |
+| \`lib/tauri.ts\` | Frontend | Typed wrappers around \`invoke()\` |
+| \`data.rs\` | Backend | File read/write commands |
+| \`voice.rs\` | Backend | Audio capture + Whisper integration |
+| \`main.rs\` | Backend | App entry, plugin registration |
+
+## Security
+
+- **CSP**: Configured in \`tauri.conf.json\` (currently null for dev)
+- **Shell plugin**: Only \`open\` command enabled
+- **No network**: App is fully offline — no external API calls from the desktop app
+- **Sensitive files**: \`.env\`, credentials excluded via deny rules
+`;
+  }
+
+  if (lowerName.includes('prd') || lowerName.includes('requirements')) {
+    return `# Product Requirements Document
+
+## Vision
+A desktop command center that gives developers full visibility into their project portfolio — pipeline status, task tracking, documentation, and inbox — all powered by local files that AI agents can read and write.
+
+## Core Features
+
+### F1: Pipeline View
+Kanban-style board with 5 stage columns (Design → Engineering → Build → Launch → Closure). Each project card shows phase, progress, priority badge, and days since last update.
+
+### F2: Quick Launch (Cmd+K)
+Command palette with fuzzy search across projects, tasks, and actions. Recent items surfaced first.
+
+### F3: Document Viewer
+Browse and edit project Markdown docs inline. Supports approval workflow, voice comments, and AI review badges.
+
+### F4: Inbox
+Messaging system with unread badges, reply threads, and structured Markdown export for Claude Code integration.
+
+### F5: Calendar
+Weekly timeline showing project activity across Morning / Afternoon / Evening / Night blocks with deep-work detection.
+
+## Non-Functional Requirements
+
+| Metric | Target |
+|--------|--------|
+| App launch | < 2 s |
+| File load | < 100 ms |
+| UI response | < 16 ms (60 fps) |
+| Memory | < 200 MB |
+
+## Out of Scope (v1)
+- Cloud sync
+- Multi-user collaboration
+- Mobile companion (planned as Launchpad)
+`;
+  }
+
+  if (lowerName.includes('idea') || lowerName.includes('discovery')) {
+    return `# Discovery Notes
+
+## Problem Statement
+Managing multiple side-projects is chaotic. Context is spread across GitHub, Jira, Notion, and local files. Switching between projects means re-loading mental context every time.
+
+## User Research
+- Developers juggle 3-8 projects simultaneously
+- Average context-switch cost: 15-25 minutes
+- Most existing tools are cloud-first and heavy
+- AI coding agents need a local file interface to read/write project state
+
+## Key Insight
+A **file-based** system that stores everything in JSON and Markdown gives both humans *and* AI agents a shared interface. No API keys, no sync conflicts, no vendor lock-in.
+
+## Initial Ideas
+1. Kanban pipeline view for project stages
+2. Voice-to-text inbox for quick capture
+3. AI-readable inbox.md for Claude Code sessions
+4. Calendar heatmap for work patterns
+5. Command palette for fast navigation
+`;
+  }
+
+  if (lowerName.includes('development-plan') || lowerName.includes('dev-plan')) {
+    return `# AnyCalc - Development Plan
+
+---
+
+## Overview
+
+AnyCalc is a comprehensive financial calculator suite built for the Indian market. One workspace, 19+ calculators, covering investments, tax, loans, health, and real estate.
+
+**Core Problem:** Users juggle 5-10 different calculator apps for financial planning. None of them talk to each other, none save your context, and none are designed for Indian tax/investment rules.
+
+**Solution:** A single, elegant workspace with interlinked calculators, persistent data, and India-specific defaults (old/new tax regime, CII indexation, PPF rates, etc.)
+
+---
+
+## Phase 1: Foundation (Dec 15-18)
+
+### 1.1 Project Setup
+- [x] Initialize Next.js 14 with App Router
+- [x] Configure TypeScript 5.7 strict mode
+- [x] Set up Tailwind CSS with custom color palette
+- [x] Configure ESLint + Prettier
+- [x] Set up project folder structure
+- [x] Configure path aliases
+
+### 1.2 Architecture Decisions
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Framework | Next.js 14 (App Router) | SSR for SEO, file-based routing |
+| State | Zustand | Lightweight, no boilerplate, persist middleware |
+| Charts | Recharts | React-native, responsive, composable |
+| UI Primitives | Radix UI | Accessible, unstyled, composable |
+| Auth | Supabase Auth | Google OAuth, magic links, free tier |
+| Database | Supabase (PostgreSQL) | Cloud sync, RLS, real-time |
+| Styling | Tailwind CSS | Utility-first, dark mode, responsive |
+
+### 1.3 Component Architecture
+
+\`\`\`
+src/
+├── app/
+│   ├── layout.tsx              # Root layout with sidebar
+│   ├── page.tsx                # Home / calculator grid
+│   └── workspace/
+│       └── page.tsx            # Workspace mode
+├── components/
+│   ├── calculators/
+│   │   ├── CalculatorCard.tsx  # Reusable calculator wrapper
+│   │   ├── InputField.tsx      # Formatted number input
+│   │   ├── ResultDisplay.tsx   # Result with breakdown
+│   │   ├── ChartContainer.tsx  # Recharts wrapper
+│   │   ├── sip/               # SIP calculator
+│   │   ├── fd/                # FD calculator
+│   │   ├── tax/               # Tax calculator
+│   │   └── ...                # 19 total calculators
+│   ├── workspace/
+│   │   ├── Sidebar.tsx         # Calculator navigation
+│   │   ├── Favorites.tsx       # Pinned calculators
+│   │   └── ExportPanel.tsx     # PDF/Excel export
+│   └── ui/                     # Shared UI components
+├── lib/
+│   ├── calculations/           # Pure calculation functions
+│   │   ├── investment.ts       # SIP, FD, RD, PPF, CAGR, Lumpsum
+│   │   ├── tax.ts              # Old/New regime, HRA, Gratuity
+│   │   ├── loan.ts             # EMI, Compound Interest
+│   │   ├── realestate.ts       # Capital gains, CII
+│   │   └── health.ts           # BMI
+│   ├── formatters.ts           # INR formatting, percentage
+│   └── constants.ts            # Tax slabs, CII index, PPF rates
+├── hooks/
+│   ├── useCalculator.ts        # Shared calculator state logic
+│   └── useExport.ts            # Export functionality
+└── store/
+    └── index.ts                # Zustand store (favorites, history, notes)
+\`\`\`
+
+---
+
+## Phase 2: Core Calculators (Dec 18 - Jan 5)
+
+### 2.1 Investment Calculators (6)
+
+| Calculator | Features | Dual-Mode | Status |
+|-----------|----------|-----------|--------|
+| SIP | Growth chart, step-up SIP, goal planner | Yes (Calculate / Plan for Goal) | Done |
+| Lumpsum | Maturity breakdown, comparison chart | Yes | Done |
+| FD | Interest options (quarterly/monthly/cumulative) | Yes | Done |
+| RD | Monthly deposit projections | No | Done |
+| PPF | 15-year projection with yearly breakdown | No | Done |
+| CAGR | Returns calculator with period comparison | Yes | Done |
+
+**Dual-Mode:** Five calculators support two modes:
+1. **Calculate** — Enter inputs, get the result
+2. **Plan for Goal** — Enter your target amount, get the required investment
+
+### 2.2 Tax Calculators (4)
+
+| Calculator | Features | Status |
+|-----------|----------|--------|
+| Income Tax | Old vs New regime comparison, slab visualization | Done |
+| HRA Exemption | Metro/non-metro, rent receipt calculator | Done |
+| Gratuity | Years of service, last drawn salary | Done |
+| TDS | Section-wise TDS rates, threshold check | Done |
+
+### 2.3 Loan Calculators (3)
+
+| Calculator | Features | Status |
+|-----------|----------|--------|
+| EMI | Amortization schedule, prepayment analysis | Done |
+| Compound Interest | Annual/quarterly/monthly compounding | Done |
+| Simple Interest | Basic SI calculator | Done |
+
+### 2.4 Utility & Health Calculators (6)
+
+| Calculator | Features | Status |
+|-----------|----------|--------|
+| Currency Converter | Live rates via API, 150+ currencies | Done |
+| Trip Splitter | Multi-person expense splitting | Done |
+| Percentage | 3 modes (% of, % change, find %) | Done |
+| Age Calculator | Years/months/days with next birthday | Done |
+| BMI | WHO categories, visual scale | Done |
+| Real Estate CG | STCG/LTCG, CII indexation, Section 54/54EC/54F | Done |
+
+---
+
+## Phase 3: Workspace Features (Jan 5-10)
+
+- [x] Sidebar navigation with calculator categories
+- [x] Favorites system (pin frequently used calculators)
+- [x] Calculator history (last 10 calculations per type)
+- [x] Notes section per calculator
+- [x] PDF / Excel / HTML export
+- [x] Interlinked calculators (salary → tax, SIP → CAGR)
+
+---
+
+## Phase 4: Real Estate Capital Gains (Jan 10-17)
+
+Most complex calculator — dedicated feature build:
+
+- **Capital gains computation** — STCG (<24 months) and LTCG (>=24 months)
+- **CII indexation** — Cost Inflation Index from 2001-02 to 2025-26
+- **Reinvestment planner** — Section 54, 54EC, 54F
+- **Budget 2024 dual regime** — Old: 20% with indexation vs New: 12.5% without
+
+---
+
+## Phase 5: Testing & Ship (Jan 10-17)
+
+| Metric | Target | Actual |
+|--------|--------|--------|
+| Lighthouse Performance | >90 | 94 |
+| First Contentful Paint | <1.5s | 1.2s |
+| Bundle Size (gzipped) | <200KB | 178KB |
+
+**Deployed:** Vercel + [anycalc.in](https://anycalc.in)
+
+---
+
+## Dependencies
+
+| Package | Purpose | Version |
+|---------|---------|---------|
+| next | Framework | 14.2.x |
+| typescript | Language | 5.7.x |
+| tailwindcss | Styling | 3.4.x |
+| zustand | State management | 4.5.x |
+| recharts | Charts & visualizations | 2.12.x |
+| @supabase/supabase-js | Auth & database | 2.x |
+| jspdf | PDF export | 2.5.x |
+
+---
+
+**Document Version:** 2.0 | **Created:** 2025-12-15 | **Updated:** 2026-01-17
+`;
+  }
+
+  // Default fallback for any other document
+  return `# ${fileName}
 
 > **File Path:** \`${path}\`
 
 ---
 
-## 🖥️ Browser Dev Mode
+This is a project document. In the desktop app (Tauri mode), the full file content loads directly from disk.
 
-This document cannot be loaded in browser mode because direct filesystem access is restricted.
+## Sections
 
-### To view this document:
+### Overview
+Document content would appear here when loaded from the file system.
 
-1. **Run in Tauri desktop mode:**
-   \`\`\`bash
-   cd apps/command-center
-   npm run tauri dev
-   \`\`\`
-
-2. **Or open directly:**
-   - Open the file in VS Code or your preferred editor
-   - Path: \`${path}\`
-
-### Document Info
-
-| Property | Value |
-|----------|-------|
-| **File** | ${fileName} |
-| **Full Path** | ${path} |
-| **Type** | ${path.endsWith('.md') ? 'Markdown' : path.endsWith('.csv') ? 'CSV' : path.endsWith('.sql') ? 'SQL' : 'Document'} |
+### Details
+Additional content, tables, code blocks, and diagrams from the original Markdown file.
 
 ---
 
-*Switch to Tauri desktop mode to view and edit documents directly.*
+*Running in browser dev mode — switch to \`npm run tauri dev\` for live file access.*
 `;
+}
+
+/**
+ * Read a markdown document
+ */
+export async function readDocument(path: string): Promise<string> {
+  if (!isTauri()) {
+    // In browser dev mode, return realistic dummy content per document
+    const fileName = path.split(/[/\\]/).pop() || path;
+    const lowerName = fileName.toLowerCase();
+    return getDevDocContent(lowerName, fileName, path);
   }
 
   return invoke<string>('read_document', { path });

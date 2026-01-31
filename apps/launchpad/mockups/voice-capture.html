@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=375, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Launchpad - Voice Capture</title>
+  <title>Launchpad - Voice Capture with AI Structuring</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { font-family: 'Inter', sans-serif; }
     body { background: #f5f5f5; }
-    .icon { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; }
     .icon-sm { width: 16px; height: 16px; }
     .icon-md { width: 20px; height: 20px; }
     .icon-lg { width: 24px; height: 24px; }
@@ -33,51 +32,69 @@
     .wave-bar:nth-child(3) { animation-delay: 0.2s; }
     .wave-bar:nth-child(4) { animation-delay: 0.3s; }
     .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+    .wave-bar:nth-child(6) { animation-delay: 0.5s; }
+    .wave-bar:nth-child(7) { animation-delay: 0.15s; }
+    .wave-bar:nth-child(8) { animation-delay: 0.25s; }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin { animation: spin 1s linear infinite; }
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen max-w-[430px] mx-auto shadow-2xl">
 
+  <!-- ============================================ -->
+  <!-- STATE 1: RECORDING (Active by default)       -->
+  <!-- ============================================ -->
+
   <!-- Overlay Background -->
   <div class="fixed inset-0 bg-black/50 backdrop-blur-sm max-w-[430px] mx-auto"></div>
 
-  <!-- Voice Capture Modal -->
+  <!-- Voice Capture Modal - Recording State -->
   <div class="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-[398px] mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
 
     <!-- Header -->
     <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-      <h2 class="text-lg font-semibold text-gray-900">Quick Instruct</h2>
-      <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-400">
+      <h2 class="text-lg font-semibold text-gray-900">Quick Capture</h2>
+      <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-200">
         <svg class="icon-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
 
-    <!-- Project Context -->
+    <!-- Optional: Project Context (when triggered from project) -->
     <div class="px-6 py-3 bg-emerald-50 border-b border-emerald-100">
-      <p class="text-xs text-emerald-600">Recording for:</p>
-      <p class="font-medium text-emerald-700">Numbers Game</p>
+      <div class="flex items-center gap-2">
+        <svg class="icon-sm text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/></svg>
+        <span class="text-sm text-emerald-700 font-medium">Klarity Task Board</span>
+        <button class="ml-auto text-xs text-emerald-600 underline">Change</button>
+      </div>
     </div>
 
     <!-- Recording Area -->
-    <div class="px-6 py-12 text-center">
+    <div class="px-6 py-10 text-center">
 
       <!-- Microphone with Pulse -->
       <div class="relative inline-block mb-6">
         <!-- Pulse rings -->
-        <div class="absolute inset-0 w-32 h-32 bg-emerald-500/20 rounded-full pulse-ring"></div>
-        <div class="absolute inset-0 w-32 h-32 bg-emerald-500/10 rounded-full pulse-ring" style="animation-delay: 0.5s"></div>
+        <div class="absolute inset-0 w-28 h-28 -m-2 bg-emerald-500/20 rounded-full pulse-ring"></div>
+        <div class="absolute inset-0 w-28 h-28 -m-2 bg-emerald-500/10 rounded-full pulse-ring" style="animation-delay: 0.5s"></div>
 
         <!-- Mic button -->
-        <button class="relative w-32 h-32 bg-emerald-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
-          <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24"><path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z"/><path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z"/></svg>
+        <button class="relative w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
+          <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z"/><path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z"/></svg>
         </button>
       </div>
 
       <!-- Recording status -->
-      <p class="text-emerald-600 font-medium mb-2">Listening...</p>
-      <p class="text-gray-400 text-sm">Speak your instructions</p>
+      <div class="flex items-center justify-center gap-2 mb-2">
+        <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+        <p class="text-emerald-600 font-semibold">Listening...</p>
+        <span class="text-gray-400 text-sm">0:04</span>
+      </div>
+      <p class="text-gray-400 text-sm">Speak your task or idea</p>
 
       <!-- Audio waveform -->
-      <div class="flex items-center justify-center gap-1 mt-6 h-8">
+      <div class="flex items-center justify-center gap-1 mt-6 h-10">
         <div class="w-1 bg-emerald-500 rounded-full wave-bar"></div>
         <div class="w-1 bg-emerald-500 rounded-full wave-bar"></div>
         <div class="w-1 bg-emerald-500 rounded-full wave-bar"></div>
@@ -86,64 +103,186 @@
         <div class="w-1 bg-emerald-400 rounded-full wave-bar"></div>
         <div class="w-1 bg-emerald-400 rounded-full wave-bar"></div>
         <div class="w-1 bg-emerald-300 rounded-full wave-bar"></div>
-        <div class="w-1 bg-emerald-300 rounded-full wave-bar"></div>
-        <div class="w-1 bg-emerald-200 rounded-full wave-bar"></div>
       </div>
 
     </div>
 
-    <!-- Transcription Preview -->
+    <!-- Live Transcription Preview -->
     <div class="px-6 py-4 bg-gray-50 border-t border-gray-100">
-      <p class="text-xs text-gray-500 mb-2">Transcription:</p>
-      <p class="text-gray-900 text-sm leading-relaxed">
-        "Add the leaderboard feature with top 10 scores, then deploy to Vercel, priority high..."
+      <div class="flex items-center gap-2 mb-2">
+        <svg class="icon-sm text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+        <span class="text-xs text-gray-500 uppercase tracking-wide font-medium">Live transcript</span>
+      </div>
+      <p class="text-gray-700 text-sm leading-relaxed italic">
+        "I need to fix that bug in the login page where users can't reset..."
       </p>
     </div>
 
     <!-- Actions -->
-    <div class="px-6 py-4">
+    <div class="px-6 py-4 border-t border-gray-100">
       <div class="flex gap-3">
-        <button class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl font-medium">
+        <button class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl font-medium hover:bg-gray-200">
           Cancel
         </button>
-        <button class="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-medium flex items-center justify-center gap-2">
+        <button class="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-emerald-600">
           <span>Done</span>
-          <svg class="icon-md text-emerald-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          <svg class="icon-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"/></svg>
         </button>
       </div>
-      <p class="text-xs text-gray-400 text-center mt-2 flex items-center justify-center gap-1">
-        <span class="bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded text-[10px] font-medium">⚡ Groq</span>
-        <span>will structure your instruction</span>
-      </p>
     </div>
 
   </div>
 
-  <!-- Alternative State: Processing -->
+  <!-- ============================================ -->
+  <!-- STATE 2: PROCESSING (Comment out to see)     -->
+  <!-- ============================================ -->
   <!--
-  <div class="fixed inset-x-4 bottom-32 max-w-[398px] mx-auto bg-white rounded-2xl shadow-lg p-4">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
-        <span class="animate-spin">⏳</span>
+  <div class="fixed inset-0 bg-black/50 backdrop-blur-sm max-w-[430px] mx-auto"></div>
+  <div class="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-[398px] mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100">
+      <h2 class="text-lg font-semibold text-gray-900">Processing...</h2>
+    </div>
+    <div class="px-6 py-16 text-center">
+      <div class="w-16 h-16 mx-auto mb-6 bg-purple-100 rounded-full flex items-center justify-center">
+        <svg class="w-8 h-8 text-purple-600 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
       </div>
-      <div>
-        <p class="font-medium text-gray-900">Processing...</p>
-        <p class="text-sm text-gray-500">Structuring your instruction</p>
+      <p class="text-gray-900 font-medium mb-2">Structuring your input...</p>
+      <p class="text-gray-500 text-sm">AI is extracting title, description, and priority</p>
+      <div class="mt-6 flex items-center justify-center gap-2">
+        <span class="bg-purple-100 text-purple-600 px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+          <span>⚡</span> Groq LLaMA
+        </span>
       </div>
     </div>
   </div>
   -->
 
-  <!-- Toast: Success State -->
-  <div class="fixed bottom-8 inset-x-4 max-w-[398px] mx-auto bg-emerald-600 text-white rounded-2xl p-4 flex items-center gap-3 shadow-lg opacity-0">
+  <!-- ============================================ -->
+  <!-- STATE 3: REVIEW STRUCTURED RESULT            -->
+  <!-- (Comment out Recording state to see this)    -->
+  <!-- ============================================ -->
+  <!--
+  <div class="fixed inset-0 bg-black/50 backdrop-blur-sm max-w-[430px] mx-auto"></div>
+  <div class="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-[398px] mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+
+    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10">
+      <div class="flex items-center gap-2">
+        <svg class="icon-lg text-emerald-500" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd"/></svg>
+        <h2 class="text-lg font-semibold text-gray-900">Review & Confirm</h2>
+      </div>
+      <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-400">
+        <svg class="icon-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="px-6 py-2 bg-purple-50 border-b border-purple-100 flex items-center gap-2">
+      <span class="bg-purple-100 text-purple-600 px-2 py-0.5 rounded text-[10px] font-medium flex items-center gap-1">
+        <span>⚡</span> AI Structured
+      </span>
+      <span class="text-xs text-purple-600">Edit any field below</span>
+    </div>
+
+    <div class="px-6 py-5 space-y-4">
+
+      <div>
+        <label class="text-xs text-gray-500 uppercase tracking-wide font-medium mb-1.5 block">Title</label>
+        <input
+          type="text"
+          value="Fix password reset on login page"
+          class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+        />
+      </div>
+
+      <div>
+        <label class="text-xs text-gray-500 uppercase tracking-wide font-medium mb-1.5 block">Description</label>
+        <textarea
+          rows="3"
+          class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
+        >Users are unable to reset passwords from the login page. This has been a recurring issue affecting user experience and should be prioritized.</textarea>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs text-gray-500 uppercase tracking-wide font-medium mb-1.5 block">Priority</label>
+          <select class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <option value="P0">P0 - Critical</option>
+            <option value="P1" selected>P1 - High</option>
+            <option value="P2">P2 - Medium</option>
+            <option value="P3">P3 - Low</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs text-gray-500 uppercase tracking-wide font-medium mb-1.5 block">Complexity</label>
+          <select class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <option value="XS">XS - Trivial</option>
+            <option value="S" selected>S - Small</option>
+            <option value="M">M - Medium</option>
+            <option value="L">L - Large</option>
+            <option value="XL">XL - Very Large</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs text-gray-500 uppercase tracking-wide font-medium mb-1.5 block">Save To</label>
+        <div class="flex gap-2">
+          <button class="flex-1 py-3 px-4 bg-emerald-50 border-2 border-emerald-500 rounded-xl text-emerald-700 text-sm font-medium flex items-center justify-center gap-2">
+            <svg class="icon-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 13.5h3.86a2.25 2.25 0 012.012 1.244l.256.512a2.25 2.25 0 002.013 1.244h3.218a2.25 2.25 0 002.013-1.244l.256-.512a2.25 2.25 0 012.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 00-2.15-1.588H6.911a2.25 2.25 0 00-2.15 1.588L2.35 13.177a2.25 2.25 0 00-.1.661z"/></svg>
+            Inbox
+          </button>
+          <button class="flex-1 py-3 px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-600 text-sm font-medium flex items-center justify-center gap-2 hover:bg-gray-100">
+            <svg class="icon-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Task
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs text-gray-500 uppercase tracking-wide font-medium mb-1.5 block">Project (Optional)</label>
+        <select class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+          <option value="">No project (General inbox)</option>
+          <option value="klarity" selected>Klarity Task Board</option>
+          <option value="primmo">PRIMMO</option>
+          <option value="anycalc">AnyCalc</option>
+          <option value="portfolio">Castronix Portfolio</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 sticky bottom-0">
+      <div class="flex gap-3">
+        <button class="flex-1 py-3 bg-white border border-gray-200 text-gray-600 rounded-xl font-medium hover:bg-gray-50 flex items-center justify-center gap-2">
+          <svg class="icon-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/></svg>
+          Re-record
+        </button>
+        <button class="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-emerald-600">
+          <svg class="icon-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          Save
+        </button>
+      </div>
+      <p class="text-[11px] text-gray-400 text-center mt-2">Claude will pick this up in your next desktop session</p>
+    </div>
+  </div>
+  -->
+
+  <!-- ============================================ -->
+  <!-- SUCCESS TOAST (shown after save)             -->
+  <!-- ============================================ -->
+  <!--
+  <div class="fixed bottom-8 inset-x-4 max-w-[398px] mx-auto bg-emerald-600 text-white rounded-2xl p-4 flex items-center gap-3 shadow-lg">
     <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
       <svg class="icon-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
     </div>
     <div>
-      <p class="font-medium">Instruction saved!</p>
-      <p class="text-sm text-emerald-100">Claude will pick this up on desktop</p>
+      <p class="font-medium">Saved to Inbox!</p>
+      <p class="text-sm text-emerald-100">Synced • Claude will process on desktop</p>
     </div>
   </div>
+  -->
 
 </body>
 </html>

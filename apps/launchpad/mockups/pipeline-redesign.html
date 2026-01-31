@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbit — Dashboard Redesign Mockups</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0a0a0a;
+    color: #fff;
+    padding: 32px 24px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .page-sub { font-size: 12px; color: #666; margin-bottom: 40px; }
+
+  .section-divider {
+    border: none;
+    border-top: 1px solid #1a1a1a;
+    margin: 48px 0;
+  }
+
+  .section-title {
+    font-size: 10px; font-weight: 700; color: #10b981;
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .section-heading {
+    font-size: 17px; font-weight: 700; color: #fff;
+    margin-bottom: 4px;
+  }
+  .section-desc {
+    font-size: 12px; color: #555; margin-bottom: 20px; line-height: 1.5;
+  }
+
+  .mockup-row {
+    display: flex; gap: 16px; margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+
+  /* Phone frame */
+  .phone {
+    width: 340px;
+    border-radius: 24px;
+    padding: 20px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .phone.light { background: #f5f5f5; }
+  .phone.dark { background: #000; }
+  .phone.dark-surface { background: #0d0d0d; }
+
+  .mode-tag {
+    font-size: 9px; font-weight: 700; color: #555;
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .phone.light .mode-tag { color: #aaa; }
+
+  /* Recommended badge */
+  .rec {
+    position: absolute; top: 10px; right: 14px;
+    background: #10b981; color: #fff;
+    font-size: 8px; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px;
+    letter-spacing: 1px;
+  }
+
+  /* Shared label */
+  .sec-label {
+    font-size: 10px; font-weight: 600; color: #555;
+    letter-spacing: 0.8px; margin-bottom: 10px;
+  }
+  .phone.light .sec-label { color: #9ca3af; }
+
+  /* ═══════════════════════════════════════════════ */
+  /* STATS CARDS                                     */
+  /* ═══════════════════════════════════════════════ */
+
+  /* --- Pattern 1: Gradient Accent Border --- */
+  .s1-row { display: flex; gap: 10px; }
+  .s1-card {
+    flex: 1; border-radius: 14px; padding: 14px;
+    position: relative; overflow: hidden;
+    background: #1c1c1e;
+  }
+  .s1-card.light-card { background: #fff; border: 1px solid #e5e7eb; }
+  .s1-accent {
+    position: absolute; top: 0; left: 0; width: 3px; height: 100%;
+    border-radius: 3px 0 0 3px;
+  }
+  .s1-icon-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; margin-left: 8px; }
+  .s1-icon {
+    width: 24px; height: 24px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
+  .s1-label { font-size: 10px; font-weight: 500; color: #888; }
+  .s1-val { font-size: 28px; font-weight: 700; margin-left: 8px; line-height: 1; }
+  .s1-unit { font-size: 13px; font-weight: 400; color: #666; }
+  .s1-sub { font-size: 10px; color: #555; margin-top: 4px; margin-left: 8px; }
+  .phone.light .s1-val { color: #111; }
+  .phone.light .s1-sub { color: #9ca3af; }
+  .phone.light .s1-label { color: #9ca3af; }
+
+  /* --- Pattern 2: Glassmorphism over Gradient --- */
+  .s2-bg {
+    border-radius: 16px; padding: 4px;
+    background: linear-gradient(135deg, #10b981 0%, #0ea5e9 50%, #ec4899 100%);
+  }
+  .s2-bg.light-bg {
+    background: linear-gradient(135deg, #d1fae5 0%, #dbeafe 50%, #fce7f3 100%);
+  }
+  .s2-row { display: flex; gap: 4px; }
+  .s2-card {
+    flex: 1; border-radius: 13px; padding: 14px;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .s2-card.light-glass {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+  }
+  .s2-emoji { font-size: 18px; margin-bottom: 6px; }
+  .s2-val { font-size: 26px; font-weight: 800; line-height: 1; }
+  .s2-card.light-glass .s2-val { color: #111; }
+  .s2-unit { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.6); }
+  .s2-card.light-glass .s2-unit { color: #6b7280; }
+  .s2-label { font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 4px; font-weight: 500; }
+  .s2-card.light-glass .s2-label { color: #9ca3af; }
+
+  /* --- Pattern 3: Ring/Arc Visualization --- */
+  .s3-row { display: flex; gap: 10px; }
+  .s3-card {
+    flex: 1; border-radius: 14px; padding: 14px;
+    display: flex; align-items: center; gap: 12px;
+    background: #1c1c1e;
+  }
+  .s3-card.light-card { background: #fff; border: 1px solid #e5e7eb; }
+  .s3-ring {
+    width: 48px; height: 48px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .s3-ring svg { position: absolute; top: 0; left: 0; transform: rotate(-90deg); }
+  .s3-ring-val { font-size: 14px; font-weight: 800; z-index: 1; }
+  .phone.light .s3-ring-val { color: #111; }
+  .s3-info { flex: 1; }
+  .s3-title { font-size: 11px; font-weight: 600; color: #888; margin-bottom: 2px; }
+  .phone.light .s3-title { color: #6b7280; }
+  .s3-subtitle { font-size: 9px; color: #555; }
+  .phone.light .s3-subtitle { color: #9ca3af; }
+
+  /* --- Pattern 4: Neon Glow --- */
+  .s4-row { display: flex; gap: 10px; }
+  .s4-card {
+    flex: 1; border-radius: 14px; padding: 14px;
+    background: #111;
+    border: 1px solid rgba(16,185,129,0.2);
+    position: relative; overflow: hidden;
+  }
+  .s4-card::before {
+    content: ''; position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle at 30% 30%, rgba(16,185,129,0.08) 0%, transparent 60%);
+  }
+  .s4-card.accent-blue { border-color: rgba(14,165,233,0.2); }
+  .s4-card.accent-blue::before {
+    background: radial-gradient(circle at 70% 30%, rgba(14,165,233,0.08) 0%, transparent 60%);
+  }
+  .s4-lbl { font-size: 10px; font-weight: 600; color: #555; margin-bottom: 8px; position: relative; }
+  .s4-val { font-size: 30px; font-weight: 800; position: relative; line-height: 1; }
+  .s4-unit { font-size: 13px; font-weight: 400; opacity: 0.5; }
+  .s4-sub { font-size: 10px; color: #444; margin-top: 6px; position: relative; }
+
+  /* --- Pattern 5: Compact Single Row --- */
+  .s5-row { display: flex; gap: 10px; }
+  .s5-card {
+    flex: 1; border-radius: 14px; padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px;
+    background: #1c1c1e; border: 1px solid #2a2a2a;
+  }
+  .s5-card.light-card { background: #fff; border-color: #e5e7eb; }
+  .s5-icon-circle {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .s5-mid { flex: 1; }
+  .s5-name { font-size: 10px; font-weight: 500; color: #666; }
+  .phone.light .s5-name { color: #9ca3af; }
+  .s5-val { font-size: 20px; font-weight: 700; line-height: 1.1; }
+  .phone.light .s5-val { color: #111; }
+  .s5-sub { font-size: 9px; color: #444; }
+  .phone.light .s5-sub { color: #9ca3af; }
+
+  /* --- Pattern 6: Gradient Fill Cards --- */
+  .s6-row { display: flex; gap: 10px; }
+  .s6-card {
+    flex: 1; border-radius: 14px; padding: 14px 14px 12px;
+    position: relative; overflow: hidden;
+  }
+  .s6-card.emerald { background: linear-gradient(135deg, #065f46 0%, #10b981 100%); }
+  .s6-card.ocean { background: linear-gradient(135deg, #0c4a6e 0%, #0ea5e9 100%); }
+  .s6-card.soft-emerald { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); }
+  .s6-card.soft-ocean { background: linear-gradient(135deg, #dbeafe 0%, #bae6fd 100%); }
+  .s6-icon { font-size: 14px; margin-bottom: 10px; }
+  .s6-val { font-size: 28px; font-weight: 800; color: #fff; line-height: 1; }
+  .s6-card.soft-emerald .s6-val, .s6-card.soft-ocean .s6-val { color: #111; }
+  .s6-unit { font-size: 12px; font-weight: 400; opacity: 0.7; }
+  .s6-lbl { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.6); margin-top: 4px; }
+  .s6-card.soft-emerald .s6-lbl { color: #065f46; }
+  .s6-card.soft-ocean .s6-lbl { color: #0c4a6e; }
+  .s6-sub { font-size: 9px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+  .s6-card.soft-emerald .s6-sub { color: #6b7280; }
+  .s6-card.soft-ocean .s6-sub { color: #6b7280; }
+
+  /* ═══════════════════════════════════════════════ */
+  /* PIPELINE PATTERNS                               */
+  /* ═══════════════════════════════════════════════ */
+
+  /* --- Pipeline A: Colored Numbers --- */
+  .pa-card {
+    display: flex; border-radius: 14px; padding: 6px;
+    background: #1c1c1e; border: 1px solid #2a2a2a;
+  }
+  .pa-card.light-card { background: #fff; border-color: #e5e7eb; }
+  .pa-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; padding: 10px 4px;
+    border-right: 1px solid #2a2a2a;
+  }
+  .pa-card.light-card .pa-item { border-right-color: #f3f4f6; }
+  .pa-item:last-child { border-right: none; }
+  .pa-count { font-size: 22px; font-weight: 800; line-height: 1; margin-bottom: 3px; }
+  .pa-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+
+  /* --- Pipeline B: Connected Flow --- */
+  .pb-card {
+    display: flex; align-items: center;
+    border-radius: 14px; padding: 14px 10px;
+    background: #1c1c1e; border: 1px solid #2a2a2a;
+    gap: 0;
+  }
+  .pb-card.light-card { background: #fff; border-color: #e5e7eb; }
+  .pb-node {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 4px; flex: 1;
+  }
+  .pb-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; color: #fff;
+  }
+  .pb-name { font-size: 8px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.3px; }
+  .phone.light .pb-name { color: #9ca3af; }
+  .pb-line { width: 16px; height: 2px; background: #2a2a2a; margin-top: -14px; flex-shrink: 0; }
+  .phone.light .pb-line { background: #e5e7eb; }
+
+  /* --- Pipeline C: Colored Pills --- */
+  .pc-row { display: flex; gap: 6px; }
+  .pc-pill {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; padding: 10px 4px;
+    border-radius: 10px; gap: 3px;
+  }
+  .pc-count { font-size: 18px; font-weight: 800; }
+  .pc-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2px; }
+
+  /* --- Pipeline D: Segmented Bar + Inline --- */
+  .pd-card {
+    border-radius: 14px; padding: 14px;
+    background: #1c1c1e; border: 1px solid #2a2a2a;
+  }
+  .pd-card.light-card { background: #fff; border-color: #e5e7eb; }
+  .pd-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; gap: 3px; margin-bottom: 12px; }
+  .pd-seg { flex: 1; border-radius: 4px; }
+  .pd-seg.empty { opacity: 0.2; }
+  .pd-labels { display: flex; }
+  .pd-item { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; }
+  .pd-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .pd-text { font-size: 10px; font-weight: 600; color: #888; }
+  .phone.light .pd-text { color: #6b7280; }
+  .pd-num { color: #fff; font-weight: 800; }
+  .phone.light .pd-num { color: #111; }
+
+  /* --- Pipeline E: Mini Arcs --- */
+  .pe-card {
+    display: flex; justify-content: space-around;
+    border-radius: 14px; padding: 12px 6px;
+    background: #1c1c1e; border: 1px solid #2a2a2a;
+  }
+  .pe-card.light-card { background: #fff; border-color: #e5e7eb; }
+  .pe-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .pe-arc {
+    width: 40px; height: 40px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pe-arc svg { position: absolute; top: 0; left: 0; }
+  .pe-count { font-size: 14px; font-weight: 800; z-index: 1; }
+  .phone.light .pe-count { color: #111; }
+  .pe-label { font-size: 9px; font-weight: 600; color: #555; text-transform: uppercase; }
+  .phone.light .pe-label { color: #9ca3af; }
+
+  /* --- Pipeline F: Stacked Horizontal Bars --- */
+  .pf-card {
+    border-radius: 14px; padding: 12px 14px;
+    background: #1c1c1e; border: 1px solid #2a2a2a;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .pf-card.light-card { background: #fff; border-color: #e5e7eb; }
+  .pf-row { display: flex; align-items: center; gap: 8px; }
+  .pf-label { font-size: 10px; font-weight: 600; color: #666; width: 46px; text-align: right; }
+  .phone.light .pf-label { color: #6b7280; }
+  .pf-bar-wrap { flex: 1; height: 8px; background: #2a2a2a; border-radius: 4px; overflow: hidden; }
+  .phone.light .pf-bar-wrap { background: #f3f4f6; }
+  .pf-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+  .pf-count { font-size: 11px; font-weight: 700; width: 16px; }
+  .phone.light .pf-count { color: #111; }
+
+</style>
+</head>
+<body>
+
+<h1>Orbit — Dashboard Redesign</h1>
+<p class="page-sub">Stats Cards + Pipeline section mockups. Light + Dark mode. Pick & mix.</p>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- STATS CARDS                                                 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="section-title">SECTION 1</div>
+<div class="section-heading">Stats Cards (Streak + Deep Work)</div>
+<div class="section-desc">Current design is flat white cards with plain numbers. Here are 6 creative patterns.</div>
+
+<!-- Pattern 1: Gradient Accent Border -->
+<div class="section-title" style="color:#ec4899">PATTERN 1</div>
+<div class="section-heading">Gradient Accent Border</div>
+<div class="section-desc">Thin left accent strip with colored icon badge. Subtle but distinctive.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="s1-row">
+      <div class="s1-card">
+        <div class="s1-accent" style="background:linear-gradient(to bottom, #f97316, #ef4444)"></div>
+        <div class="s1-icon-row">
+          <div class="s1-icon" style="background:rgba(249,115,22,0.15)">🔥</div>
+          <div class="s1-label">Current Streak</div>
+        </div>
+        <div class="s1-val">14 <span class="s1-unit">days</span></div>
+        <div class="s1-sub">Best: 23 days</div>
+      </div>
+      <div class="s1-card">
+        <div class="s1-accent" style="background:linear-gradient(to bottom, #0ea5e9, #6366f1)"></div>
+        <div class="s1-icon-row">
+          <div class="s1-icon" style="background:rgba(14,165,233,0.15)">⚡</div>
+          <div class="s1-label">Deep Work</div>
+        </div>
+        <div class="s1-val">4 <span class="s1-unit">days</span></div>
+        <div class="s1-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="s1-row">
+      <div class="s1-card light-card">
+        <div class="s1-accent" style="background:linear-gradient(to bottom, #f97316, #ef4444)"></div>
+        <div class="s1-icon-row">
+          <div class="s1-icon" style="background:rgba(249,115,22,0.1)">🔥</div>
+          <div class="s1-label">Current Streak</div>
+        </div>
+        <div class="s1-val" style="color:#111">14 <span class="s1-unit">days</span></div>
+        <div class="s1-sub">Best: 23 days</div>
+      </div>
+      <div class="s1-card light-card">
+        <div class="s1-accent" style="background:linear-gradient(to bottom, #0ea5e9, #6366f1)"></div>
+        <div class="s1-icon-row">
+          <div class="s1-icon" style="background:rgba(14,165,233,0.1)">⚡</div>
+          <div class="s1-label">Deep Work</div>
+        </div>
+        <div class="s1-val" style="color:#111">4 <span class="s1-unit">days</span></div>
+        <div class="s1-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pattern 2: Glassmorphism -->
+<div class="section-title" style="color:#0ea5e9">PATTERN 2</div>
+<div class="section-heading">Glassmorphism over Gradient</div>
+<div class="section-desc">Frosted glass cards over a subtle gradient strip. Premium feel. Apple-inspired.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="s2-bg">
+      <div class="s2-row">
+        <div class="s2-card">
+          <div class="s2-emoji">🔥</div>
+          <div class="s2-val">14 <span class="s2-unit">days</span></div>
+          <div class="s2-label">Streak · Best: 23d</div>
+        </div>
+        <div class="s2-card">
+          <div class="s2-emoji">⚡</div>
+          <div class="s2-val">4 <span class="s2-unit">days</span></div>
+          <div class="s2-label">Deep Work · 6h+ this week</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="s2-bg light-bg">
+      <div class="s2-row">
+        <div class="s2-card light-glass">
+          <div class="s2-emoji">🔥</div>
+          <div class="s2-val">14 <span class="s2-unit">days</span></div>
+          <div class="s2-label">Streak · Best: 23d</div>
+        </div>
+        <div class="s2-card light-glass">
+          <div class="s2-emoji">⚡</div>
+          <div class="s2-val">4 <span class="s2-unit">days</span></div>
+          <div class="s2-label">Deep Work · 6h+ this week</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pattern 3: Ring/Arc Visualization -->
+<div class="section-title" style="color:#a855f7">PATTERN 3</div>
+<div class="section-heading">Ring Visualization</div>
+<div class="section-desc">Circular progress rings showing streak vs best. Compact horizontal layout — number inside the ring.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="s3-row">
+      <div class="s3-card">
+        <div class="s3-ring">
+          <svg width="48" height="48" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="20" fill="none" stroke="#2a2a2a" stroke-width="4"/>
+            <circle cx="24" cy="24" r="20" fill="none" stroke="#f97316" stroke-width="4"
+              stroke-dasharray="125.6" stroke-dashoffset="49" stroke-linecap="round"/>
+          </svg>
+          <div class="s3-ring-val" style="color:#f97316">14</div>
+        </div>
+        <div class="s3-info">
+          <div class="s3-title">Current Streak</div>
+          <div class="s3-subtitle">Best: 23 days (61%)</div>
+        </div>
+      </div>
+      <div class="s3-card">
+        <div class="s3-ring">
+          <svg width="48" height="48" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="20" fill="none" stroke="#2a2a2a" stroke-width="4"/>
+            <circle cx="24" cy="24" r="20" fill="none" stroke="#0ea5e9" stroke-width="4"
+              stroke-dasharray="125.6" stroke-dashoffset="89.7" stroke-linecap="round"/>
+          </svg>
+          <div class="s3-ring-val" style="color:#0ea5e9">4</div>
+        </div>
+        <div class="s3-info">
+          <div class="s3-title">Deep Work</div>
+          <div class="s3-subtitle">This week · 6h+ days</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="s3-row">
+      <div class="s3-card light-card">
+        <div class="s3-ring">
+          <svg width="48" height="48" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="20" fill="none" stroke="#f3f4f6" stroke-width="4"/>
+            <circle cx="24" cy="24" r="20" fill="none" stroke="#f97316" stroke-width="4"
+              stroke-dasharray="125.6" stroke-dashoffset="49" stroke-linecap="round"/>
+          </svg>
+          <div class="s3-ring-val" style="color:#f97316">14</div>
+        </div>
+        <div class="s3-info">
+          <div class="s3-title">Current Streak</div>
+          <div class="s3-subtitle">Best: 23 days (61%)</div>
+        </div>
+      </div>
+      <div class="s3-card light-card">
+        <div class="s3-ring">
+          <svg width="48" height="48" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="20" fill="none" stroke="#f3f4f6" stroke-width="4"/>
+            <circle cx="24" cy="24" r="20" fill="none" stroke="#0ea5e9" stroke-width="4"
+              stroke-dasharray="125.6" stroke-dashoffset="89.7" stroke-linecap="round"/>
+          </svg>
+          <div class="s3-ring-val" style="color:#0ea5e9">4</div>
+        </div>
+        <div class="s3-info">
+          <div class="s3-title">Deep Work</div>
+          <div class="s3-subtitle">This week · 6h+ days</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pattern 4: Neon Glow -->
+<div class="section-title" style="color:#10b981">PATTERN 4</div>
+<div class="section-heading">Neon Glow (Dark Only)</div>
+<div class="section-desc">Subtle radial glow behind the card. Accent colored border hint. Dark-mode premium feel.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="s4-row">
+      <div class="s4-card">
+        <div class="s4-lbl">🔥 Current Streak</div>
+        <div class="s4-val" style="color:#10b981">14 <span class="s4-unit">days</span></div>
+        <div class="s4-sub">Best: 23 days</div>
+      </div>
+      <div class="s4-card accent-blue">
+        <div class="s4-lbl">⚡ Deep Work</div>
+        <div class="s4-val" style="color:#0ea5e9">4 <span class="s4-unit">days</span></div>
+        <div class="s4-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pattern 5: Compact Icon Row -->
+<div class="section-title" style="color:#eab308">PATTERN 5</div>
+<div class="section-heading">Compact Icon Row</div>
+<div class="section-desc">Rounded icon + value + subtitle in a tight horizontal card. Saves vertical space.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="s5-row">
+      <div class="s5-card">
+        <div class="s5-icon-circle" style="background:rgba(249,115,22,0.15)">🔥</div>
+        <div class="s5-mid">
+          <div class="s5-name">Streak</div>
+          <div class="s5-val">14<span style="font-size:11px;font-weight:400;color:#555"> days</span></div>
+        </div>
+      </div>
+      <div class="s5-card">
+        <div class="s5-icon-circle" style="background:rgba(14,165,233,0.15)">⚡</div>
+        <div class="s5-mid">
+          <div class="s5-name">Deep Work</div>
+          <div class="s5-val">4<span style="font-size:11px;font-weight:400;color:#555"> days</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="s5-row">
+      <div class="s5-card light-card">
+        <div class="s5-icon-circle" style="background:rgba(249,115,22,0.08)">🔥</div>
+        <div class="s5-mid">
+          <div class="s5-name">Streak</div>
+          <div class="s5-val">14<span style="font-size:11px;font-weight:400;color:#999"> days</span></div>
+        </div>
+      </div>
+      <div class="s5-card light-card">
+        <div class="s5-icon-circle" style="background:rgba(14,165,233,0.08)">⚡</div>
+        <div class="s5-mid">
+          <div class="s5-name">Deep Work</div>
+          <div class="s5-val">4<span style="font-size:11px;font-weight:400;color:#999"> days</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pattern 6: Gradient Fill -->
+<div class="section-title" style="color:#22c55e">PATTERN 6</div>
+<div class="section-heading">Gradient Fill Cards</div>
+<div class="section-desc">Bold gradient backgrounds. The card IS the accent. High visual impact. Works great for hero metrics.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="rec">RECOMMENDED</div>
+    <div class="mode-tag">Dark</div>
+    <div class="s6-row">
+      <div class="s6-card emerald">
+        <div class="s6-icon">🔥</div>
+        <div class="s6-val">14 <span class="s6-unit">days</span></div>
+        <div class="s6-lbl">Current Streak</div>
+        <div class="s6-sub">Best: 23 days</div>
+      </div>
+      <div class="s6-card ocean">
+        <div class="s6-icon">⚡</div>
+        <div class="s6-val">4 <span class="s6-unit">days</span></div>
+        <div class="s6-lbl">Deep Work</div>
+        <div class="s6-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="s6-row">
+      <div class="s6-card soft-emerald">
+        <div class="s6-icon">🔥</div>
+        <div class="s6-val">14 <span class="s6-unit" style="color:#065f46">days</span></div>
+        <div class="s6-lbl">Current Streak</div>
+        <div class="s6-sub">Best: 23 days</div>
+      </div>
+      <div class="s6-card soft-ocean">
+        <div class="s6-icon">⚡</div>
+        <div class="s6-val">4 <span class="s6-unit" style="color:#0c4a6e">days</span></div>
+        <div class="s6-lbl">Deep Work</div>
+        <div class="s6-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PIPELINE                                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="section-title">SECTION 2</div>
+<div class="section-heading">Pipeline (5 Phases)</div>
+<div class="section-desc">Current: 3 rows (dot → label → count). Must be 2 rows max. 6 creative patterns below.</div>
+
+<!-- Pipeline A: Colored Numbers -->
+<div class="section-title" style="color:#ec4899">PIPELINE A</div>
+<div class="section-heading">Colored Numbers + Label</div>
+<div class="section-desc">The number IS the color. No dot needed. Cleanest 2-row design. Each phase speaks for itself.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="sec-label">PIPELINE</div>
+    <div class="pa-card">
+      <div class="pa-item"><div class="pa-count" style="color:#ec4899">1</div><div class="pa-label" style="color:#ec4899">Design</div></div>
+      <div class="pa-item"><div class="pa-count" style="color:#0ea5e9">1</div><div class="pa-label" style="color:#0ea5e9">Eng</div></div>
+      <div class="pa-item"><div class="pa-count" style="color:#eab308">1</div><div class="pa-label" style="color:#eab308">Build</div></div>
+      <div class="pa-item"><div class="pa-count" style="color:#22c55e">1</div><div class="pa-label" style="color:#22c55e">Launch</div></div>
+      <div class="pa-item" style="border:none"><div class="pa-count" style="color:#14b8a6">0</div><div class="pa-label" style="color:#14b8a6">Done</div></div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="sec-label">PIPELINE</div>
+    <div class="pa-card light-card">
+      <div class="pa-item"><div class="pa-count" style="color:#ec4899">1</div><div class="pa-label" style="color:#ec4899">Design</div></div>
+      <div class="pa-item"><div class="pa-count" style="color:#0ea5e9">1</div><div class="pa-label" style="color:#0ea5e9">Eng</div></div>
+      <div class="pa-item"><div class="pa-count" style="color:#ca8a04">1</div><div class="pa-label" style="color:#ca8a04">Build</div></div>
+      <div class="pa-item"><div class="pa-count" style="color:#22c55e">1</div><div class="pa-label" style="color:#22c55e">Launch</div></div>
+      <div class="pa-item" style="border:none"><div class="pa-count" style="color:#14b8a6">0</div><div class="pa-label" style="color:#14b8a6">Done</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Pipeline B: Connected Flow -->
+<div class="section-title" style="color:#0ea5e9">PIPELINE B</div>
+<div class="section-heading">Connected Flow Nodes</div>
+<div class="section-desc">Colored circles connected by lines. Feels like a real pipeline/workflow. Count inside circle, label below.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="rec">RECOMMENDED</div>
+    <div class="mode-tag">Dark</div>
+    <div class="sec-label">PIPELINE</div>
+    <div class="pb-card">
+      <div class="pb-node"><div class="pb-circle" style="background:#ec4899">1</div><div class="pb-name">Design</div></div>
+      <div class="pb-line"></div>
+      <div class="pb-node"><div class="pb-circle" style="background:#0ea5e9">1</div><div class="pb-name">Eng</div></div>
+      <div class="pb-line"></div>
+      <div class="pb-node"><div class="pb-circle" style="background:#eab308">1</div><div class="pb-name">Build</div></div>
+      <div class="pb-line"></div>
+      <div class="pb-node"><div class="pb-circle" style="background:#22c55e">1</div><div class="pb-name">Launch</div></div>
+      <div class="pb-line"></div>
+      <div class="pb-node"><div class="pb-circle" style="background:#14b8a6">0</div><div class="pb-name">Done</div></div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="sec-label">PIPELINE</div>
+    <div class="pb-card light-card">
+      <div class="pb-node"><div class="pb-circle" style="background:#ec4899">1</div><div class="pb-name">Design</div></div>
+      <div class="pb-line"></div>
+      <div class="pb-node"><div class="pb-circle" style="background:#0ea5e9">1</div><div class="pb-name">Eng</div></div>
+      <div class="pb-line"></div>
+      <div class="pb-node"><div class="pb-circle" style="background:#ca8a04">1</div><div class="pb-name">Build</div></div>
+      <div class="pb-line"></div>
+      <div class="pb-node"><div class="pb-circle" style="background:#22c55e">1</div><div class="pb-name">Launch</div></div>
+      <div class="pb-line"></div>
+      <div class="pb-node"><div class="pb-circle" style="background:#14b8a6">0</div><div class="pb-name">Done</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Pipeline C: Colored Pills -->
+<div class="section-title" style="color:#eab308">PIPELINE C</div>
+<div class="section-heading">Colored Pill Cards</div>
+<div class="section-desc">Individual colored background pills. No outer card. Bold, visual, each phase has its own identity.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="sec-label">PIPELINE</div>
+    <div class="pc-row">
+      <div class="pc-pill" style="background:rgba(236,72,153,0.15)"><div class="pc-count" style="color:#ec4899">1</div><div class="pc-label" style="color:#ec4899">Design</div></div>
+      <div class="pc-pill" style="background:rgba(14,165,233,0.15)"><div class="pc-count" style="color:#0ea5e9">1</div><div class="pc-label" style="color:#0ea5e9">Eng</div></div>
+      <div class="pc-pill" style="background:rgba(234,179,8,0.15)"><div class="pc-count" style="color:#eab308">1</div><div class="pc-label" style="color:#eab308">Build</div></div>
+      <div class="pc-pill" style="background:rgba(34,197,94,0.15)"><div class="pc-count" style="color:#22c55e">1</div><div class="pc-label" style="color:#22c55e">Launch</div></div>
+      <div class="pc-pill" style="background:rgba(20,184,166,0.15)"><div class="pc-count" style="color:#14b8a6">0</div><div class="pc-label" style="color:#14b8a6">Done</div></div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="sec-label">PIPELINE</div>
+    <div class="pc-row">
+      <div class="pc-pill" style="background:rgba(236,72,153,0.08)"><div class="pc-count" style="color:#ec4899">1</div><div class="pc-label" style="color:#ec4899">Design</div></div>
+      <div class="pc-pill" style="background:rgba(14,165,233,0.08)"><div class="pc-count" style="color:#0ea5e9">1</div><div class="pc-label" style="color:#0ea5e9">Eng</div></div>
+      <div class="pc-pill" style="background:rgba(234,179,8,0.08)"><div class="pc-count" style="color:#ca8a04">1</div><div class="pc-label" style="color:#ca8a04">Build</div></div>
+      <div class="pc-pill" style="background:rgba(34,197,94,0.08)"><div class="pc-count" style="color:#22c55e">1</div><div class="pc-label" style="color:#22c55e">Launch</div></div>
+      <div class="pc-pill" style="background:rgba(20,184,166,0.08)"><div class="pc-count" style="color:#14b8a6">0</div><div class="pc-label" style="color:#14b8a6">Done</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Pipeline D: Segmented Bar -->
+<div class="section-title" style="color:#22c55e">PIPELINE D</div>
+<div class="section-heading">Segmented Bar + Labels</div>
+<div class="section-desc">Color bar on top showing distribution. Dot + count labels below. Feels like a real progress pipeline.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="sec-label">PIPELINE</div>
+    <div class="pd-card">
+      <div class="pd-bar">
+        <div class="pd-seg" style="background:#ec4899"></div>
+        <div class="pd-seg" style="background:#0ea5e9"></div>
+        <div class="pd-seg" style="background:#eab308"></div>
+        <div class="pd-seg" style="background:#22c55e"></div>
+        <div class="pd-seg empty" style="background:#14b8a6"></div>
+      </div>
+      <div class="pd-labels">
+        <div class="pd-item"><div class="pd-dot" style="background:#ec4899"></div><div class="pd-text"><span class="pd-num">1</span> Des</div></div>
+        <div class="pd-item"><div class="pd-dot" style="background:#0ea5e9"></div><div class="pd-text"><span class="pd-num">1</span> Eng</div></div>
+        <div class="pd-item"><div class="pd-dot" style="background:#eab308"></div><div class="pd-text"><span class="pd-num">1</span> Bld</div></div>
+        <div class="pd-item"><div class="pd-dot" style="background:#22c55e"></div><div class="pd-text"><span class="pd-num">1</span> Lch</div></div>
+        <div class="pd-item"><div class="pd-dot" style="background:#14b8a6"></div><div class="pd-text"><span class="pd-num">0</span> Done</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="sec-label">PIPELINE</div>
+    <div class="pd-card light-card">
+      <div class="pd-bar">
+        <div class="pd-seg" style="background:#ec4899"></div>
+        <div class="pd-seg" style="background:#0ea5e9"></div>
+        <div class="pd-seg" style="background:#eab308"></div>
+        <div class="pd-seg" style="background:#22c55e"></div>
+        <div class="pd-seg empty" style="background:#14b8a6"></div>
+      </div>
+      <div class="pd-labels">
+        <div class="pd-item"><div class="pd-dot" style="background:#ec4899"></div><div class="pd-text"><span class="pd-num">1</span> Des</div></div>
+        <div class="pd-item"><div class="pd-dot" style="background:#0ea5e9"></div><div class="pd-text"><span class="pd-num">1</span> Eng</div></div>
+        <div class="pd-item"><div class="pd-dot" style="background:#eab308"></div><div class="pd-text"><span class="pd-num">1</span> Bld</div></div>
+        <div class="pd-item"><div class="pd-dot" style="background:#22c55e"></div><div class="pd-text"><span class="pd-num">1</span> Lch</div></div>
+        <div class="pd-item"><div class="pd-dot" style="background:#14b8a6"></div><div class="pd-text"><span class="pd-num">0</span> Done</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pipeline E: Mini Arcs -->
+<div class="section-title" style="color:#a855f7">PIPELINE E</div>
+<div class="section-heading">Mini Arc Badges</div>
+<div class="section-desc">Small colored arcs around each count. Arc fill = proportion of total projects. Adds data-viz depth.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="sec-label">PIPELINE</div>
+    <div class="pe-card">
+      <div class="pe-item">
+        <div class="pe-arc">
+          <svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="#2a2a2a" stroke-width="3" transform="rotate(-90 20 20)"/><circle cx="20" cy="20" r="16" fill="none" stroke="#ec4899" stroke-width="3" stroke-dasharray="100.5" stroke-dashoffset="75.4" stroke-linecap="round" transform="rotate(-90 20 20)"/></svg>
+          <div class="pe-count" style="color:#ec4899">1</div>
+        </div>
+        <div class="pe-label" style="color:#ec4899">Design</div>
+      </div>
+      <div class="pe-item">
+        <div class="pe-arc">
+          <svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="#2a2a2a" stroke-width="3" transform="rotate(-90 20 20)"/><circle cx="20" cy="20" r="16" fill="none" stroke="#0ea5e9" stroke-width="3" stroke-dasharray="100.5" stroke-dashoffset="75.4" stroke-linecap="round" transform="rotate(-90 20 20)"/></svg>
+          <div class="pe-count" style="color:#0ea5e9">1</div>
+        </div>
+        <div class="pe-label" style="color:#0ea5e9">Eng</div>
+      </div>
+      <div class="pe-item">
+        <div class="pe-arc">
+          <svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="#2a2a2a" stroke-width="3" transform="rotate(-90 20 20)"/><circle cx="20" cy="20" r="16" fill="none" stroke="#eab308" stroke-width="3" stroke-dasharray="100.5" stroke-dashoffset="75.4" stroke-linecap="round" transform="rotate(-90 20 20)"/></svg>
+          <div class="pe-count" style="color:#eab308">1</div>
+        </div>
+        <div class="pe-label" style="color:#eab308">Build</div>
+      </div>
+      <div class="pe-item">
+        <div class="pe-arc">
+          <svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="#2a2a2a" stroke-width="3" transform="rotate(-90 20 20)"/><circle cx="20" cy="20" r="16" fill="none" stroke="#22c55e" stroke-width="3" stroke-dasharray="100.5" stroke-dashoffset="75.4" stroke-linecap="round" transform="rotate(-90 20 20)"/></svg>
+          <div class="pe-count" style="color:#22c55e">1</div>
+        </div>
+        <div class="pe-label" style="color:#22c55e">Launch</div>
+      </div>
+      <div class="pe-item">
+        <div class="pe-arc">
+          <svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="#2a2a2a" stroke-width="3" transform="rotate(-90 20 20)"/></svg>
+          <div class="pe-count" style="color:#555">0</div>
+        </div>
+        <div class="pe-label">Done</div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="sec-label">PIPELINE</div>
+    <div class="pe-card light-card">
+      <div class="pe-item">
+        <div class="pe-arc">
+          <svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="#f3f4f6" stroke-width="3" transform="rotate(-90 20 20)"/><circle cx="20" cy="20" r="16" fill="none" stroke="#ec4899" stroke-width="3" stroke-dasharray="100.5" stroke-dashoffset="75.4" stroke-linecap="round" transform="rotate(-90 20 20)"/></svg>
+          <div class="pe-count" style="color:#ec4899">1</div>
+        </div>
+        <div class="pe-label" style="color:#ec4899">Design</div>
+      </div>
+      <div class="pe-item">
+        <div class="pe-arc">
+          <svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="#f3f4f6" stroke-width="3" transform="rotate(-90 20 20)"/><circle cx="20" cy="20" r="16" fill="none" stroke="#0ea5e9" stroke-width="3" stroke-dasharray="100.5" stroke-dashoffset="75.4" stroke-linecap="round" transform="rotate(-90 20 20)"/></svg>
+          <div class="pe-count" style="color:#0ea5e9">1</div>
+        </div>
+        <div class="pe-label" style="color:#0ea5e9">Eng</div>
+      </div>
+      <div class="pe-item">
+        <div class="pe-arc">
+          <svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="#f3f4f6" stroke-width="3" transform="rotate(-90 20 20)"/><circle cx="20" cy="20" r="16" fill="none" stroke="#eab308" stroke-width="3" stroke-dasharray="100.5" stroke-dashoffset="75.4" stroke-linecap="round" transform="rotate(-90 20 20)"/></svg>
+          <div class="pe-count" style="color:#ca8a04">1</div>
+        </div>
+        <div class="pe-label" style="color:#ca8a04">Build</div>
+      </div>
+      <div class="pe-item">
+        <div class="pe-arc">
+          <svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="#f3f4f6" stroke-width="3" transform="rotate(-90 20 20)"/><circle cx="20" cy="20" r="16" fill="none" stroke="#22c55e" stroke-width="3" stroke-dasharray="100.5" stroke-dashoffset="75.4" stroke-linecap="round" transform="rotate(-90 20 20)"/></svg>
+          <div class="pe-count" style="color:#22c55e">1</div>
+        </div>
+        <div class="pe-label" style="color:#22c55e">Launch</div>
+      </div>
+      <div class="pe-item">
+        <div class="pe-arc">
+          <svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="#f3f4f6" stroke-width="3" transform="rotate(-90 20 20)"/></svg>
+          <div class="pe-count" style="color:#ccc">0</div>
+        </div>
+        <div class="pe-label">Done</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pipeline F: Horizontal Bars -->
+<div class="section-title" style="color:#14b8a6">PIPELINE F</div>
+<div class="section-heading">Horizontal Bars</div>
+<div class="section-desc">Vertical list with progress bars. Different layout — shows proportion visually. Tappable rows.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="sec-label">PIPELINE</div>
+    <div class="pf-card">
+      <div class="pf-row"><div class="pf-label">Design</div><div class="pf-bar-wrap"><div class="pf-fill" style="width:25%;background:#ec4899"></div></div><div class="pf-count" style="color:#ec4899">1</div></div>
+      <div class="pf-row"><div class="pf-label">Eng</div><div class="pf-bar-wrap"><div class="pf-fill" style="width:25%;background:#0ea5e9"></div></div><div class="pf-count" style="color:#0ea5e9">1</div></div>
+      <div class="pf-row"><div class="pf-label">Build</div><div class="pf-bar-wrap"><div class="pf-fill" style="width:25%;background:#eab308"></div></div><div class="pf-count" style="color:#eab308">1</div></div>
+      <div class="pf-row"><div class="pf-label">Launch</div><div class="pf-bar-wrap"><div class="pf-fill" style="width:25%;background:#22c55e"></div></div><div class="pf-count" style="color:#22c55e">1</div></div>
+      <div class="pf-row"><div class="pf-label">Done</div><div class="pf-bar-wrap"><div class="pf-fill" style="width:0%;background:#14b8a6"></div></div><div class="pf-count" style="color:#555">0</div></div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="sec-label">PIPELINE</div>
+    <div class="pf-card light-card">
+      <div class="pf-row"><div class="pf-label">Design</div><div class="pf-bar-wrap"><div class="pf-fill" style="width:25%;background:#ec4899"></div></div><div class="pf-count" style="color:#ec4899">1</div></div>
+      <div class="pf-row"><div class="pf-label">Eng</div><div class="pf-bar-wrap"><div class="pf-fill" style="width:25%;background:#0ea5e9"></div></div><div class="pf-count" style="color:#0ea5e9">1</div></div>
+      <div class="pf-row"><div class="pf-label">Build</div><div class="pf-bar-wrap"><div class="pf-fill" style="width:25%;background:#eab308"></div></div><div class="pf-count" style="color:#ca8a04">1</div></div>
+      <div class="pf-row"><div class="pf-label">Launch</div><div class="pf-bar-wrap"><div class="pf-fill" style="width:25%;background:#22c55e"></div></div><div class="pf-count" style="color:#22c55e">1</div></div>
+      <div class="pf-row"><div class="pf-label">Done</div><div class="pf-bar-wrap"><div class="pf-fill" style="width:0%;background:#14b8a6"></div></div><div class="pf-count" style="color:#ccc">0</div></div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PATTERN 6 ICON VARIATIONS                                   -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="section-title">SECTION 3</div>
+<div class="section-heading">Pattern 6 — Icon Variations</div>
+<div class="section-desc">Same gradient fill cards, different icon treatments. Pick the one that feels most professional.</div>
+
+<style>
+  /* --- Icon Variation Shared --- */
+  .iv-row { display: flex; gap: 10px; }
+  .iv-card {
+    flex: 1; border-radius: 14px; padding: 14px 14px 12px;
+    position: relative; overflow: hidden;
+  }
+  .iv-card.emerald { background: linear-gradient(135deg, #065f46 0%, #10b981 100%); }
+  .iv-card.ocean { background: linear-gradient(135deg, #0c4a6e 0%, #0ea5e9 100%); }
+  .iv-card.soft-emerald { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); }
+  .iv-card.soft-ocean { background: linear-gradient(135deg, #dbeafe 0%, #bae6fd 100%); }
+  .iv-val { font-size: 28px; font-weight: 800; color: #fff; line-height: 1; }
+  .iv-card.soft-emerald .iv-val, .iv-card.soft-ocean .iv-val { color: #111; }
+  .iv-unit { font-size: 12px; font-weight: 400; opacity: 0.7; }
+  .iv-card.soft-emerald .iv-unit { color: #065f46; }
+  .iv-card.soft-ocean .iv-unit { color: #0c4a6e; }
+  .iv-lbl { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.6); margin-top: 4px; }
+  .iv-card.soft-emerald .iv-lbl { color: #065f46; }
+  .iv-card.soft-ocean .iv-lbl { color: #0c4a6e; }
+  .iv-sub { font-size: 9px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+  .iv-card.soft-emerald .iv-sub { color: #6b7280; }
+  .iv-card.soft-ocean .iv-sub { color: #6b7280; }
+
+  /* Variation A: No icon at all */
+
+  /* Variation B: Outline SVG icons */
+  .iv-svg-icon { margin-bottom: 8px; opacity: 0.8; }
+  .iv-card.soft-emerald .iv-svg-icon { opacity: 0.6; }
+  .iv-card.soft-ocean .iv-svg-icon { opacity: 0.6; }
+
+  /* Variation C: Large watermark icon */
+  .iv-watermark {
+    position: absolute; top: -8px; right: -8px;
+    opacity: 0.08; font-size: 72px; line-height: 1;
+    pointer-events: none;
+  }
+
+  /* Variation D: Small circle icon badge */
+  .iv-icon-badge {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 8px;
+    background: rgba(255,255,255,0.15);
+  }
+  .iv-card.soft-emerald .iv-icon-badge { background: rgba(0,0,0,0.08); }
+  .iv-card.soft-ocean .iv-icon-badge { background: rgba(0,0,0,0.08); }
+
+  /* Variation E: Inline icon next to label */
+  .iv-label-row {
+    display: flex; align-items: center; gap: 5px;
+    margin-top: 4px;
+  }
+
+  /* Variation F: Top-right minimal icon */
+  .iv-top-icon {
+    position: absolute; top: 12px; right: 12px;
+    opacity: 0.3;
+  }
+  .iv-card.soft-emerald .iv-top-icon, .iv-card.soft-ocean .iv-top-icon { opacity: 0.25; }
+</style>
+
+<!-- Variation A: No Icon — Pure Typography -->
+<div class="section-title" style="color:#10b981">VARIATION A</div>
+<div class="section-heading">No Icon — Pure Typography</div>
+<div class="section-desc">Let the numbers and gradient speak. No icon clutter. Most minimal and elegant.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="iv-row">
+      <div class="iv-card emerald">
+        <div class="iv-val">14 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Current Streak</div>
+        <div class="iv-sub">Best: 23 days</div>
+      </div>
+      <div class="iv-card ocean">
+        <div class="iv-val">4 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Deep Work</div>
+        <div class="iv-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="iv-row">
+      <div class="iv-card soft-emerald">
+        <div class="iv-val">14 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Current Streak</div>
+        <div class="iv-sub">Best: 23 days</div>
+      </div>
+      <div class="iv-card soft-ocean">
+        <div class="iv-val">4 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Deep Work</div>
+        <div class="iv-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Variation B: Outline SVG Icons (Ionicons-style) -->
+<div class="section-title" style="color:#0ea5e9">VARIATION B</div>
+<div class="section-heading">Outline SVG Icons</div>
+<div class="section-desc">Thin stroke icons matching the Ionicons set used in the app. Professional, consistent with the design system.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="iv-row">
+      <div class="iv-card emerald">
+        <div class="iv-svg-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21c-4-4-8-7.5-8-11a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 3.5-4 7-8 11z"/>
+            <path d="M12 13V7" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="iv-val">14 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Current Streak</div>
+        <div class="iv-sub">Best: 23 days</div>
+      </div>
+      <div class="iv-card ocean">
+        <div class="iv-svg-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <div class="iv-val">4 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Deep Work</div>
+        <div class="iv-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="iv-row">
+      <div class="iv-card soft-emerald">
+        <div class="iv-svg-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#065f46" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21c-4-4-8-7.5-8-11a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 3.5-4 7-8 11z"/>
+            <path d="M12 13V7" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="iv-val">14 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Current Streak</div>
+        <div class="iv-sub">Best: 23 days</div>
+      </div>
+      <div class="iv-card soft-ocean">
+        <div class="iv-svg-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0c4a6e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <div class="iv-val">4 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Deep Work</div>
+        <div class="iv-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Variation C: Large Watermark Icon -->
+<div class="section-title" style="color:#a855f7">VARIATION C</div>
+<div class="section-heading">Large Watermark Icon</div>
+<div class="section-desc">Oversized faded icon in the background corner. Adds visual interest without cluttering the content area. Premium app feel.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="rec">RECOMMENDED</div>
+    <div class="mode-tag">Dark</div>
+    <div class="iv-row">
+      <div class="iv-card emerald">
+        <svg class="iv-watermark" width="72" height="72" viewBox="0 0 24 24" fill="white" style="position:absolute;top:-4px;right:-4px;opacity:0.08">
+          <path d="M12 21c-4-4-8-7.5-8-11a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 3.5-4 7-8 11z"/>
+        </svg>
+        <div class="iv-val">14 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Current Streak</div>
+        <div class="iv-sub">Best: 23 days</div>
+      </div>
+      <div class="iv-card ocean">
+        <svg class="iv-watermark" width="72" height="72" viewBox="0 0 24 24" fill="white" style="position:absolute;top:-4px;right:-4px;opacity:0.08">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        <div class="iv-val">4 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Deep Work</div>
+        <div class="iv-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="iv-row">
+      <div class="iv-card soft-emerald">
+        <svg class="iv-watermark" width="72" height="72" viewBox="0 0 24 24" fill="#065f46" style="position:absolute;top:-4px;right:-4px;opacity:0.06">
+          <path d="M12 21c-4-4-8-7.5-8-11a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 3.5-4 7-8 11z"/>
+        </svg>
+        <div class="iv-val">14 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Current Streak</div>
+        <div class="iv-sub">Best: 23 days</div>
+      </div>
+      <div class="iv-card soft-ocean">
+        <svg class="iv-watermark" width="72" height="72" viewBox="0 0 24 24" fill="#0c4a6e" style="position:absolute;top:-4px;right:-4px;opacity:0.06">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        <div class="iv-val">4 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Deep Work</div>
+        <div class="iv-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Variation D: Small Frosted Icon Badge -->
+<div class="section-title" style="color:#ec4899">VARIATION D</div>
+<div class="section-heading">Frosted Icon Badge</div>
+<div class="section-desc">Small rounded badge with semi-transparent background. Icon inside. Clean separation between icon and content.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="iv-row">
+      <div class="iv-card emerald">
+        <div class="iv-icon-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21c-4-4-8-7.5-8-11a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 3.5-4 7-8 11z"/>
+          </svg>
+        </div>
+        <div class="iv-val">14 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Current Streak</div>
+        <div class="iv-sub">Best: 23 days</div>
+      </div>
+      <div class="iv-card ocean">
+        <div class="iv-icon-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <div class="iv-val">4 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Deep Work</div>
+        <div class="iv-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="iv-row">
+      <div class="iv-card soft-emerald">
+        <div class="iv-icon-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#065f46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21c-4-4-8-7.5-8-11a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 3.5-4 7-8 11z"/>
+          </svg>
+        </div>
+        <div class="iv-val">14 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Current Streak</div>
+        <div class="iv-sub">Best: 23 days</div>
+      </div>
+      <div class="iv-card soft-ocean">
+        <div class="iv-icon-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0c4a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <div class="iv-val">4 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Deep Work</div>
+        <div class="iv-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Variation E: Inline Icon with Label -->
+<div class="section-title" style="color:#eab308">VARIATION E</div>
+<div class="section-heading">Inline Icon + Label</div>
+<div class="section-desc">Small icon sits next to the label text. Compact, no extra vertical space used. Professional dashboard pattern.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="iv-row">
+      <div class="iv-card emerald">
+        <div class="iv-val">14 <span class="iv-unit">days</span></div>
+        <div class="iv-label-row">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21c-4-4-8-7.5-8-11a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 3.5-4 7-8 11z"/>
+          </svg>
+          <span class="iv-lbl" style="margin-top:0">Current Streak</span>
+        </div>
+        <div class="iv-sub">Best: 23 days</div>
+      </div>
+      <div class="iv-card ocean">
+        <div class="iv-val">4 <span class="iv-unit">days</span></div>
+        <div class="iv-label-row">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+          <span class="iv-lbl" style="margin-top:0">Deep Work</span>
+        </div>
+        <div class="iv-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="iv-row">
+      <div class="iv-card soft-emerald">
+        <div class="iv-val">14 <span class="iv-unit">days</span></div>
+        <div class="iv-label-row">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#065f46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6">
+            <path d="M12 21c-4-4-8-7.5-8-11a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 3.5-4 7-8 11z"/>
+          </svg>
+          <span class="iv-lbl" style="margin-top:0">Current Streak</span>
+        </div>
+        <div class="iv-sub">Best: 23 days</div>
+      </div>
+      <div class="iv-card soft-ocean">
+        <div class="iv-val">4 <span class="iv-unit">days</span></div>
+        <div class="iv-label-row">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0c4a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+          <span class="iv-lbl" style="margin-top:0">Deep Work</span>
+        </div>
+        <div class="iv-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Variation F: Top-Right Floating Icon -->
+<div class="section-title" style="color:#14b8a6">VARIATION F</div>
+<div class="section-heading">Top-Right Floating Icon</div>
+<div class="section-desc">Small faded icon floated to top-right corner. Content stays left-aligned. Common in banking / finance apps.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="iv-row">
+      <div class="iv-card emerald">
+        <div class="iv-top-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+            <path d="M12 21c-4-4-8-7.5-8-11a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 3.5-4 7-8 11z"/>
+          </svg>
+        </div>
+        <div class="iv-val">14 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Current Streak</div>
+        <div class="iv-sub">Best: 23 days</div>
+      </div>
+      <div class="iv-card ocean">
+        <div class="iv-top-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <div class="iv-val">4 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Deep Work</div>
+        <div class="iv-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="iv-row">
+      <div class="iv-card soft-emerald">
+        <div class="iv-top-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#065f46">
+            <path d="M12 21c-4-4-8-7.5-8-11a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 3.5-4 7-8 11z"/>
+          </svg>
+        </div>
+        <div class="iv-val">14 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Current Streak</div>
+        <div class="iv-sub">Best: 23 days</div>
+      </div>
+      <div class="iv-card soft-ocean">
+        <div class="iv-top-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#0c4a6e">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <div class="iv-val">4 <span class="iv-unit">days</span></div>
+        <div class="iv-lbl">Deep Work</div>
+        <div class="iv-sub">This week (6h+)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 4: STALE INDICATOR — URGENCY BADGE REDESIGNS                  -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+<div class="section-title" style="color:#ef4444">SECTION 4</div>
+<div class="section-heading">Stale Indicator — Urgency Badge Variations</div>
+<div class="section-desc">
+  The current "STALE 3" circle badge is too subtle. These variations aim to create urgency and prompt action.<br>
+  Each is shown in the full Continue card context with realistic project data. Color shifts by severity:<br>
+  <span style="color:#10b981">green (1-3d)</span> &middot;
+  <span style="color:#eab308">yellow (4-7d)</span> &middot;
+  <span style="color:#f97316">orange (8-14d)</span> &middot;
+  <span style="color:#ef4444">red (15d+)</span>
+</div>
+
+<style>
+  /* Continue Card base */
+  .cc-card {
+    display: flex; border-radius: 14px; overflow: hidden;
+    border: 1px solid #27272a; position: relative;
+  }
+  .cc-card.light { border-color: #e5e7eb; background: #fff; }
+  .cc-card.dark { background: #18181b; }
+  .cc-accent { width: 3px; background: #10b981; flex-shrink: 0; }
+  .cc-body { flex: 1; padding: 14px 16px; }
+  .cc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .cc-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; color: #71717a; }
+  .cc-card.light .cc-label { color: #9ca3af; }
+  .cc-name { font-size: 16px; font-weight: 600; color: #fafafa; margin-bottom: 10px; }
+  .cc-card.light .cc-name { color: #111827; }
+  .cc-progress-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .cc-bar { flex: 1; height: 4px; background: #27272a; border-radius: 2px; overflow: hidden; }
+  .cc-card.light .cc-bar { background: #e5e7eb; }
+  .cc-fill { height: 100%; background: #10b981; border-radius: 2px; width: 35%; }
+  .cc-pct { font-size: 11px; font-weight: 600; color: #71717a; }
+  .cc-phase { font-size: 11px; color: #52525b; margin-bottom: 12px; }
+  .cc-card.light .cc-phase { color: #9ca3af; }
+  .cc-btn { display: inline-flex; align-items: center; gap: 6px; background: #10b981; color: #fff; border: none; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+  /* ---- Stale Variation Styles ---- */
+
+  /* A: Gradient Warning Strip */
+  .stale-strip {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 10px; border-radius: 8px; margin-bottom: 10px;
+  }
+  .stale-strip.green { background: linear-gradient(90deg, rgba(16,185,129,0.12) 0%, rgba(16,185,129,0.04) 100%); }
+  .stale-strip.yellow { background: linear-gradient(90deg, rgba(234,179,8,0.15) 0%, rgba(234,179,8,0.04) 100%); }
+  .stale-strip.orange { background: linear-gradient(90deg, rgba(249,115,22,0.18) 0%, rgba(249,115,22,0.04) 100%); }
+  .stale-strip.red { background: linear-gradient(90deg, rgba(239,68,68,0.20) 0%, rgba(239,68,68,0.05) 100%); }
+  .stale-strip-icon { font-size: 13px; }
+  .stale-strip-text { font-size: 11px; font-weight: 600; }
+  .stale-strip.green .stale-strip-text { color: #10b981; }
+  .stale-strip.yellow .stale-strip-text { color: #eab308; }
+  .stale-strip.orange .stale-strip-text { color: #f97316; }
+  .stale-strip.red .stale-strip-text { color: #ef4444; }
+
+  /* B: Pulsing Dot + Bold Text */
+  .stale-pulse { display: flex; align-items: center; gap: 6px; }
+  .stale-dot {
+    width: 8px; height: 8px; border-radius: 50%; position: relative;
+    animation: pulseDot 2s ease-in-out infinite;
+  }
+  .stale-dot.green { background: #10b981; box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+  .stale-dot.yellow { background: #eab308; box-shadow: 0 0 0 0 rgba(234,179,8,0.4); }
+  .stale-dot.orange { background: #f97316; box-shadow: 0 0 0 0 rgba(249,115,22,0.4); animation-duration: 1.5s; }
+  .stale-dot.red { background: #ef4444; box-shadow: 0 0 0 0 rgba(239,68,68,0.4); animation-duration: 1s; }
+  @keyframes pulseDot {
+    0% { box-shadow: 0 0 0 0 currentColor; transform: scale(1); }
+    50% { box-shadow: 0 0 0 6px transparent; transform: scale(1.15); }
+    100% { box-shadow: 0 0 0 0 transparent; transform: scale(1); }
+  }
+  .stale-dot.green { color: rgba(16,185,129,0.4); }
+  .stale-dot.yellow { color: rgba(234,179,8,0.4); }
+  .stale-dot.orange { color: rgba(249,115,22,0.5); }
+  .stale-dot.red { color: rgba(239,68,68,0.5); }
+  .stale-pulse-text { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stale-pulse-text.green { color: #10b981; }
+  .stale-pulse-text.yellow { color: #eab308; }
+  .stale-pulse-text.orange { color: #f97316; }
+  .stale-pulse-text.red { color: #ef4444; }
+
+  /* C: Heat Bar / Urgency Meter */
+  .stale-heat { display: flex; align-items: center; gap: 8px; }
+  .stale-heat-track {
+    width: 48px; height: 5px; border-radius: 3px; overflow: hidden;
+    background: #27272a; position: relative;
+  }
+  .cc-card.light .stale-heat-track { background: #e5e7eb; }
+  .stale-heat-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+  .stale-heat-fill.green { width: 20%; background: #10b981; }
+  .stale-heat-fill.yellow { width: 47%; background: linear-gradient(90deg, #eab308, #f59e0b); }
+  .stale-heat-fill.orange { width: 73%; background: linear-gradient(90deg, #f97316, #ef4444); }
+  .stale-heat-fill.red { width: 100%; background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .stale-heat-label { font-size: 10px; font-weight: 700; }
+  .stale-heat-label.green { color: #10b981; }
+  .stale-heat-label.yellow { color: #eab308; }
+  .stale-heat-label.orange { color: #f97316; }
+  .stale-heat-label.red { color: #ef4444; }
+
+  /* D: Countdown Pill */
+  .stale-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px 3px 7px; border-radius: 20px; font-size: 10px; font-weight: 700;
+  }
+  .stale-pill.green { background: rgba(16,185,129,0.15); color: #10b981; }
+  .stale-pill.yellow { background: rgba(234,179,8,0.15); color: #eab308; }
+  .stale-pill.orange { background: rgba(249,115,22,0.18); color: #f97316; }
+  .stale-pill.red { background: rgba(239,68,68,0.20); color: #ef4444; }
+  .stale-pill svg { flex-shrink: 0; }
+
+  /* E: Full Banner Alert */
+  .stale-banner {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; margin: -14px -16px 12px -16px;
+    font-size: 11px; font-weight: 600;
+  }
+  .stale-banner.green { background: rgba(16,185,129,0.10); color: #10b981; border-bottom: 1px solid rgba(16,185,129,0.15); }
+  .stale-banner.yellow { background: rgba(234,179,8,0.10); color: #eab308; border-bottom: 1px solid rgba(234,179,8,0.15); }
+  .stale-banner.orange { background: rgba(249,115,22,0.12); color: #f97316; border-bottom: 1px solid rgba(249,115,22,0.15); }
+  .stale-banner.red { background: rgba(239,68,68,0.12); color: #ef4444; border-bottom: 1px solid rgba(239,68,68,0.15); }
+  .stale-banner svg { flex-shrink: 0; }
+
+  /* F: Ring Decay */
+  .stale-ring { display: flex; align-items: center; gap: 6px; }
+  .stale-ring-svg { width: 26px; height: 26px; transform: rotate(-90deg); }
+  .stale-ring-bg { fill: none; stroke-width: 3; }
+  .stale-ring-fill { fill: none; stroke-width: 3; stroke-linecap: round; transition: stroke-dashoffset 0.3s; }
+  .stale-ring-num {
+    font-size: 10px; font-weight: 800; position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+  }
+  .stale-ring-wrap { position: relative; width: 26px; height: 26px; }
+  .stale-ring-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+</style>
+
+<!-- ======================== VARIATION A: GRADIENT WARNING STRIP ======================== -->
+<div class="section-title" style="color:#ef4444">VARIATION A</div>
+<div class="section-heading">Gradient Warning Strip</div>
+<div class="section-desc">Full-width colored strip inside the card with icon + message. Background gradient intensifies with urgency. Impossible to miss.</div>
+<div class="mockup-row">
+  <!-- Dark -->
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <!-- 3 days (green) -->
+    <div class="cc-card dark" style="margin-bottom:12px">
+      <div class="cc-accent"></div>
+      <div class="cc-body">
+        <div class="cc-top"><span class="cc-label">CONTINUE</span></div>
+        <div class="stale-strip green">
+          <span class="stale-strip-icon">&#9201;</span>
+          <span class="stale-strip-text">3 days idle — pick up where you left off</span>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <!-- 12 days (orange) -->
+    <div class="cc-card dark">
+      <div class="cc-accent" style="background:#f97316"></div>
+      <div class="cc-body">
+        <div class="cc-top"><span class="cc-label">CONTINUE</span></div>
+        <div class="stale-strip orange">
+          <span class="stale-strip-icon">&#128293;</span>
+          <span class="stale-strip-text">12 days idle — this project needs attention!</span>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+  </div>
+  <!-- Light -->
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="cc-card light" style="margin-bottom:12px">
+      <div class="cc-accent"></div>
+      <div class="cc-body">
+        <div class="cc-top"><span class="cc-label">CONTINUE</span></div>
+        <div class="stale-strip yellow">
+          <span class="stale-strip-icon">&#9201;</span>
+          <span class="stale-strip-text">5 days idle — pick up where you left off</span>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card light">
+      <div class="cc-accent" style="background:#ef4444"></div>
+      <div class="cc-body">
+        <div class="cc-top"><span class="cc-label">CONTINUE</span></div>
+        <div class="stale-strip red">
+          <span class="stale-strip-icon">&#128293;</span>
+          <span class="stale-strip-text">18 days idle — project at risk!</span>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== VARIATION B: PULSING DOT + BOLD TEXT ======================== -->
+<div class="section-title" style="color:#a855f7">VARIATION B</div>
+<div class="section-heading">Pulsing Dot + Bold Text</div>
+<div class="section-desc">Animated pulsing dot next to bold stale text. Pulse frequency increases with staleness (2s → 1s). The animation creates urgency without being obnoxious.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="cc-card dark" style="margin-bottom:12px">
+      <div class="cc-accent"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-pulse">
+            <div class="stale-dot green"></div>
+            <span class="stale-pulse-text green">3d idle</span>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card dark">
+      <div class="cc-accent" style="background:#ef4444"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-pulse">
+            <div class="stale-dot red"></div>
+            <span class="stale-pulse-text red">18d idle</span>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="cc-card light" style="margin-bottom:12px">
+      <div class="cc-accent"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-pulse">
+            <div class="stale-dot yellow"></div>
+            <span class="stale-pulse-text yellow">6d idle</span>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card light">
+      <div class="cc-accent" style="background:#f97316"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-pulse">
+            <div class="stale-dot orange"></div>
+            <span class="stale-pulse-text orange">10d idle</span>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== VARIATION C: HEAT BAR / URGENCY METER ======================== -->
+<div class="section-title" style="color:#f97316">VARIATION C</div>
+<div class="section-heading">Heat Bar — Urgency Meter</div>
+<div class="section-desc">A mini thermometer-style bar that fills from left to right. More stale = more filled with hotter colors. Visual metaphor of "temperature rising." Days count next to bar.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="cc-card dark" style="margin-bottom:12px">
+      <div class="cc-accent"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-heat">
+            <div class="stale-heat-track"><div class="stale-heat-fill green"></div></div>
+            <span class="stale-heat-label green">3d</span>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card dark" style="margin-bottom:12px">
+      <div class="cc-accent" style="background:#eab308"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-heat">
+            <div class="stale-heat-track"><div class="stale-heat-fill yellow"></div></div>
+            <span class="stale-heat-label yellow">6d</span>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card dark">
+      <div class="cc-accent" style="background:#ef4444"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-heat">
+            <div class="stale-heat-track"><div class="stale-heat-fill red"></div></div>
+            <span class="stale-heat-label red">20d</span>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="cc-card light" style="margin-bottom:12px">
+      <div class="cc-accent"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-heat">
+            <div class="stale-heat-track"><div class="stale-heat-fill green"></div></div>
+            <span class="stale-heat-label green">3d</span>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card light" style="margin-bottom:12px">
+      <div class="cc-accent" style="background:#f97316"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-heat">
+            <div class="stale-heat-track"><div class="stale-heat-fill orange"></div></div>
+            <span class="stale-heat-label orange">12d</span>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card light">
+      <div class="cc-accent" style="background:#ef4444"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-heat">
+            <div class="stale-heat-track"><div class="stale-heat-fill red"></div></div>
+            <span class="stale-heat-label red">20d</span>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== VARIATION D: COUNTDOWN PILL ======================== -->
+<div class="section-title" style="color:#0ea5e9">VARIATION D</div>
+<div class="section-heading">Countdown Pill Badge</div>
+<div class="section-desc">Compact pill-shaped badge with clock icon + days. Colored background shifts with severity. Compact but noticeable. Common in fitness/habit apps.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="cc-card dark" style="margin-bottom:12px">
+      <div class="cc-accent"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-pill green">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            3d ago
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card dark" style="margin-bottom:12px">
+      <div class="cc-accent" style="background:#eab308"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-pill yellow">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            7d ago
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card dark">
+      <div class="cc-accent" style="background:#ef4444"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-pill red">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            18d ago
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="cc-card light" style="margin-bottom:12px">
+      <div class="cc-accent"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-pill green">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            3d ago
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card light" style="margin-bottom:12px">
+      <div class="cc-accent" style="background:#f97316"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-pill orange">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            10d ago
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card light">
+      <div class="cc-accent" style="background:#ef4444"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-pill red">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            18d ago
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== VARIATION E: FULL BANNER ALERT ======================== -->
+<div class="section-title" style="color:#ec4899">VARIATION E</div>
+<div class="section-heading">Full Banner Alert</div>
+<div class="section-desc">Edge-to-edge colored banner spans the card width. Warning icon + action-oriented text. The card's left accent also shifts color. Most aggressive — hard to ignore.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="rec">RECOMMENDED</div>
+    <div class="mode-tag">Dark</div>
+    <div class="cc-card dark" style="margin-bottom:12px">
+      <div class="cc-accent"></div>
+      <div class="cc-body">
+        <div class="stale-banner green">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Idle for 3 days — get back on track
+        </div>
+        <div class="cc-top"><span class="cc-label">CONTINUE</span></div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card dark">
+      <div class="cc-accent" style="background:#ef4444"></div>
+      <div class="cc-body">
+        <div class="stale-banner red">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          18 days idle — project at risk!
+        </div>
+        <div class="cc-top"><span class="cc-label">CONTINUE</span></div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="cc-card light" style="margin-bottom:12px">
+      <div class="cc-accent" style="background:#eab308"></div>
+      <div class="cc-body">
+        <div class="stale-banner yellow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Idle for 5 days — pick up where you left off
+        </div>
+        <div class="cc-top"><span class="cc-label">CONTINUE</span></div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card light">
+      <div class="cc-accent" style="background:#f97316"></div>
+      <div class="cc-body">
+        <div class="stale-banner orange">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          12 days idle — this project needs attention!
+        </div>
+        <div class="cc-top"><span class="cc-label">CONTINUE</span></div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== VARIATION F: RING DECAY ======================== -->
+<div class="section-title" style="color:#14b8a6">VARIATION F</div>
+<div class="section-heading">Ring Decay — Time Running Out</div>
+<div class="section-desc">Small SVG ring that depletes as days increase. Number inside. "Time is running out" metaphor — 100% full ring at 1 day, nearly empty at 20+ days. Color shifts with urgency.</div>
+<div class="mockup-row">
+  <div class="phone dark">
+    <div class="mode-tag">Dark</div>
+    <div class="cc-card dark" style="margin-bottom:12px">
+      <div class="cc-accent"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-ring">
+            <span class="stale-ring-label" style="color:#10b981">idle</span>
+            <div class="stale-ring-wrap">
+              <svg class="stale-ring-svg" viewBox="0 0 30 30">
+                <circle class="stale-ring-bg" cx="15" cy="15" r="12" stroke="#27272a"/>
+                <!-- 3d: ~85% remaining (circumference=75.4, dash=75.4, offset=~11) -->
+                <circle class="stale-ring-fill" cx="15" cy="15" r="12" stroke="#10b981" stroke-dasharray="75.4" stroke-dashoffset="11"/>
+              </svg>
+              <span class="stale-ring-num" style="color:#10b981">3</span>
+            </div>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card dark" style="margin-bottom:12px">
+      <div class="cc-accent" style="background:#eab308"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-ring">
+            <span class="stale-ring-label" style="color:#eab308">idle</span>
+            <div class="stale-ring-wrap">
+              <svg class="stale-ring-svg" viewBox="0 0 30 30">
+                <circle class="stale-ring-bg" cx="15" cy="15" r="12" stroke="#27272a"/>
+                <!-- 7d: ~65% remaining (offset=~26) -->
+                <circle class="stale-ring-fill" cx="15" cy="15" r="12" stroke="#eab308" stroke-dasharray="75.4" stroke-dashoffset="26"/>
+              </svg>
+              <span class="stale-ring-num" style="color:#eab308">7</span>
+            </div>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card dark">
+      <div class="cc-accent" style="background:#ef4444"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-ring">
+            <span class="stale-ring-label" style="color:#ef4444">idle</span>
+            <div class="stale-ring-wrap">
+              <svg class="stale-ring-svg" viewBox="0 0 30 30">
+                <circle class="stale-ring-bg" cx="15" cy="15" r="12" stroke="#27272a"/>
+                <!-- 18d: ~10% remaining (offset=~68) -->
+                <circle class="stale-ring-fill" cx="15" cy="15" r="12" stroke="#ef4444" stroke-dasharray="75.4" stroke-dashoffset="68"/>
+              </svg>
+              <span class="stale-ring-num" style="color:#ef4444">18</span>
+            </div>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+  </div>
+  <div class="phone light">
+    <div class="mode-tag">Light</div>
+    <div class="cc-card light" style="margin-bottom:12px">
+      <div class="cc-accent"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-ring">
+            <span class="stale-ring-label" style="color:#10b981">idle</span>
+            <div class="stale-ring-wrap">
+              <svg class="stale-ring-svg" viewBox="0 0 30 30">
+                <circle class="stale-ring-bg" cx="15" cy="15" r="12" stroke="#e5e7eb"/>
+                <circle class="stale-ring-fill" cx="15" cy="15" r="12" stroke="#10b981" stroke-dasharray="75.4" stroke-dashoffset="11"/>
+              </svg>
+              <span class="stale-ring-num" style="color:#10b981">3</span>
+            </div>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card light" style="margin-bottom:12px">
+      <div class="cc-accent" style="background:#f97316"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-ring">
+            <span class="stale-ring-label" style="color:#f97316">idle</span>
+            <div class="stale-ring-wrap">
+              <svg class="stale-ring-svg" viewBox="0 0 30 30">
+                <circle class="stale-ring-bg" cx="15" cy="15" r="12" stroke="#e5e7eb"/>
+                <!-- 12d: ~40% remaining (offset=~45) -->
+                <circle class="stale-ring-fill" cx="15" cy="15" r="12" stroke="#f97316" stroke-dasharray="75.4" stroke-dashoffset="45"/>
+              </svg>
+              <span class="stale-ring-num" style="color:#f97316">12</span>
+            </div>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+    <div class="cc-card light">
+      <div class="cc-accent" style="background:#ef4444"></div>
+      <div class="cc-body">
+        <div class="cc-top">
+          <span class="cc-label">CONTINUE</span>
+          <div class="stale-ring">
+            <span class="stale-ring-label" style="color:#ef4444">idle</span>
+            <div class="stale-ring-wrap">
+              <svg class="stale-ring-svg" viewBox="0 0 30 30">
+                <circle class="stale-ring-bg" cx="15" cy="15" r="12" stroke="#e5e7eb"/>
+                <circle class="stale-ring-fill" cx="15" cy="15" r="12" stroke="#ef4444" stroke-dasharray="75.4" stroke-dashoffset="68"/>
+              </svg>
+              <span class="stale-ring-num" style="color:#ef4444">18</span>
+            </div>
+          </div>
+        </div>
+        <div class="cc-name">REPPIT</div>
+        <div class="cc-progress-row"><div class="cc-bar"><div class="cc-fill"></div></div><span class="cc-pct">35%</span></div>
+        <div class="cc-phase">Engineering phase</div>
+        <div class="cc-btn">Open Project →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+<p style="font-size:11px; color:#333; text-align:center; padding-bottom: 40px;">
+  Orbit Dashboard Redesign — Stats + Pipeline + Stale Indicator Mockups<br>
+  <span style="color:#555">Sections 1-3: Stats &amp; Pipeline &middot; Section 4: Stale Badge Variations</span>
+</p>
+
+</body>
+</html>

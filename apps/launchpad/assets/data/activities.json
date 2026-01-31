@@ -1,0 +1,68 @@
+{
+  "activities": [
+    {
+      "id": "a-001",
+      "type": "stage_changed",
+      "projectId": "taskboard",
+      "projectName": "Klarity Task Board",
+      "description": "Moved to Engineering phase",
+      "timestamp": "2026-01-28T10:00:00Z"
+    },
+    {
+      "id": "a-002",
+      "type": "document_created",
+      "projectId": "taskboard",
+      "projectName": "Klarity Task Board",
+      "description": "Created APP_PRD.md for Launchpad",
+      "timestamp": "2026-01-28T14:00:00Z"
+    },
+    {
+      "id": "a-003",
+      "type": "task_completed",
+      "projectId": "anycalc",
+      "projectName": "AnyCalc",
+      "description": "Completed Real Estate Capital Gains calculator",
+      "timestamp": "2026-01-27T16:00:00Z"
+    },
+    {
+      "id": "a-004",
+      "type": "deployed",
+      "projectId": "anycalc",
+      "projectName": "AnyCalc",
+      "description": "Deployed v1.0 to anycalc.in",
+      "timestamp": "2026-01-27T18:00:00Z"
+    },
+    {
+      "id": "a-005",
+      "type": "task_completed",
+      "projectId": "reppit",
+      "projectName": "REPPIT",
+      "description": "Completed workout logging flow",
+      "timestamp": "2026-01-25T12:00:00Z"
+    },
+    {
+      "id": "a-006",
+      "type": "project_created",
+      "projectId": "launchpad",
+      "projectName": "Launchpad",
+      "description": "Project created - Mobile companion for Klarity",
+      "timestamp": "2026-01-28T08:00:00Z"
+    },
+    {
+      "id": "a-007",
+      "type": "document_created",
+      "projectId": "taskboard",
+      "projectName": "Klarity Task Board",
+      "description": "Created voice-capture.html mockup",
+      "timestamp": "2026-01-28T15:30:00Z"
+    },
+    {
+      "id": "a-008",
+      "type": "code_merged",
+      "projectId": "taskboard",
+      "projectName": "Klarity Task Board",
+      "description": "Merged Help tab + notifications + voice capture",
+      "timestamp": "2026-01-28T20:00:00Z"
+    }
+  ]
+}

@@ -137,7 +137,7 @@
   "integrations": {
     "groq": {
       "enabled": true,
-      "apiKey": "",
+      "apiKey": "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",
       "model": "whisper-large-v3-turbo",
       "useFor": ["voiceTranscription"]
     },

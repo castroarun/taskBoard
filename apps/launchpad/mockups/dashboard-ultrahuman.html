@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Launchpad — Ultrahuman Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            surface: '#0A0A0A',
+            card: '#111111',
+            border: '#1a1a1a',
+            muted: '#666666',
+            accent: '#1DB954',
+            'accent-blue': '#3B82F6',
+            'accent-orange': '#F59E0B',
+            'accent-red': '#EF4444',
+            'accent-purple': '#A855F7',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #000000;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Glow effects */
+    .glow-green { box-shadow: 0 0 20px rgba(29, 185, 84, 0.15), 0 0 40px rgba(29, 185, 84, 0.05); }
+    .glow-green-strong { filter: drop-shadow(0 0 12px rgba(29, 185, 84, 0.3)); }
+    .glow-blue { box-shadow: 0 0 16px rgba(59, 130, 246, 0.15); }
+    .glow-orange { box-shadow: 0 0 16px rgba(245, 158, 11, 0.15); }
+    .glow-red { box-shadow: 0 0 16px rgba(239, 68, 68, 0.15); }
+    .glow-purple { box-shadow: 0 0 16px rgba(168, 85, 247, 0.15); }
+
+    /* Ring glow */
+    .ring-glow-green { filter: drop-shadow(0 0 8px rgba(29, 185, 84, 0.25)); }
+    .ring-glow-blue { filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.25)); }
+    .ring-glow-orange { filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.25)); }
+
+    /* Subtle card hover feel */
+    .card-surface {
+      background: #111111;
+      border: 1px solid #1a1a1a;
+      border-radius: 16px;
+    }
+
+    /* Attention card left glow borders */
+    .attention-amber { border-left: 2px solid #F59E0B; box-shadow: -4px 0 16px rgba(245, 158, 11, 0.12); }
+    .attention-red { border-left: 2px solid #EF4444; box-shadow: -4px 0 16px rgba(239, 68, 68, 0.12); }
+    .attention-blue { border-left: 2px solid #3B82F6; box-shadow: -4px 0 16px rgba(59, 130, 246, 0.12); }
+
+    /* FAB glow */
+    .fab-glow {
+      box-shadow: 0 0 24px rgba(29, 185, 84, 0.3), 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Pipeline dot */
+    .pipeline-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Progress bar */
+    .progress-track {
+      height: 3px;
+      background: #222;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: #1DB954;
+    }
+
+    /* SVG ring animation feel (static but smooth) */
+    .score-ring { transform: rotate(-90deg); transform-origin: center; }
+  </style>
+</head>
+<body class="font-inter">
+
+  <!-- Phone Frame -->
+  <div class="mx-auto max-w-[430px] min-h-screen bg-black relative" style="box-shadow: 0 0 60px rgba(0,0,0,0.8), 0 0 1px rgba(255,255,255,0.05);">
+
+    <!-- ==================== STATUS BAR ==================== -->
+    <div class="flex items-center justify-between px-6 pt-3 pb-1">
+      <span class="text-white text-sm font-semibold tracking-tight">9:41</span>
+      <div class="flex items-center gap-1.5">
+        <!-- Signal -->
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <rect x="0" y="8" width="3" height="4" rx="0.5" fill="white"/>
+          <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="white"/>
+          <rect x="9" y="2" width="3" height="10" rx="0.5" fill="white"/>
+          <rect x="13.5" y="0" width="2.5" height="12" rx="0.5" fill="white" opacity="0.3"/>
+        </svg>
+        <!-- WiFi -->
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <path d="M8 10.5a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z" fill="white"/>
+          <path d="M4.5 8.5a5 5 0 017 0" stroke="white" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+          <path d="M2 5.5a8.5 8.5 0 0112 0" stroke="white" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        </svg>
+        <!-- Battery -->
+        <svg width="27" height="12" viewBox="0 0 27 12" fill="none">
+          <rect x="0.5" y="0.5" width="22" height="11" rx="2" stroke="white" stroke-opacity="0.35"/>
+          <rect x="2" y="2" width="16" height="8" rx="1" fill="white"/>
+          <path d="M24 4v4a1.5 1.5 0 000-4z" fill="white" opacity="0.35"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ==================== SAFE AREA CONTENT ==================== -->
+    <div class="px-5 pb-28">
+
+      <!-- ==================== HEADER ==================== -->
+      <div class="flex items-start justify-between pt-6 pb-2">
+        <div>
+          <h1 class="text-white text-2xl font-bold tracking-tight leading-tight">Good evening, Arun</h1>
+          <p class="text-muted text-sm mt-1 font-medium">Tuesday, January 28</p>
+        </div>
+        <!-- Notification Bell -->
+        <button class="mt-1 p-2 rounded-full" style="background: #111;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 01-3.46 0"/>
+            <circle cx="18" cy="4" r="3" fill="#1DB954" stroke="none"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- ==================== HERO SCORE RING ==================== -->
+      <div class="flex flex-col items-center mt-6 mb-8">
+        <div class="relative glow-green-strong">
+          <!-- Outer ring SVG -->
+          <svg width="200" height="200" viewBox="0 0 200 200">
+            <!-- Background ring -->
+            <circle
+              cx="100" cy="100" r="88"
+              fill="none"
+              stroke="#1a1a1a"
+              stroke-width="6"
+              class="score-ring"
+            />
+            <!-- Score ring (72% = 72% of circumference) -->
+            <!-- circumference = 2 * pi * 88 = 553.0 -->
+            <!-- dasharray = 553 * 0.72 = 398.2, gap = 553 -->
+            <circle
+              cx="100" cy="100" r="88"
+              fill="none"
+              stroke="#1DB954"
+              stroke-width="6"
+              stroke-linecap="round"
+              stroke-dasharray="398.2 553"
+              class="score-ring"
+            />
+            <!-- Inner subtle ring -->
+            <circle
+              cx="100" cy="100" r="78"
+              fill="none"
+              stroke="#111"
+              stroke-width="1"
+            />
+          </svg>
+          <!-- Score number -->
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <span class="text-white text-6xl font-extrabold tracking-tight leading-none">72</span>
+            <span class="text-muted text-xs font-medium mt-1 uppercase tracking-widest">Score</span>
+          </div>
+        </div>
+        <p class="text-muted text-xs mt-4 text-center max-w-[260px] leading-relaxed">
+          Based on streak, deep work &amp; project progress
+        </p>
+      </div>
+
+      <!-- ==================== STATS ROW (3 Mini Rings) ==================== -->
+      <div class="grid grid-cols-3 gap-3 mb-6">
+
+        <!-- Streak -->
+        <div class="card-surface p-4 flex flex-col items-center">
+          <div class="relative ring-glow-orange">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <!-- BG ring -->
+              <circle cx="32" cy="32" r="26" fill="none" stroke="#1a1a1a" stroke-width="4" class="score-ring"/>
+              <!-- 58% fill: circ = 2*pi*26 = 163.4, dash = 163.4*0.58 = 94.8 -->
+              <circle cx="32" cy="32" r="26" fill="none" stroke="#F59E0B" stroke-width="4" stroke-linecap="round" stroke-dasharray="94.8 163.4" class="score-ring"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="text-white text-lg font-bold">7</span>
+            </div>
+          </div>
+          <span class="text-muted text-[10px] mt-2 font-medium uppercase tracking-wider">Streak</span>
+          <span class="text-white/50 text-[10px]">days</span>
+        </div>
+
+        <!-- Deep Work -->
+        <div class="card-surface p-4 flex flex-col items-center">
+          <div class="relative ring-glow-blue">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="26" fill="none" stroke="#1a1a1a" stroke-width="4" class="score-ring"/>
+              <!-- 60% fill: 163.4 * 0.60 = 98.0 -->
+              <circle cx="32" cy="32" r="26" fill="none" stroke="#3B82F6" stroke-width="4" stroke-linecap="round" stroke-dasharray="98.0 163.4" class="score-ring"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="text-white text-base font-bold">3<span class="text-white/40 text-xs">/5</span></span>
+            </div>
+          </div>
+          <span class="text-muted text-[10px] mt-2 font-medium uppercase tracking-wider">Deep Work</span>
+          <span class="text-white/50 text-[10px]">days</span>
+        </div>
+
+        <!-- Projects -->
+        <div class="card-surface p-4 flex flex-col items-center">
+          <div class="relative ring-glow-green">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="26" fill="none" stroke="#1a1a1a" stroke-width="4" class="score-ring"/>
+              <!-- 80% fill: 163.4 * 0.80 = 130.7 -->
+              <circle cx="32" cy="32" r="26" fill="none" stroke="#1DB954" stroke-width="4" stroke-linecap="round" stroke-dasharray="130.7 163.4" class="score-ring"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="text-white text-lg font-bold">4</span>
+            </div>
+          </div>
+          <span class="text-muted text-[10px] mt-2 font-medium uppercase tracking-wider">Projects</span>
+          <span class="text-white/50 text-[10px]">active</span>
+        </div>
+
+      </div>
+
+      <!-- ==================== CONTINUE CARD ==================== -->
+      <div class="card-surface p-5 mb-6 glow-green">
+        <div class="flex items-start justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <!-- Folder icon -->
+            <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background: rgba(29,185,84,0.1);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1DB954" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="6" width="20" height="14" rx="2"/>
+                <path d="M2 10h20"/>
+                <path d="M10 2l2 4h10"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-white text-sm font-semibold">Command Center</h3>
+              <p class="text-muted text-xs mt-0.5">Engineering phase</p>
+            </div>
+          </div>
+          <span class="text-accent text-xs font-semibold">72%</span>
+        </div>
+        <!-- Progress bar -->
+        <div class="progress-track mb-3">
+          <div class="progress-fill" style="width: 72%;"></div>
+        </div>
+        <!-- CTA -->
+        <div class="flex items-center justify-between">
+          <span class="text-muted text-xs">Last active 2h ago</span>
+          <button class="text-accent text-xs font-semibold flex items-center gap-1">
+            Continue
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1DB954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"/>
+              <path d="M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================== PIPELINE SECTION ==================== -->
+      <div class="mb-6">
+        <h2 class="text-white text-sm font-semibold mb-4 tracking-tight">Pipeline</h2>
+        <div class="card-surface p-4">
+          <div class="flex items-center justify-between">
+
+            <!-- Design -->
+            <div class="flex flex-col items-center gap-2 flex-1">
+              <div class="flex items-center gap-1">
+                <div class="pipeline-dot" style="background: #A855F7;"></div>
+                <span class="text-white text-lg font-bold">1</span>
+              </div>
+              <span class="text-muted text-[10px] uppercase tracking-wider font-medium">Design</span>
+            </div>
+
+            <!-- Divider -->
+            <div class="w-px h-8" style="background: #222;"></div>
+
+            <!-- Engineering -->
+            <div class="flex flex-col items-center gap-2 flex-1">
+              <div class="flex items-center gap-1">
+                <div class="pipeline-dot" style="background: #3B82F6;"></div>
+                <span class="text-white text-lg font-bold">2</span>
+              </div>
+              <span class="text-muted text-[10px] uppercase tracking-wider font-medium">Engineer</span>
+            </div>
+
+            <!-- Divider -->
+            <div class="w-px h-8" style="background: #222;"></div>
+
+            <!-- Build -->
+            <div class="flex flex-col items-center gap-2 flex-1">
+              <div class="flex items-center gap-1">
+                <div class="pipeline-dot" style="background: #1DB954;"></div>
+                <span class="text-white text-lg font-bold">1</span>
+              </div>
+              <span class="text-muted text-[10px] uppercase tracking-wider font-medium">Build</span>
+            </div>
+
+            <!-- Divider -->
+            <div class="w-px h-8" style="background: #222;"></div>
+
+            <!-- Launch -->
+            <div class="flex flex-col items-center gap-2 flex-1">
+              <div class="flex items-center gap-1">
+                <div class="pipeline-dot" style="background: #333;"></div>
+                <span class="text-white/30 text-lg font-bold">0</span>
+              </div>
+              <span class="text-muted text-[10px] uppercase tracking-wider font-medium">Launch</span>
+            </div>
+
+            <!-- Divider -->
+            <div class="w-px h-8" style="background: #222;"></div>
+
+            <!-- Closure -->
+            <div class="flex flex-col items-center gap-2 flex-1">
+              <div class="flex items-center gap-1">
+                <div class="pipeline-dot" style="background: #333;"></div>
+                <span class="text-white/30 text-lg font-bold">0</span>
+              </div>
+              <span class="text-muted text-[10px] uppercase tracking-wider font-medium">Closure</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== NEEDS ATTENTION ==================== -->
+      <div class="mb-6">
+        <h2 class="text-white text-sm font-semibold mb-4 tracking-tight">Needs Attention</h2>
+        <div class="flex flex-col gap-3">
+
+          <!-- PRIMMO — Stale -->
+          <div class="card-surface attention-amber p-4 flex items-center gap-4">
+            <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(245,158,11,0.08);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <h4 class="text-white text-sm font-semibold truncate">PRIMMO</h4>
+                <span class="text-[10px] font-medium px-1.5 py-0.5 rounded" style="background: rgba(245,158,11,0.12); color: #F59E0B;">STALE</span>
+              </div>
+              <p class="text-muted text-xs mt-0.5">No activity for 14 days</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </div>
+
+          <!-- Personal Portfolio — Blocker -->
+          <div class="card-surface attention-red p-4 flex items-center gap-4">
+            <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(239,68,68,0.08);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <h4 class="text-white text-sm font-semibold truncate">Personal Portfolio</h4>
+                <span class="text-[10px] font-medium px-1.5 py-0.5 rounded" style="background: rgba(239,68,68,0.12); color: #EF4444;">BLOCKER</span>
+              </div>
+              <p class="text-muted text-xs mt-0.5">Deployment blocked by DNS issue</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </div>
+
+          <!-- NoteApp — Due Soon -->
+          <div class="card-surface attention-blue p-4 flex items-center gap-4">
+            <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(59,130,246,0.08);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <h4 class="text-white text-sm font-semibold truncate">NoteApp</h4>
+                <span class="text-[10px] font-medium px-1.5 py-0.5 rounded" style="background: rgba(59,130,246,0.12); color: #3B82F6;">DUE SOON</span>
+              </div>
+              <p class="text-muted text-xs mt-0.5">Target date in 3 days</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== MOCKUP LABEL ==================== -->
+      <p class="text-center text-muted text-[10px] mt-8 mb-4 tracking-wider uppercase">
+        Mockup: Ultrahuman-inspired &middot; Launchpad by Klarity
+      </p>
+
+    </div>
+
+    <!-- ==================== FLOATING ACTION BUTTON ==================== -->
+    <div class="fixed bottom-8 right-1/2 translate-x-[calc(215px-32px)]" style="z-index: 50;">
+      <button class="w-14 h-14 rounded-full flex items-center justify-center fab-glow" style="background: #1DB954;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/>
+          <path d="M19 10v2a7 7 0 01-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- ==================== BOTTOM SAFE AREA ==================== -->
+    <div class="h-8 bg-black"></div>
+
+  </div>
+
+</body>
+</html>

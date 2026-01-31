@@ -14,8 +14,12 @@ import {
   writeInbox,
   generateInboxMarkdown,
   isTauri,
+  readSyncConfig,
   MOCK_INBOX_ITEMS,
 } from '@/lib/tauri';
+import { mergeInboxItems, startSyncPoller } from '@/services/gist-sync';
+import { startGitHubSyncPoller, mergeRepoInboxItems, pushInboxToRepo } from '@/services/github-sync';
+import { notifyNewInboxItems } from '@/lib/notifications';
 
 // Activity templates for generating sample data
 const ACTIVITY_TEMPLATES = [
@@ -36,6 +40,17 @@ const TIME_BLOCKS = [
   { name: 'night', hours: [21, 22, 23] },
 ];
 
+// Weighted random pick from an array using weights
+function weightedPick<T>(items: T[], weights: number[]): T {
+  const total = weights.reduce((a, b) => a + b, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < items.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return items[i];
+  }
+  return items[items.length - 1];
+}
+
 // Generate sample activities from projects
 function generateSampleActivities(projects: { id: string; name: string; lastUpdated: string; currentPhase?: string }[]): Activity[] {
   const activities: Activity[] = [];
@@ -43,13 +58,22 @@ function generateSampleActivities(projects: { id: string; name: string; lastUpda
 
   if (projects.length === 0) return activities;
 
+  // Time block weights: weekdays skew heavily toward evening/night (side-project after work)
+  // Weekends spread more evenly but still favour afternoon+evening
+  const weekdayWeights = [1, 2, 5, 4]; // morning=1, afternoon=2, evening=5, night=4
+  const weekendWeights = [3, 4, 4, 3];  // more balanced but still active
+
   // Generate activities for the past 21 days (3 weeks)
   for (let daysAgo = 0; daysAgo <= 21; daysAgo++) {
     const dayDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
     const isWeekend = dayDate.getDay() === 0 || dayDate.getDay() === 6;
 
-    // Fewer activities on weekends
-    const activityCount = isWeekend ? Math.floor(Math.random() * 3) : Math.floor(Math.random() * 5) + 2;
+    // Weekends are MORE active (personal project time), weekdays still decent
+    const activityCount = isWeekend
+      ? Math.floor(Math.random() * 4) + 4  // 4-7 activities on weekends
+      : Math.floor(Math.random() * 5) + 2; // 2-6 activities on weekdays
+
+    const blockWeights = isWeekend ? weekendWeights : weekdayWeights;
 
     for (let i = 0; i < activityCount; i++) {
       // Pick a random project
@@ -59,8 +83,8 @@ function generateSampleActivities(projects: { id: string; name: string; lastUpda
       const template = ACTIVITY_TEMPLATES[Math.floor(Math.random() * ACTIVITY_TEMPLATES.length)];
       const description = template.descriptions[Math.floor(Math.random() * template.descriptions.length)];
 
-      // Pick a random time block and hour
-      const timeBlock = TIME_BLOCKS[Math.floor(Math.random() * TIME_BLOCKS.length)];
+      // Pick time block using weighted distribution
+      const timeBlock = weightedPick(TIME_BLOCKS, blockWeights);
       const hour = timeBlock.hours[Math.floor(Math.random() * timeBlock.hours.length)];
       const minute = Math.floor(Math.random() * 60);
 
@@ -169,6 +193,23 @@ export function useDataLoader() {
         tasks: tasksChanged,
         inbox: inboxChanged,
       });
+
+      // Push inbox changes to GitHub repo (fire-and-forget, non-blocking)
+      if (inboxChanged) {
+        readSyncConfig().then(async (config) => {
+          if (!config?.github?.token || !config?.github?.owner) return;
+          const pushed = await pushInboxToRepo(
+            config.github.token,
+            config.github.owner,
+            inboxItems
+          );
+          if (pushed) {
+            console.log('[DataLoader] Pushed inbox to GitHub');
+          }
+        }).catch((err) => {
+          console.warn('[DataLoader] GitHub push skipped:', err);
+        });
+      }
     } catch (error) {
       console.error('[DataLoader] Save failed:', error);
     } finally {
@@ -256,6 +297,76 @@ export function useDataLoader() {
 
     loadData();
   }, [setProjects, setTasks, setInboxItems, setLoading]);
+
+  // Gist sync polling for mobile ↔ desktop sync
+  useEffect(() => {
+    let stopPoller: (() => void) | null = null;
+
+    const startGistSync = async () => {
+      const config = await readSyncConfig();
+      if (!config?.gistToken || !config?.gistId) return;
+
+      const intervalMs = config.pollIntervalMs || 60000; // Default 60s
+
+      stopPoller = startSyncPoller(
+        config.gistToken,
+        config.gistId,
+        intervalMs,
+        (remoteItems) => {
+          const currentInbox = useAppStore.getState().inboxItems;
+          const { merged, newCount } = mergeInboxItems(currentInbox, remoteItems);
+
+          if (newCount > 0) {
+            useAppStore.getState().setInboxItems(merged);
+            const preview = remoteItems[0]?.text;
+            notifyNewInboxItems(newCount, preview);
+            console.log(`[DataLoader] Synced ${newCount} new item(s) from Launchpad`);
+          }
+        }
+      );
+    };
+
+    startGistSync();
+
+    return () => {
+      if (stopPoller) stopPoller();
+    };
+  }, []);
+
+  // GitHub repo sync polling (Orbit ↔ Klarity via .taskboard repo)
+  useEffect(() => {
+    let stopPoller: (() => void) | null = null;
+
+    const startGitHubSync = async () => {
+      const config = await readSyncConfig();
+      if (!config?.github?.token || !config?.github?.owner) return;
+
+      const intervalMs = config.github.pollIntervalMs || 120000; // Default 2 min
+
+      stopPoller = startGitHubSyncPoller(
+        config.github.token,
+        config.github.owner,
+        intervalMs,
+        (remoteItems) => {
+          const currentInbox = useAppStore.getState().inboxItems;
+          const { merged, newCount } = mergeRepoInboxItems(currentInbox, remoteItems);
+
+          if (newCount > 0) {
+            useAppStore.getState().setInboxItems(merged);
+            const preview = remoteItems[0]?.text;
+            notifyNewInboxItems(newCount, preview);
+            console.log(`[DataLoader] Synced ${newCount} new item(s) from Orbit`);
+          }
+        }
+      );
+    };
+
+    startGitHubSync();
+
+    return () => {
+      if (stopPoller) stopPoller();
+    };
+  }, []);
 
   // Cleanup on unmount
   useEffect(() => {

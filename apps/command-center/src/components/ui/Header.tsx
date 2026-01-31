@@ -42,8 +42,8 @@ const tabs: { id: TabId; label: string; shortcut: string }[] = [
 // Klarity Lens K Logo
 function KlarityLogo() {
   return (
-    <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20 bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800">
-      <svg className="w-6 h-6" viewBox="0 0 64 64" fill="none">
+    <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20 bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800">
+      <svg className="w-9 h-9" viewBox="0 0 64 64" fill="none">
         <defs>
           <linearGradient id="klarity-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#6366f1" />
@@ -85,15 +85,10 @@ export function Header() {
   const notificationRef = useRef<HTMLDivElement>(null);
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  // Calculate unread inbox count - only count items FROM Claude or with unread Claude replies
+  // Calculate unread inbox count - any pending item that hasn't been read
   const unreadInboxCount = inboxItems.filter(item => {
     if (item.status !== 'pending') return false;
-    // Count if item is from Claude and unread
-    if (item.author === 'claude' && !item.read) return true;
-    // Count if item has any unread Claude replies (check if item was read AFTER latest Claude reply)
-    const claudeReplies = item.replies?.filter(r => r.author === 'claude') || [];
-    if (claudeReplies.length > 0 && !item.read) return true;
-    return false;
+    return !item.read;
   }).length;
 
   // Close notification panel when clicking outside

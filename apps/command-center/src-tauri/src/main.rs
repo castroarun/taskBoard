@@ -3,6 +3,7 @@
 
 mod voice;
 mod data;
+mod watcher;
 
 use std::sync::Mutex;
 use tauri::Manager;
@@ -26,7 +27,13 @@ fn main() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_notification::init())
         .manage(Mutex::new(AppState { data_dir }))
+        .setup(|app| {
+            // Start watching inbox.json for new items
+            watcher::start_inbox_watcher(app.handle().clone());
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             // Voice commands
             voice::check_voice_available,
@@ -41,6 +48,8 @@ fn main() {
             data::write_inbox,
             data::read_inbox_json,
             data::write_inbox_json,
+            data::read_sync_config,
+            data::write_sync_config,
             data::read_document,
             data::write_document,
             data::get_data_path,

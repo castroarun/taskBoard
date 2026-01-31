@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orbit — Project Detail</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'SF Pro Display', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
+      background: #000;
+      -webkit-font-smoothing: antialiased;
+    }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .surface { background: #1C1C1E; border: 1px solid #2A2A2A; }
+    .surface-flush { background: #1C1C1E; }
+
+    /* Workflow connector line */
+    .stage-connector { position: relative; }
+    .stage-connector::after {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: calc(50% + 14px);
+      width: calc(100% - 28px);
+      height: 2px;
+      background: #2A2A2A;
+    }
+    .stage-connector.done::after { background: #10b981; }
+    .stage-connector:last-child::after { display: none; }
+
+    /* Sub-stage dots */
+    .sub-dot-done { background: #10b981; }
+    .sub-dot-active { background: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25); }
+    .sub-dot-pending { background: #3A3A44; }
+
+    /* Expandable task */
+    .task-expand-area { display: none; }
+    .task-row.expanded .task-expand-area { display: block; }
+    .task-row .chevron-icon { transition: transform 0.2s; }
+    .task-row.expanded .chevron-icon { transform: rotate(90deg); }
+
+    /* Voice pulse */
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .voice-idle { box-shadow: 0 0 0 0 transparent; }
+  </style>
+</head>
+<body class="min-h-screen flex items-start justify-center">
+
+  <!-- Phone Frame -->
+  <div class="w-full max-w-[430px] min-h-screen bg-black relative overflow-hidden">
+
+    <!-- ==================== STATUS BAR ==================== -->
+    <div class="flex items-center justify-between px-6 pt-3 pb-1">
+      <span class="text-sm font-semibold text-white tracking-tight">9:41</span>
+      <div class="flex items-center gap-1.5">
+        <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><rect x="0" y="10" width="3" height="4" rx="1" fill="white"/><rect x="5" y="7" width="3" height="7" rx="1" fill="white"/><rect x="10" y="3" width="3" height="11" rx="1" fill="white"/><rect x="15" y="0" width="3" height="14" rx="1" fill="white"/></svg>
+        <svg width="17" height="14" viewBox="0 0 17 14" fill="none"><path d="M8.5 12.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z" fill="white"/><path d="M4.5 10.2a5.5 5.5 0 018 0" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M1.5 7a10 10 0 0114 0" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg width="28" height="14" viewBox="0 0 28 14" fill="none"><rect x="0.5" y="1" width="23" height="12" rx="3" stroke="white" stroke-opacity="0.35" stroke-width="1.2"/><rect x="2.5" y="3" width="17" height="8" rx="2" fill="#10b981"/><path d="M25 5.5v3a1.5 1.5 0 000-3z" fill="white" fill-opacity="0.4"/></svg>
+      </div>
+    </div>
+
+    <!-- ==================== HEADER BAR ==================== -->
+    <div class="flex items-center justify-between px-5 pt-3 pb-3">
+      <div class="flex items-center gap-4">
+        <button class="w-10 h-10 rounded-xl flex items-center justify-center surface">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div>
+          <span class="text-base font-bold text-white block leading-tight">Project Details</span>
+          <span class="text-[11px] font-medium text-gray-500">Started Jan 10 · <span class="text-emerald-400 font-semibold">18 days</span></span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <!-- Completion Ring -->
+        <div class="relative w-10 h-10 flex items-center justify-center">
+          <svg width="40" height="40" viewBox="0 0 40 40">
+            <circle cx="20" cy="20" r="16" fill="none" stroke="#2A2A2A" stroke-width="3"/>
+            <circle cx="20" cy="20" r="16" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round"
+              stroke-dasharray="100.53" stroke-dashoffset="28.15" transform="rotate(-90 20 20)"/>
+          </svg>
+          <span class="absolute text-[10px] font-bold text-emerald-400">72%</span>
+        </div>
+        <button class="w-10 h-10 rounded-xl flex items-center justify-center surface">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1.5" fill="#9CA3AF"/><circle cx="12" cy="12" r="1.5" fill="#9CA3AF"/><circle cx="12" cy="19" r="1.5" fill="#9CA3AF"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== SCROLLABLE CONTENT ==================== -->
+    <div class="px-5 pb-12 hide-scrollbar overflow-y-auto" style="max-height: calc(100vh - 140px);">
+
+      <!-- ==================== PROJECT TITLE ==================== -->
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-3 py-1.5 text-xs font-semibold rounded-lg surface" style="color: #10b981;">Engineering</span>
+        <span class="px-3 py-1.5 text-xs font-semibold rounded-lg surface" style="color: #FBBF24;">Tauri 2.0</span>
+      </div>
+      <h1 class="text-[24px] font-extrabold text-white leading-tight mb-1">Command Center</h1>
+      <p class="text-sm text-gray-500 font-medium mb-5">Desktop project orchestration app</p>
+
+      <!-- ==================== 5-STAGE WORKFLOW ==================== -->
+      <div class="mb-6">
+        <h3 class="text-sm font-bold text-white mb-3">Workflow</h3>
+        <div class="rounded-2xl p-4 surface overflow-hidden">
+
+          <!-- Stage Icons Row -->
+          <div class="grid grid-cols-5 gap-0 mb-4 relative">
+            <!-- Connector line (full width behind icons) -->
+            <div class="absolute top-[13px] left-[10%] right-[10%] h-[2px]" style="background: linear-gradient(to right, #10b981 0%, #10b981 55%, #2A2A2A 55%, #2A2A2A 100%);"></div>
+
+            <!-- 1. Design (Done) -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10">
+              <div class="w-7 h-7 rounded-full flex items-center justify-center bg-emerald-500">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span class="text-[10px] font-bold text-emerald-400">Design</span>
+            </div>
+            <!-- 2. Engineering (Done) -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10">
+              <div class="w-7 h-7 rounded-full flex items-center justify-center bg-emerald-500">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span class="text-[10px] font-bold text-emerald-400">Engineer</span>
+            </div>
+            <!-- 3. Build (Active — current) -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10">
+              <div class="w-7 h-7 rounded-full flex items-center justify-center" style="background: #10b981; box-shadow: 0 0 0 4px rgba(16,185,129,0.2);">
+                <div class="w-2.5 h-2.5 rounded-full bg-white"></div>
+              </div>
+              <span class="text-[10px] font-bold text-white">Build</span>
+            </div>
+            <!-- 4. Launch (Pending) -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10">
+              <div class="w-7 h-7 rounded-full flex items-center justify-center" style="background: #2A2A2A;">
+                <span class="text-[9px] font-bold text-gray-500">4</span>
+              </div>
+              <span class="text-[10px] font-semibold text-gray-600">Launch</span>
+            </div>
+            <!-- 5. Closure (Pending) -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10">
+              <div class="w-7 h-7 rounded-full flex items-center justify-center" style="background: #2A2A2A;">
+                <span class="text-[9px] font-bold text-gray-500">5</span>
+              </div>
+              <span class="text-[10px] font-semibold text-gray-600">Closure</span>
+            </div>
+          </div>
+
+          <!-- Current Stage: BUILD — Sub-stages -->
+          <div class="rounded-xl p-3.5" style="background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.12);">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Build</span>
+              <span class="text-[10px] text-gray-500 font-medium">— Current stage</span>
+            </div>
+            <div class="space-y-2.5">
+              <!-- Sub: Development (Done) -->
+              <div class="flex items-center gap-3">
+                <div class="w-4 h-4 rounded-full sub-dot-done flex items-center justify-center flex-shrink-0">
+                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <span class="text-xs font-medium text-gray-500 line-through flex-1">Development</span>
+                <span class="text-[10px] text-gray-600">Jan 20</span>
+              </div>
+              <!-- Sub: Testing (Active) -->
+              <div class="flex items-center gap-3">
+                <div class="w-4 h-4 rounded-full sub-dot-active flex-shrink-0"></div>
+                <span class="text-xs font-semibold text-white flex-1">Testing</span>
+                <span class="text-[10px] text-emerald-400 font-semibold">In progress</span>
+              </div>
+              <!-- Sub: Staging (Pending) -->
+              <div class="flex items-center gap-3">
+                <div class="w-4 h-4 rounded-full sub-dot-pending flex-shrink-0"></div>
+                <span class="text-xs font-medium text-gray-600 flex-1">Staging</span>
+                <span class="text-[10px] text-gray-700">Upcoming</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Completed Stages Summary -->
+          <div class="mt-3 grid grid-cols-2 gap-2">
+            <!-- Design done -->
+            <div class="rounded-lg p-2.5" style="background: rgba(255,255,255,0.03);">
+              <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Design</p>
+              <div class="flex items-center gap-1">
+                <div class="w-2 h-2 rounded-full bg-emerald-500"></div><span class="text-[10px] text-gray-500">Conception</span>
+              </div>
+              <div class="flex items-center gap-1 mt-0.5">
+                <div class="w-2 h-2 rounded-full bg-emerald-500"></div><span class="text-[10px] text-gray-500">Discovery</span>
+              </div>
+              <div class="flex items-center gap-1 mt-0.5">
+                <div class="w-2 h-2 rounded-full bg-emerald-500"></div><span class="text-[10px] text-gray-500">Requirements</span>
+              </div>
+            </div>
+            <!-- Engineering done -->
+            <div class="rounded-lg p-2.5" style="background: rgba(255,255,255,0.03);">
+              <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Engineering</p>
+              <div class="flex items-center gap-1">
+                <div class="w-2 h-2 rounded-full bg-emerald-500"></div><span class="text-[10px] text-gray-500">Architecture</span>
+              </div>
+              <div class="flex items-center gap-1 mt-0.5">
+                <div class="w-2 h-2 rounded-full bg-emerald-500"></div><span class="text-[10px] text-gray-500">QA Planning</span>
+              </div>
+              <div class="flex items-center gap-1 mt-0.5">
+                <div class="w-2 h-2 rounded-full bg-emerald-500"></div><span class="text-[10px] text-gray-500">Review</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== VOICE + COMMENTS ==================== -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-bold text-white">Comments</h3>
+          <span class="text-[11px] font-semibold text-gray-500">2 messages</span>
+        </div>
+
+        <!-- Voice + Text Input Bar -->
+        <div class="flex items-center gap-2.5 mb-3">
+          <button class="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center voice-idle" style="background: linear-gradient(135deg, #10b981, #059669);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </button>
+          <div class="flex-1 flex items-center gap-2 p-3 rounded-xl surface">
+            <input type="text" placeholder="Comment or hold mic..." class="flex-1 bg-transparent text-sm text-gray-300 placeholder-gray-600 outline-none" disabled />
+            <button class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: #10b981;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 mb-4 px-1">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span class="text-[10px] font-medium text-gray-600">Voice powered by Groq AI — auto-structures into tasks</span>
+        </div>
+
+        <!-- Comments (latest first) -->
+        <div class="space-y-3">
+          <div class="flex items-start gap-3 p-3.5 rounded-xl surface">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0"><span class="text-[10px] font-bold text-white">CL</span></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1"><span class="text-xs font-bold text-gray-300">Claude</span><span class="text-[10px] text-gray-600">1h ago</span></div>
+              <p class="text-[13px] text-gray-400 leading-relaxed">Pipeline card component ready. Color-coded left borders per stage. Drag-and-drop next.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3.5 rounded-xl surface">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center flex-shrink-0"><span class="text-[10px] font-bold text-white">AC</span></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-xs font-bold text-gray-300">Arun</span><span class="text-[10px] text-gray-600">2h ago</span>
+                <span class="ml-auto flex items-center gap-1 text-[10px] text-gray-600">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/></svg>voice
+                </span>
+              </div>
+              <p class="text-[13px] text-gray-400 leading-relaxed">Pipeline columns should match the 9-step workflow. Start with Design, Engineering, Build, Launch, Closure.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== TASKS (EXPANDABLE) ==================== -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-bold text-white">Tasks</h3>
+          <span class="text-xs font-semibold text-gray-500">5 / 7</span>
+        </div>
+
+        <div class="space-y-2">
+
+          <!-- Task 1: Done — EXPANDED (showing attachments) -->
+          <div class="task-row expanded rounded-xl overflow-hidden surface">
+            <div class="flex items-center gap-3 p-3.5 cursor-pointer">
+              <div class="w-1 h-8 rounded-full flex-shrink-0 bg-emerald-500"></div>
+              <div class="w-5 h-5 rounded-md flex-shrink-0 flex items-center justify-center bg-emerald-500">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span class="text-sm font-medium text-gray-500 line-through flex-1">Build pipeline view layout</span>
+              <svg class="chevron-icon flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+            <!-- Expanded: Attachments -->
+            <div class="task-expand-area px-3.5 pb-3.5">
+              <div class="pt-2 border-t" style="border-color: #2A2A2A;">
+                <p class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Attachments</p>
+                <div class="flex gap-2.5 overflow-x-auto hide-scrollbar">
+                  <div class="flex-shrink-0 w-[64px] h-[64px] rounded-lg overflow-hidden" style="background: linear-gradient(135deg, #1E3A5F, #2563EB);">
+                    <div class="w-full h-full flex items-center justify-center">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" opacity="0.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    </div>
+                  </div>
+                  <div class="flex-shrink-0 w-[64px] h-[64px] rounded-lg overflow-hidden" style="background: linear-gradient(135deg, #1A3328, #059669);">
+                    <div class="w-full h-full flex items-center justify-center">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" opacity="0.6"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 mt-2">
+                  <span class="text-[10px] text-gray-600">Completed Jan 22</span>
+                  <span class="text-gray-700">·</span>
+                  <span class="text-[10px] text-gray-600">by Arun</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Task 2: Done — collapsed -->
+          <div class="task-row rounded-xl surface">
+            <div class="flex items-center gap-3 p-3.5 cursor-pointer">
+              <div class="w-1 h-8 rounded-full flex-shrink-0 bg-emerald-500"></div>
+              <div class="w-5 h-5 rounded-md flex-shrink-0 flex items-center justify-center bg-emerald-500">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span class="text-sm font-medium text-gray-500 line-through flex-1">Read projects.json via Tauri</span>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+                <span class="text-[10px] text-gray-600">1</span>
+              </div>
+              <svg class="chevron-icon flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+
+          <!-- Task 3: Done — collapsed -->
+          <div class="task-row rounded-xl surface">
+            <div class="flex items-center gap-3 p-3.5 cursor-pointer">
+              <div class="w-1 h-8 rounded-full flex-shrink-0 bg-emerald-500"></div>
+              <div class="w-5 h-5 rounded-md flex-shrink-0 flex items-center justify-center bg-emerald-500">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span class="text-sm font-medium text-gray-500 line-through flex-1">Design pipeline card component</span>
+              <svg class="chevron-icon flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+
+          <!-- Task 4: Done — collapsed -->
+          <div class="task-row rounded-xl surface">
+            <div class="flex items-center gap-3 p-3.5 cursor-pointer">
+              <div class="w-1 h-8 rounded-full flex-shrink-0 bg-emerald-500"></div>
+              <div class="w-5 h-5 rounded-md flex-shrink-0 flex items-center justify-center bg-emerald-500">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span class="text-sm font-medium text-gray-500 line-through flex-1">Inbox with voice replies</span>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+                <span class="text-[10px] text-gray-600">3</span>
+              </div>
+              <svg class="chevron-icon flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+
+          <!-- Task 5: Done — collapsed -->
+          <div class="task-row rounded-xl surface">
+            <div class="flex items-center gap-3 p-3.5 cursor-pointer">
+              <div class="w-1 h-8 rounded-full flex-shrink-0 bg-emerald-500"></div>
+              <div class="w-5 h-5 rounded-md flex-shrink-0 flex items-center justify-center bg-emerald-500">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span class="text-sm font-medium text-gray-500 line-through flex-1">Set up Tauri project scaffold</span>
+              <svg class="chevron-icon flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+
+          <!-- Task 6: Pending (High) — collapsed -->
+          <div class="task-row rounded-xl surface">
+            <div class="flex items-center gap-3 p-3.5 cursor-pointer">
+              <div class="w-1 h-8 rounded-full flex-shrink-0" style="background: #F87171;"></div>
+              <div class="w-5 h-5 rounded-md flex-shrink-0" style="border: 2px solid #3A3A44;"></div>
+              <span class="text-sm font-medium text-gray-200 flex-1">Wire up drag-and-drop columns</span>
+              <svg class="chevron-icon flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+
+          <!-- Task 7: Pending (Medium) — collapsed -->
+          <div class="task-row rounded-xl surface">
+            <div class="flex items-center gap-3 p-3.5 cursor-pointer">
+              <div class="w-1 h-8 rounded-full flex-shrink-0" style="background: #FBBF24;"></div>
+              <div class="w-5 h-5 rounded-md flex-shrink-0" style="border: 2px solid #3A3A44;"></div>
+              <span class="text-sm font-medium text-gray-200 flex-1">Calendar view integration</span>
+              <svg class="chevron-icon flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== DESCRIPTION ==================== -->
+      <div class="mb-6">
+        <h3 class="text-sm font-bold text-white mb-2.5">Description</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">Desktop project orchestration app built with Tauri 2.0, React, and TypeScript. Pipeline view, inbox with voice replies, calendar, and real-time project tracking from file-based JSON data.</p>
+      </div>
+
+      <!-- ==================== TEAM ==================== -->
+      <div class="mb-6">
+        <h3 class="text-sm font-bold text-white mb-2.5">Team</h3>
+        <div class="flex items-center gap-3">
+          <div class="flex items-center -space-x-2.5">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center ring-2 ring-black"><span class="text-[10px] font-bold text-white">AC</span></div>
+            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center ring-2 ring-black"><span class="text-[10px] font-bold text-white">CL</span></div>
+          </div>
+          <span class="text-xs text-gray-500 font-medium">Arun + Claude</span>
+        </div>
+      </div>
+
+      <p class="text-center text-[11px] text-gray-700 font-medium pb-4 tracking-wide">Orbit — Project Detail</p>
+    </div>
+
+  </div>
+
+</body>
+</html>
