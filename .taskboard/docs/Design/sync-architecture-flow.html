@@ -46,38 +46,46 @@
             align-items: center;
         }
 
-        .claude-direct-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
+        .claude-direct-section {
             max-width: 1000px;
             margin: 0 auto 64px;
-            padding: 16px 24px;
-            background: rgba(16, 185, 129, 0.03);
+        }
+
+        .claude-direct-label {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .claude-direct-label span {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #34d399;
+            padding: 4px 16px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            border-radius: 16px;
+        }
+
+        .claude-direct-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            gap: 0;
+            align-items: center;
+            padding: 28px 24px;
+            background: rgba(16, 185, 129, 0.02);
             border: 1px dashed rgba(16, 185, 129, 0.12);
-            border-radius: 12px;
+            border-radius: 16px;
         }
 
-        .claude-direct-row .system-box {
-            min-width: 140px;
-        }
-
-        .claude-direct-row .system-box.vscode {
+        .claude-direct-grid .system-box.vscode {
             background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.02));
             border: 1px solid rgba(16, 185, 129, 0.15);
         }
 
         .system-tag.vscode { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-
-        .claude-direct-row .direct-label {
-            font-size: 10px;
-            color: #34d399;
-            text-align: center;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
 
         .system-box {
             padding: 24px 20px;
@@ -768,40 +776,43 @@
     </div>
 
     <!-- Claude Code bidirectional row -->
-    <div class="claude-direct-row">
-        <div class="system-box orbit" style="min-width:120px">
-            <div class="system-icon">📱</div>
-            <div class="system-name">Orbit</div>
-            <div class="system-desc">Sends task</div>
-            <div class="system-tag phone">PHONE</div>
+    <div class="claude-direct-section">
+        <div class="claude-direct-label">
+            <span>Orbit ↔ Claude — fully independent of Klarity</span>
         </div>
+        <div class="claude-direct-grid">
+            <div class="system-box orbit">
+                <div class="system-icon">📱</div>
+                <div class="system-name">Orbit</div>
+                <div class="system-desc">Sends task</div>
+                <div class="system-tag phone">PHONE</div>
+            </div>
 
-        <div class="system-arrow">
-            <div class="arrow-line">── writes ──▶</div>
+            <div class="system-arrow">
+                <div class="arrow-line">── writes ──▶</div>
+            </div>
+
+            <div class="system-box github">
+                <div class="system-icon">🔒</div>
+                <div class="system-name">.taskboard</div>
+                <div class="system-desc">inbox.json</div>
+                <div class="system-tag cloud">CLOUD</div>
+            </div>
+
+            <div class="system-arrow">
+                <div class="arrow-line">◀── sync-pull.sh ──</div>
+                <div class="arrow-label">Session start</div>
+                <div class="arrow-line" style="margin-top: 4px;">── sync-push.sh ──▶</div>
+                <div class="arrow-label">After reply</div>
+            </div>
+
+            <div class="system-box vscode">
+                <div class="system-icon">⚡</div>
+                <div class="system-name">Claude Code</div>
+                <div class="system-desc">Pull + Execute + Push</div>
+                <div class="system-tag vscode">BIDIRECTIONAL</div>
+            </div>
         </div>
-
-        <div class="system-box github" style="min-width:120px">
-            <div class="system-icon">🔒</div>
-            <div class="system-name">.taskboard</div>
-            <div class="system-desc">inbox.json</div>
-            <div class="system-tag cloud">CLOUD</div>
-        </div>
-
-        <div class="system-arrow">
-            <div class="arrow-line">◀── sync-pull.sh ──</div>
-            <div class="arrow-label">Session start</div>
-            <div class="arrow-line" style="margin-top: 4px;">── sync-push.sh ──▶</div>
-            <div class="arrow-label">After reply</div>
-        </div>
-
-        <div class="system-box vscode">
-            <div class="system-icon">⚡</div>
-            <div class="system-name">Claude Code</div>
-            <div class="system-desc">Pull + Execute + Push</div>
-            <div class="system-tag vscode">BIDIRECTIONAL</div>
-        </div>
-
-        <div class="direct-label">Orbit ↔ Claude — fully independent of Klarity</div>
     </div>
 
     <!-- ===== FLOW: VOICE NOTE ON PHONE ===== -->
@@ -1181,7 +1192,7 @@
 
     <!-- ===== LINKEDIN COMPACT VERSION ===== -->
     <div class="linkedin-section">
-        <div class="linkedin-badge">Screenshot-ready for LinkedIn</div>
+        <div class="linkedin-badge">Zero-server sync — phone, desktop, and AI agents stay in sync via GitHub alone</div>
 
         <!-- FLOW 1: Direct (Orbit → Claude) -->
         <div class="linkedin-card" style="margin-bottom: 24px;">
