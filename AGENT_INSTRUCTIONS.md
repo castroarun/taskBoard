@@ -1,4 +1,4 @@
-# Agent Instructions: Arun's Task Board
+# Agent Instructions: Klarity & Orbit
 
 You are an AI development agent working on Arun's projects. Follow these instructions.
 

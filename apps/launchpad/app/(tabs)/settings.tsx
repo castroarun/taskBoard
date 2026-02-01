@@ -168,7 +168,7 @@ export default function SettingsScreen() {
               </View>
               <View style={styles.profileInfo}>
                 <Text style={styles.profileName}>Arun Castro</Text>
-                <Text style={styles.profileEmail}>Launchpad Mobile</Text>
+                <Text style={styles.profileEmail}>Orbit</Text>
               </View>
             </View>
           </View>

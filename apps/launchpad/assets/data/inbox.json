@@ -1,0 +1,50 @@
+{
+  "items": [
+    {
+      "id": "inbox-1738054800000",
+      "text": "The 5-column layout is feeling cramped on smaller screens. Can we make the columns scroll horizontally instead of squeezing them all in? Also the column headers need more contrast.",
+      "type": "note",
+      "project": "taskboard",
+      "priority": "P0",
+      "status": "done",
+      "createdAt": "2026-01-28T11:00:00.000Z",
+      "forClaude": true,
+      "read": true,
+      "author": "user",
+      "parentId": null,
+      "replies": [
+        {
+          "id": "reply-1738056600000",
+          "author": "claude",
+          "text": "Done — columns now scroll horizontally on narrow screens and header contrast is bumped up.",
+          "createdAt": "2026-01-28T11:30:00.000Z"
+        }
+      ],
+      "taskRef": "t-tb-001",
+      "taskTitle": "Build pipeline view layout"
+    },
+    {
+      "id": "inbox-1738281300000",
+      "text": "The pipeline card looks good but can we add a subtle gradient on the progress bar instead of a flat color? Also make the priority badge slightly bigger, it's hard to read on smaller screens.",
+      "type": "note",
+      "project": "taskboard",
+      "priority": "P1",
+      "status": "done",
+      "createdAt": "2026-01-31T10:15:00.000Z",
+      "forClaude": true,
+      "read": true,
+      "author": "user",
+      "parentId": null,
+      "replies": [
+        {
+          "id": "reply-1738283220000",
+          "author": "claude",
+          "text": "Done — gradient added to the progress bar and priority badge size bumped up. Check it out.",
+          "createdAt": "2026-01-31T10:47:00.000Z"
+        }
+      ],
+      "taskRef": "t-tb-003",
+      "taskTitle": "Design pipeline card component"
+    }
+  ]
+}

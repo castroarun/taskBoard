@@ -1,7 +1,7 @@
 [package]
 name = "command-center"
 version = "0.1.0"
-description = "Command Center - Desktop app for Arun's Task Board"
+description = "Klarity — Desktop command center for AI-assisted development"
 authors = ["Arun Prakash"]
 edition = "2021"
 

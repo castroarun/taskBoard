@@ -1,6 +1,6 @@
-# Task Board Setup Guide
+# Klarity Setup Guide
 
-This guide will help you set up Task Board's Command Center on your machine.
+This guide will help you set up Klarity (Desktop Command Center) on your machine.
 
 ---
 

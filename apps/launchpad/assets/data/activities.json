@@ -2,67 +2,123 @@
   "activities": [
     {
       "id": "a-001",
-      "type": "stage_changed",
+      "type": "feature_shipped",
       "projectId": "taskboard",
       "projectName": "Klarity Task Board",
-      "description": "Moved to Engineering phase",
-      "timestamp": "2026-01-28T10:00:00Z"
+      "description": "Bidirectional sync pipeline live — Orbit ↔ GitHub ↔ Klarity ↔ Claude",
+      "timestamp": "2026-02-01T12:00:00Z"
     },
     {
       "id": "a-002",
-      "type": "document_created",
+      "type": "task_completed",
       "projectId": "taskboard",
       "projectName": "Klarity Task Board",
-      "description": "Created APP_PRD.md for Launchpad",
-      "timestamp": "2026-01-28T14:00:00Z"
+      "description": "Rust file watcher with Windows toast notifications",
+      "timestamp": "2026-01-30T14:00:00Z"
     },
     {
       "id": "a-003",
       "type": "task_completed",
-      "projectId": "anycalc",
-      "projectName": "AnyCalc",
-      "description": "Completed Real Estate Capital Gains calculator",
-      "timestamp": "2026-01-27T16:00:00Z"
+      "projectId": "taskboard",
+      "projectName": "Klarity Task Board",
+      "description": "Inbox with voice replies and Claude message threads",
+      "timestamp": "2026-01-26T15:00:00Z"
     },
     {
       "id": "a-004",
-      "type": "deployed",
-      "projectId": "anycalc",
-      "projectName": "AnyCalc",
-      "description": "Deployed v1.0 to anycalc.in",
-      "timestamp": "2026-01-27T18:00:00Z"
+      "type": "stage_changed",
+      "projectId": "taskboard",
+      "projectName": "Klarity Task Board",
+      "description": "Moved to Build phase — engineering complete",
+      "timestamp": "2026-01-21T00:00:00Z"
     },
     {
       "id": "a-005",
       "type": "task_completed",
-      "projectId": "reppit",
-      "projectName": "REPPIT",
-      "description": "Completed workout logging flow",
-      "timestamp": "2026-01-25T12:00:00Z"
+      "projectId": "launchpad",
+      "projectName": "Orbit",
+      "description": "Voice capture modal with Groq Whisper + LLaMA structuring",
+      "timestamp": "2026-01-30T12:00:00Z"
     },
     {
       "id": "a-006",
-      "type": "project_created",
+      "type": "task_completed",
       "projectId": "launchpad",
-      "projectName": "Launchpad",
-      "description": "Project created - Mobile companion for Klarity",
-      "timestamp": "2026-01-28T08:00:00Z"
+      "projectName": "Orbit",
+      "description": "EAS Build configured — first preview APK generated",
+      "timestamp": "2026-01-30T16:00:00Z"
     },
     {
       "id": "a-007",
-      "type": "document_created",
-      "projectId": "taskboard",
-      "projectName": "Klarity Task Board",
-      "description": "Created voice-capture.html mockup",
-      "timestamp": "2026-01-28T15:30:00Z"
+      "type": "project_created",
+      "projectId": "launchpad",
+      "projectName": "Orbit",
+      "description": "Mobile companion for Klarity — project initialized",
+      "timestamp": "2026-01-25T00:00:00Z"
     },
     {
       "id": "a-008",
-      "type": "code_merged",
-      "projectId": "taskboard",
-      "projectName": "Klarity Task Board",
-      "description": "Merged Help tab + notifications + voice capture",
-      "timestamp": "2026-01-28T20:00:00Z"
+      "type": "deployed",
+      "projectId": "anycalc",
+      "projectName": "AnyCalc",
+      "description": "Deployed v1.0 to anycalc.in — 19 calculators live",
+      "timestamp": "2026-01-17T00:00:00Z"
+    },
+    {
+      "id": "a-009",
+      "type": "task_completed",
+      "projectId": "anycalc",
+      "projectName": "AnyCalc",
+      "description": "Real Estate Capital Gains calculator with Section 54/54EC/54F",
+      "timestamp": "2026-01-08T00:00:00Z"
+    },
+    {
+      "id": "a-010",
+      "type": "deployed",
+      "projectId": "portfolio",
+      "projectName": "Castronix Portfolio",
+      "description": "Digital Resume live with dynamic project cards from projects.json",
+      "timestamp": "2026-01-23T00:00:00Z"
+    },
+    {
+      "id": "a-011",
+      "type": "task_completed",
+      "projectId": "portfolio",
+      "projectName": "Castronix Portfolio",
+      "description": "Project auto-sync from .project.json files across all repos",
+      "timestamp": "2026-01-15T00:00:00Z"
+    },
+    {
+      "id": "a-012",
+      "type": "task_completed",
+      "projectId": "noteapp",
+      "projectName": "NoteApp",
+      "description": "Rich text editor with templates and Supabase sync",
+      "timestamp": "2026-01-17T00:00:00Z"
+    },
+    {
+      "id": "a-013",
+      "type": "task_completed",
+      "projectId": "reppit",
+      "projectName": "REPPIT",
+      "description": "Workout logging and exercise library shipped",
+      "timestamp": "2026-01-20T14:00:00Z"
+    },
+    {
+      "id": "a-014",
+      "type": "stage_changed",
+      "projectId": "primmo",
+      "projectName": "PRIMMO",
+      "description": "Architecture approved — moved to Engineering",
+      "timestamp": "2026-01-10T00:00:00Z"
+    },
+    {
+      "id": "a-015",
+      "type": "task_completed",
+      "projectId": "covered-calls",
+      "projectName": "Portfolio Optimizer",
+      "description": "Initial backtesting framework with P&L calculation",
+      "timestamp": "2026-01-17T00:00:00Z"
     }
   ]
 }

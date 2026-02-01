@@ -4,18 +4,18 @@
   "projects": [
     {
       "id": "taskboard",
-      "name": "Klarity Task Board",
-      "description": "File-based project orchestration system with Command Center desktop app",
-      "repoPath": "C:/Users/Castro/arun-task-board",
-      "githubUrl": null,
+      "name": "Klarity",
+      "description": "Desktop command center for AI-assisted development. Pipeline board, inbox, voice capture, notifications, and GitHub-synced task execution.",
+      "repoPath": "C:/Users/Castro/Documents/Projects/Taskboard",
+      "githubUrl": "https://github.com/castroarun/taskBoard",
 
-      "stage": "engineering",
+      "stage": "marketing",
       "stageStatus": "in-progress",
-      "currentPhase": "architecture",
+      "currentPhase": "launch",
 
       "priority": "P0",
       "complexity": "F",
-      "progress": 15,
+      "progress": 80,
 
       "targetDate": "2026-02-15",
       "startedAt": "2026-01-18T00:00:00Z",

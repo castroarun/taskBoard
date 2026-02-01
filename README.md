@@ -1,16 +1,16 @@
 <p align="center">
-  <img src="assets/logo.svg" alt="Taskboard Logo" width="120" height="120">
+  <img src="assets/logo.svg" alt="Klarity Logo" width="120" height="120">
 </p>
 
-<h1 align="center">Taskboard</h1>
+<h1 align="center">Klarity & Orbit</h1>
 
 <h3 align="center">
   Stop losing track of side projects. <em>Start shipping them.</em>
 </h3>
 
 <p align="center">
-  A unified project tracker that monitors all your GitHub repos,<br/>
-  nudges you when things go stale, and helps you ship with AI assistance.
+  <strong>Klarity</strong> — Desktop command center for AI-assisted development.<br/>
+  <strong>Orbit</strong> — Mobile companion for capture on the go.
 </p>
 
 <p align="center">
@@ -22,14 +22,14 @@
 
 <!-- LAUNCHPAD:START
 {
-  "stage": "development",
+  "stage": "launch",
   "stageStatus": "in-progress",
-  "progress": 70,
-  "priority": "P1",
-  "lastUpdated": "2026-01-22T12:00:00Z",
-  "tasksTotal": 8,
+  "progress": 80,
+  "priority": "P0",
+  "lastUpdated": "2026-02-01T00:00:00Z",
+  "tasksTotal": 17,
   "tasksCompleted": 8,
-  "nextAction": "Test Command Center and build Launchpad",
+  "nextAction": "Walkthrough and marketing",
   "blocker": null
 }
 LAUNCHPAD:END -->
@@ -37,13 +37,13 @@ LAUNCHPAD:END -->
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <li><a href="#why-taskboard">Why Taskboard</a></li>
+    <li><a href="#why-klarity">Why Klarity</a></li>
     <li><a href="#how-it-works">How It Works</a></li>
     <li>
       <a href="#features">Features</a>
       <ul>
-        <li><a href="#command-center-desktop">Command Center (Desktop)</a></li>
-        <li><a href="#launchpad-mobile">Launchpad (Mobile)</a></li>
+        <li><a href="#klarity-desktop">Klarity (Desktop)</a></li>
+        <li><a href="#orbit-mobile">Orbit (Mobile)</a></li>
       </ul>
     </li>
     <li><a href="#quick-start">Quick Start</a></li>
@@ -56,15 +56,15 @@ LAUNCHPAD:END -->
 
 ---
 
-## Why Taskboard
+## Why Klarity
 
 You have 12 repos. 3 are "almost done." 5 haven't been touched in months. You keep meaning to finish that one project, but every time you sit down, you're not sure where you left off.
 
-Taskboard solves this by:
+Klarity solves this by:
 
 - **Tracking project health** — Each repo gets a health score based on README completeness, staleness, and blockers
 - **Surfacing what needs attention** — The dashboard shows exactly which project to work on next
-- **Working with you, not against you** — Desktop app for coding sessions, mobile app for quick check-ins and voice instructions
+- **Working with you, not against you** — Klarity for deep coding sessions, Orbit for quick check-ins and voice capture on the go
 
 ---
 
@@ -79,42 +79,42 @@ Taskboard solves this by:
                     │ writes                       │ reads
                     │                              │
 ┌────────────────────────────┐    ┌────────────────────────────────────┐
-│   COMMAND CENTER           │    │   LAUNCHPAD                        │
+│   KLARITY                  │    │   ORBIT                            │
 │   (Desktop)                │    │   (Mobile)                         │
 │                            │    │                                    │
 │   For deep work sessions:  │    │   For when you're away:            │
-│   • Project Board view     │    │   • Push notifications             │
+│   • Pipeline Board view    │    │   • Push notifications             │
 │   • Quick Launch (⌘K)      │    │   • Health monitoring              │
 │   • Claude AI agent        │    │   • Voice instructions             │
-│   • Task breakdown         │    │   • Ship wizard + LinkedIn draft   │
+│   • Task breakdown         │    │   • Ship tab + readiness ranking   │
 │                            │    │                                    │
-│   Tauri 2.0 + React        │    │   React Native                     │
+│   Tauri 2.0 + React        │    │   React Native + Expo              │
 └────────────────────────────┘    └────────────────────────────────────┘
 ```
 
-**The loop:** You work on desktop → status syncs to GitHub → mobile reads it → reminds you when stale → you record voice instructions → Claude picks them up on desktop.
+**The loop:** You work on Klarity → status syncs to GitHub → Orbit reads it → reminds you when stale → you record voice instructions → Claude picks them up on Klarity.
 
 ---
 
 ## Features
 
-### Command Center (Desktop)
+### Klarity (Desktop)
 
 | Feature | Description |
 |---------|-------------|
-| **Project Board** | Drag projects through Idea → Building → Testing → Live stages |
+| **Pipeline Board** | Drag projects through Idea → Building → Testing → Live stages |
 | **Quick Launch** | ⌘K palette for fast actions: open project, create task, switch context |
 | **Claude Agent** | AI-powered task breakdown, code assistance, and project planning |
 | **Offline-First** | Works without internet, syncs when connected |
 
-### Launchpad (Mobile)
+### Orbit (Mobile)
 
 | Feature | Description |
 |---------|-------------|
 | **Health Dashboard** | See all projects at a glance with health scores |
 | **Smart Notifications** | Get nudged when a project goes stale (14+ days) |
 | **Voice Capture** | Record instructions on the go, Groq transcribes, Claude executes |
-| **Ship Wizard** | Pre-flight checklist + auto-generated LinkedIn post draft |
+| **Ship Tab** | Ranks all projects by shipping readiness |
 
 ---
 
@@ -122,14 +122,14 @@ Taskboard solves this by:
 
 ```bash
 # Clone and install
-git clone https://github.com/castroarun/Taskboard.git
+git clone https://github.com/castroarun/taskBoard.git
 cd Taskboard && npm install
 
-# Command Center (Desktop)
+# Klarity (Desktop)
 cd apps/command-center
 npm run tauri dev
 
-# Launchpad (Mobile)
+# Orbit (Mobile)
 cd apps/launchpad
 npm run android
 ```
@@ -141,8 +141,8 @@ npm run android
 ```
 Taskboard/
 ├── apps/
-│   ├── command-center/     # Desktop (Tauri 2.0 + React + Zustand)
-│   └── launchpad/          # Mobile (React Native + Expo)
+│   ├── command-center/     # Klarity — Desktop (Tauri 2.0 + React + Zustand)
+│   └── launchpad/          # Orbit — Mobile (React Native + Expo)
 ├── packages/
 │   └── shared/             # Types + LAUNCHPAD block parser
 ├── specs/                  # Feature specifications
@@ -174,7 +174,7 @@ This enables automatic health scoring, notifications, and cross-device sync with
 
 ## Project Icons
 
-Each project can have a custom icon displayed in the Command Center. Add an `icon` field to your project in `projects.json`:
+Each project can have a custom icon displayed in Klarity. Add an `icon` field to your project in `projects.json`:
 
 ```json
 {
@@ -205,24 +205,28 @@ Save icons to `assets/icon.png` in your project folder.
 
 ## Specs
 
-- [Command Center Spec](specs/taskboard/TASKBOARD_COMPLETE_SPEC.md) — Desktop app architecture and features
-- [Launchpad Spec](specs/launchpad/launchpad-project-spec.md) — Mobile app and notification system
+- [Klarity Spec](specs/taskboard/TASKBOARD_COMPLETE_SPEC.md) — Desktop app architecture and features
+- [Orbit Spec](specs/launchpad/launchpad-project-spec.md) — Mobile app and notification system
 
 ---
 
 ## Roadmap
 
-- [x] Command Center mockups
-- [x] Launchpad mockups
-- [x] Command Center MVP (Tauri + React)
-  - [x] Project Board view
+- [x] Klarity mockups
+- [x] Orbit mockups
+- [x] Klarity MVP (Tauri + React)
+  - [x] Pipeline Board view
   - [x] Quick Launch (⌘K) palette
   - [x] Task management (create/edit/drag-drop)
   - [x] Settings panel
   - [x] Data persistence
   - [x] Voice capture UI
-- [ ] Launchpad MVP (React Native)
-- [ ] GitHub API integration
+- [x] Orbit MVP (React Native + Expo)
+  - [x] Project dashboard with health scores
+  - [x] Voice capture with Groq transcription
+  - [x] Ship tab with readiness ranking
+  - [x] Inbox with threaded Claude replies
+- [ ] GitHub sync pipeline
 - [ ] Claude agent integration
 - [ ] Push notifications (FCM)
 

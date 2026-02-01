@@ -9,17 +9,17 @@
 
 ## Post
 
-Launching Orbit — the phone companion!! We recently shipped Klarity — a desktop command center that brings a focused "human-in-the-loop" for AI-assisted development. Pipeline board, inbox, review system — no clutter, just signal. (https://www.linkedin.com/pulse/my-project-management-app-8mb-works-offline-talks-ai-meet-castromin-mmnsc/)
+Launching 𝗢𝗿𝗯𝗶𝘁 — the phone companion!! We recently shipped Klarity — a focused "human-in-the-loop" desktop app for AI-assisted development. Pipeline board, inbox, review system — no clutter, just signal. (https://www.linkedin.com/pulse/my-project-management-app-8mb-works-offline-talks-ai-meet-castromin-mmnsc/)
 
-But ideas don't happen at your desk. They happen on the commute, in the shower, in bed at 2 AM. So Orbit — the phone companion — was always part of the plan. Both apps were designed simultaneously, each meant to complement each other or even work alone. The real challenge was making them speak the same language — schema mismatches and UI patterns that worked on desktop but broke on mobile forced design rework mid-build.
+Most often, ideas don't happen at your desk but on the commute, in the shower, in bed at 2 AM. The design principle: 𝗲𝗮𝗰𝗵 𝗮𝗽𝗽 𝗺𝘂𝘀𝘁 𝘄𝗼𝗿𝗸 𝗰𝗼𝗺𝗽𝗹𝗲𝘁𝗲𝗹𝘆 𝗮𝗹𝗼𝗻𝗲. And each has a clear role — Orbit is strictly for capture: ideas, voice notes, reminders, quick inputs. The heavy lifting — reviews, task management, code sessions — stays on Klarity and Claude. Phone captures intent, desktop executes it.
 
-The design principle: **each app must work completely alone.**
+ Both apps were designed simultaneously. The real challenge was making them speak the same language — schema mismatches and UI patterns that worked on desktop but broke on mobile forced design rework mid-build.
 
-Orbit alone: Phone → GitHub → Claude executes → results back on phone. 
+O̲r̲b̲i̲t̲ ̲a̲l̲o̲n̲e̲: Phone → GitHub → Claude executes → results back on phone.
 Klarity alone: Desktop pipeline, Windows notifications, inbox with replies. No phone required.
-(via a strcutured JSON - our source of truth)
+(via a structured JSON — our source of truth)
 
-What Orbit actually shows on your phone:
+W̲h̲a̲t̲ ̲O̲r̲b̲i̲t̲ ̲a̲c̲t̲u̲a̲l̲l̲y̲ ̲s̲h̲o̲w̲s̲ ̲o̲n̲ ̲y̲o̲u̲r̲ ̲p̲h̲o̲n̲e̲:
 
 - Project age + stale days since last update
 - Smart "pick this up now" recommendation based on staleness + closeness to launch
@@ -29,9 +29,9 @@ What Orbit actually shows on your phone:
 But here's what happens when both apps are active:
 
 You say "fix the calendar bug" into Orbit at lunch. Klarity pops a Windows notification on your desktop. Claude Code pulls the task from GitHub, fixes the code, pushes the result. Your phone AND desktop show the reply — simultaneously.
-*- the windows notification is WIP on Klarity - have reopened for enhancements*
+- the windows notification is WIP on Klarity - have reopened for enhancements
 
-The architecture that makes this work:
+T̲h̲e̲ ̲a̲r̲c̲h̲i̲t̲e̲c̲t̲u̲r̲e̲ ̲t̲h̲a̲t̲ ̲m̲a̲k̲e̲s̲ ̲t̲h̲i̲s̲ ̲w̲o̲r̲k̲:
 
 - GitHub private repo as the entire backend (zero servers)
 - SHA conflict protection + additive merge — zero data loss with concurrent edits
@@ -43,12 +43,11 @@ Tech: React Native (Orbit) · Tauri 2.0 + Rust (Klarity) · TypeScript · GitHub
 
 Interactive architecture diagram: https://htmlpreview.github.io/?https://github.com/castroarun/taskBoard/blob/main/.taskboard/docs/Design/sync-architecture-flow.html
 
-More on Klarity: https://www.linkedin.com/pulse/my-project-management-app-8mb-works-offline-talks-ai-meet-castromin-mmnsc/
 Built with the 9-step AI dev process: https://www.linkedin.com/pulse/clarity-clutter-why-ai-assisted-development-needs-arun-castromin-hmxzc/
 
 Repo: https://github.com/castroarun/taskBoard
 
-Next up: multi-user collaboration. Same sync pipeline, more contributors. One person captures the idea on Orbit, another picks it up on Klarity, Claude assists both. The architecture is already additive-merge — scaling to teams is a natural extension.
+What's next: multi-user collaboration, direct Anthropic API integration (at a cost currently), and incremental enhancements shipped as I go.
 
 ---
 

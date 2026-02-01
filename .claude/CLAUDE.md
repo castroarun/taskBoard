@@ -1,8 +1,8 @@
-# Task Board - Claude Instructions
+# Klarity & Orbit - Claude Instructions
 
 ## Project Overview
 
-This is **Arun's Task Board** - a file-based project orchestration system with a Command Center desktop app built with Tauri 2.0 + React + TypeScript.
+This is **Klarity & Orbit** - a file-based project orchestration system. Klarity is the desktop command center (Tauri 2.0 + React + TypeScript), Orbit is the mobile companion (React Native + Expo).
 
 **Jira Project Key**: TASKBOARD (if synced)
 
@@ -25,10 +25,16 @@ This is **Arun's Task Board** - a file-based project orchestration system with a
 5. Add your reply to the item's `replies` array
 6. Set `read: false` so the user sees the badge notification
 
-**Project-specific agent behavior:**
-- When working on a specific project (e.g. `taskboard`, `klarity`, `orbit`), agents should ONLY alert about inbox items where `project` matches the current project
-- Design agents, QA agents, and other specialized agents should filter inbox by project and surface relevant items
-- Example: QA agent working on `klarity` should check `inbox.json` for items where `project === "klarity"` and `type === "task"` with keywords like "bug", "test", "fix"
+**Agent inbox check (REQUIRED for all agents):**
+- Every agent (design, QA, architect, etc.) MUST run `bash ~/.taskboard/sync-pull.sh` when it starts — pull fresh from GitHub, not rely on stale local data
+- After pulling, read `inbox.json` and filter for `project` matching the current project
+- If there are new pending items relevant to the agent's role, alert the user before proceeding with the assigned task
+- Design agents filter for: "design", "mockup", "UI", "layout", "theme"
+- QA agents filter for: "bug", "test", "fix", "broken", "crash"
+- Architect agents filter for: "architecture", "schema", "structure", "refactor"
+- General agents: show all pending items for the project
+
+**Example:** QA agent invoked on `klarity` → pulls from GitHub → reads inbox.json → finds 1 new item where `project === "klarity"` with text containing "login bug" → alerts: "New inbox item for Klarity: login bug reported from Orbit"
 
 **To respond to an inbox item**, edit `inbox.json` and add to the item's replies:
 ```json
@@ -57,6 +63,8 @@ This is **Arun's Task Board** - a file-based project orchestration system with a
       "read": false,
       "author": "user|claude",
       "parentId": null,
+      "taskRef": "t-rp-002|null",
+      "taskTitle": "Exercise library with search|null",
       "replies": [
         {
           "id": "reply-<timestamp>",
@@ -105,12 +113,37 @@ projects.json → reviews[] where forClaude=true and resolved=false
 - Acknowledge and incorporate feedback
 - Mark as resolved when addressed
 
-### 3. Task Comments (Task-Specific Instructions)
+### 3. Task Comments (via Inbox Pipeline)
+
+Task-level comments flow through the **same inbox pipeline** — not a separate channel.
+When an inbox item has `taskRef` and `taskTitle`, it's a task-specific comment.
+
+**How to identify task comments in inbox.json:**
+```json
+{
+  "id": "inbox-1706234567890",
+  "text": "The search filter is not working for muscle groups",
+  "type": "task",
+  "project": "reppit",
+  "taskRef": "t-rp-002",
+  "taskTitle": "Exercise library with search",
+  "forClaude": true,
+  "status": "pending"
+}
 ```
-tasks.json → tasks[].comments[] where forClaude=true
-```
-- Check comments on tasks you're working on
-- Follow any instructions or incorporate feedback
+
+**When responding to task comments:**
+1. Include the task context in your reply: mention the task title and ID
+2. If the comment requires code changes, explain what you'll do
+3. After acting on it, add your reply AND mark status as "done"
+4. Your reply appears in Orbit's project detail screen under the linked task
+
+**Example response flow:**
+- Orbit user comments on task "Exercise library with search": "Search filter broken for muscle groups"
+- Claude reads inbox, sees `taskRef: "t-rp-002"` with `forClaude: true`
+- Claude investigates, fixes the issue
+- Claude adds reply: "Fixed the muscle group filter — was missing lowercase normalization in the search query"
+- Reply shows up under the task card in Orbit's project detail view
 
 ---
 

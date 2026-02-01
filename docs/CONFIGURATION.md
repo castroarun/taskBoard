@@ -1,6 +1,6 @@
 # Configuration Guide
 
-Task Board uses a single `config.json` file for all settings. Copy `config.example.json` to get started.
+Klarity uses a single `config.json` file for all settings. Copy `config.example.json` to get started.
 
 ---
 

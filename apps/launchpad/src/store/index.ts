@@ -6,6 +6,7 @@ import { Project, Task, InboxItem, Activity } from './types';
 import sampleProjects from '../../assets/data/projects.json';
 import sampleTasks from '../../assets/data/tasks.json';
 import sampleActivities from '../../assets/data/activities.json';
+import sampleInbox from '../../assets/data/inbox.json';
 
 interface RawProject {
   id: string;
@@ -23,6 +24,7 @@ interface RawProject {
   lastUpdated?: string;
   tags?: string[];
   techStack?: string[];
+  githubUrl?: string | null;
   metrics?: {
     totalTasks: number;
     completedTasks: number;
@@ -117,6 +119,7 @@ export const useAppStore = create<AppStore>()(
           lastUpdated: p.lastUpdated || new Date().toISOString(),
           tags: p.tags || [],
           techStack: p.techStack || [],
+          githubUrl: p.githubUrl ?? null,
           metrics: p.metrics || {
             totalTasks: 0,
             completedTasks: 0,
@@ -147,7 +150,37 @@ export const useAppStore = create<AppStore>()(
           timestamp: a.timestamp,
         }));
 
-        set({ projects, tasks, activities, lastSynced: new Date().toISOString() });
+        // Seed inbox from sample data if empty (inbox is persisted separately)
+        const rawInbox = (sampleInbox as { items: InboxItem[] }).items;
+        const inbox: InboxItem[] = rawInbox.map((item) => ({
+          id: item.id,
+          text: item.text,
+          type: item.type,
+          project: item.project,
+          priority: item.priority,
+          status: item.status,
+          createdAt: item.createdAt,
+          forClaude: item.forClaude ?? false,
+          read: item.read ?? false,
+          author: item.author ?? 'user',
+          parentId: item.parentId ?? null,
+          replies: item.replies ?? [],
+          taskRef: item.taskRef ?? null,
+          taskTitle: item.taskTitle ?? null,
+        }));
+
+        set((state) => {
+          // Merge sample inbox: add items whose IDs don't already exist
+          const existingIds = new Set(state.inbox.map((i) => i.id));
+          const newItems = inbox.filter((i) => !existingIds.has(i.id));
+          return {
+            projects,
+            tasks,
+            activities,
+            inbox: newItems.length > 0 ? [...newItems, ...state.inbox] : state.inbox,
+            lastSynced: new Date().toISOString(),
+          };
+        });
       },
     }),
     {

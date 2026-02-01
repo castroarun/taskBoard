@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,15 +8,18 @@ import {
   StyleSheet,
   Platform,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
+import Svg, { Circle } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../src/theme/ThemeContext';
 import { useAppStore } from '../../src/store';
 import { spacing, fontSize, borderRadius } from '../../src/theme/spacing';
+import { Audio } from 'expo-av';
 import { Project, Task, ProjectPhase } from '../../src/store/types';
-import { structureVoiceText } from '../../src/services/groq';
+import { structureVoiceText, transcribeAudio, isGroqConfigured } from '../../src/services/groq';
 
 // --- Constants ---
 
@@ -40,7 +43,7 @@ const PHASE_SHORT: Record<ProjectPhase, string> = {
 
 const PHASE_COLORS: Record<ProjectPhase, string> = {
   design: '#ec4899',
-  engineering: '#0ea5e9',
+  engineering: '#10b981',
   build: '#eab308',
   launch: '#22c55e',
   closure: '#14b8a6',
@@ -83,6 +86,23 @@ function getPhaseIndex(phase: ProjectPhase): number {
   return PHASES.indexOf(phase);
 }
 
+/** Map project.stage string → sub-stage index within the current phase */
+function getSubStageIndex(stage: string): number {
+  const map: Record<string, number> = {
+    // Design
+    conception: 0, design: 0, discovery: 1, requirements: 2,
+    // Engineering
+    architecture: 0, engineering: 0, 'qa-planning': 1, 'qa_planning': 1, review: 2,
+    // Build
+    development: 0, build: 0, testing: 1, staging: 2,
+    // Launch
+    beta: 0, launch: 0, release: 1, ship: 1, marketing: 2, announce: 2,
+    // Closure
+    retrospective: 0, closure: 0, documentation: 1, archive: 2,
+  };
+  return map[stage.toLowerCase()] ?? 0;
+}
+
 function formatDate(dateString: string | null): string {
   if (!dateString) return '';
   const date = new Date(dateString);
@@ -96,6 +116,27 @@ function getDaysActive(dateString: string | null): number {
   return Math.max(0, Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
 }
 
+/** Detect "start over" / "delete this" intent at the start of a transcription */
+const RESET_PATTERNS = [
+  /^(hey\s+)?(please\s+)?(delete|clear|remove)\s+(everything|all|whatever|what'?s?\s*(here|present|there))\s*/i,
+  /^(hey\s+)?(please\s+)?(let'?s?\s+)?start\s+(over|from\s+(the\s+)?(first|scratch|beginning|start)|fresh|again)\s*/i,
+  /^(hey\s+)?(please\s+)?replace\s+(everything|all|this)\s*/i,
+  /^(hey\s+)?(please\s+)?never\s*mind\s*/i,
+  /^(hey\s+)?(please\s+)?scratch\s+that\s*/i,
+];
+
+function detectResetIntent(text: string): { replace: boolean; cleanText: string } {
+  for (const pattern of RESET_PATTERNS) {
+    const match = text.match(pattern);
+    if (match) {
+      // Strip the command, keep any remaining content
+      const remaining = text.slice(match[0].length).trim();
+      return { replace: true, cleanText: remaining };
+    }
+  }
+  return { replace: false, cleanText: text };
+}
+
 // --- Component ---
 
 export default function ProjectDetailScreen() {
@@ -106,11 +147,17 @@ export default function ProjectDetailScreen() {
 
   const project = useAppStore((s) => s.projects).find((p) => p.id === id);
   const projectTasks = useAppStore((s) => s.tasks).filter((t) => t.projectId === id);
+  const inboxItems = useAppStore((s) => s.inbox);
   const addInboxItem = useAppStore((s) => s.addInboxItem);
 
   const [expandedTask, setExpandedTask] = useState<string | null>(taskId ?? null);
   const [voiceText, setVoiceText] = useState('');
   const [voiceProcessing, setVoiceProcessing] = useState(false);
+
+  // Inline voice recording
+  const inlineRecRef = useRef<Audio.Recording | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
 
   const completedCount = useMemo(
     () => projectTasks.filter((t) => t.status === 'completed').length,
@@ -130,6 +177,17 @@ export default function ProjectDetailScreen() {
   const currentPhaseIndex = useMemo(
     () => (project ? getPhaseIndex(project.currentPhase) : 0),
     [project]
+  );
+
+  const activeSubIndex = useMemo(
+    () => (project ? getSubStageIndex(project.stage) : 0),
+    [project]
+  );
+
+  /** Get inbox items linked to a specific task */
+  const getTaskReplies = useCallback(
+    (taskId: string) => inboxItems.filter((item) => item.taskRef === taskId),
+    [inboxItems]
   );
 
   const toggleTask = useCallback((tid: string) => {
@@ -155,6 +213,8 @@ export default function ProjectDetailScreen() {
         author: 'user',
         parentId: null,
         replies: [],
+        taskRef: task.id,
+        taskTitle: task.title,
       });
       setVoiceText('');
     } catch {
@@ -172,12 +232,77 @@ export default function ProjectDetailScreen() {
         author: 'user',
         parentId: null,
         replies: [],
+        taskRef: task.id,
+        taskTitle: task.title,
       });
       setVoiceText('');
     } finally {
       setVoiceProcessing(false);
     }
   }, [voiceText, project, addInboxItem]);
+
+  // Cleanup recording on unmount
+  useEffect(() => {
+    return () => {
+      if (inlineRecRef.current) {
+        inlineRecRef.current.stopAndUnloadAsync().catch(() => {});
+        inlineRecRef.current = null;
+      }
+    };
+  }, []);
+
+  const handleInlineRecord = useCallback(async () => {
+    // If already recording, stop and transcribe
+    if (isRecording && inlineRecRef.current) {
+      // Grab ref and null immediately to prevent double-tap
+      const recording = inlineRecRef.current;
+      inlineRecRef.current = null;
+      setIsRecording(false);
+      setIsTranscribing(true);
+      try {
+        await recording.stopAndUnloadAsync();
+        const uri = recording.getURI();
+        await Audio.setAudioModeAsync({ allowsRecordingIOS: false });
+
+        if (!uri) throw new Error('No audio file');
+        const text = await transcribeAudio(uri);
+        // Smart append: if text starts with reset intent, replace; otherwise append
+        const result = detectResetIntent(text);
+        if (result.replace || !voiceText.trim()) {
+          setVoiceText(result.cleanText);
+        } else {
+          setVoiceText((prev) => (prev.trim() + ' ' + result.cleanText).trim());
+        }
+      } catch {
+        // Transcription failed — user can type manually
+      } finally {
+        setIsTranscribing(false);
+      }
+      return;
+    }
+
+    // Start recording
+    try {
+      const { granted } = await Audio.requestPermissionsAsync();
+      if (!granted) return;
+
+      const configured = await isGroqConfigured();
+      if (!configured) return;
+
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
+
+      const { recording } = await Audio.Recording.createAsync(
+        Audio.RecordingOptionsPresets.HIGH_QUALITY
+      );
+      inlineRecRef.current = recording;
+      setIsRecording(true);
+    } catch {
+      setIsRecording(false);
+    }
+  }, [isRecording, voiceText]);
 
   const styles = makeStyles(colors, insets);
 
@@ -188,7 +313,7 @@ export default function ProjectDetailScreen() {
         <View style={styles.headerBar}>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => router.back()}
+            onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <Ionicons name="chevron-back" size={22} color={colors.textPrimary} />
@@ -218,7 +343,7 @@ export default function ProjectDetailScreen() {
       <View style={styles.headerBar}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => router.back()}
+          onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
           <Ionicons name="chevron-back" size={22} color={colors.textPrimary} />
@@ -232,10 +357,44 @@ export default function ProjectDetailScreen() {
             ) : null}
           </Text>
         </View>
-        {/* Completion Ring */}
-        <View style={[styles.completionRing, { borderColor: colors.borderLight }]}>
-          <Text style={styles.completionText}>{progressPercent}%</Text>
-        </View>
+        {/* Completion Ring — SVG circular progress */}
+        {(() => {
+          const size = 44;
+          const strokeWidth = 3.5;
+          const radius = (size - strokeWidth) / 2;
+          const circumference = 2 * Math.PI * radius;
+          const strokeDashoffset = circumference - (progressPercent / 100) * circumference;
+          return (
+            <View style={styles.completionRingContainer}>
+              <Svg width={size} height={size}>
+                {/* Background track */}
+                <Circle
+                  cx={size / 2}
+                  cy={size / 2}
+                  r={radius}
+                  stroke={colors.border}
+                  strokeWidth={strokeWidth}
+                  fill="none"
+                />
+                {/* Progress arc */}
+                <Circle
+                  cx={size / 2}
+                  cy={size / 2}
+                  r={radius}
+                  stroke="#10b981"
+                  strokeWidth={strokeWidth}
+                  fill="none"
+                  strokeDasharray={`${circumference} ${circumference}`}
+                  strokeDashoffset={strokeDashoffset}
+                  strokeLinecap="round"
+                  rotation="-90"
+                  origin={`${size / 2}, ${size / 2}`}
+                />
+              </Svg>
+              <Text style={styles.completionText}>{progressPercent}%</Text>
+            </View>
+          );
+        })()}
       </View>
 
       <ScrollView
@@ -256,6 +415,19 @@ export default function ProjectDetailScreen() {
                 {project.techStack[0]}
               </Text>
             </View>
+          )}
+          {project.githubUrl && (
+            <>
+              <View style={{ flex: 1 }} />
+              <TouchableOpacity
+                style={styles.githubBadge}
+                onPress={() => Linking.openURL(project.githubUrl!)}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="logo-github" size={14} color="#10b981" />
+                <Text style={styles.githubBadgeText}>GitHub</Text>
+              </TouchableOpacity>
+            </>
           )}
         </View>
         <Text style={styles.projectTitle}>{project.name}</Text>
@@ -279,7 +451,7 @@ export default function ProjectDetailScreen() {
                       <View
                         style={[
                           styles.stageConnector,
-                          { backgroundColor: isDone || isCurrent ? '#10b981' : colors.border },
+                          { backgroundColor: isDone || isCurrent ? '#10b981' : colors.textMuted + '40' },
                         ]}
                       />
                     )}
@@ -324,9 +496,8 @@ export default function ProjectDetailScreen() {
                 <Text style={styles.subStageSuffix}>— Current stage</Text>
               </View>
               {SUB_STAGES[project.currentPhase].map((sub, i) => {
-                // Simple logic: first sub = done, second = active, third = pending
-                const subDone = i === 0;
-                const subActive = i === 1;
+                const subDone = i < activeSubIndex;
+                const subActive = i === activeSubIndex;
 
                 return (
                   <View key={sub} style={styles.subStageRow}>
@@ -369,7 +540,9 @@ export default function ProjectDetailScreen() {
                     </Text>
                     {SUB_STAGES[phase].map((sub) => (
                       <View key={sub} style={styles.completedSubRow}>
-                        <View style={styles.completedSubDot} />
+                        <View style={styles.completedSubDot}>
+                          <Ionicons name="checkmark" size={8} color="#ffffff" />
+                        </View>
                         <Text style={styles.completedSubText}>{sub}</Text>
                       </View>
                     ))}
@@ -493,19 +666,98 @@ export default function ProjectDetailScreen() {
                           <Text style={styles.blockedText}>This task is blocked</Text>
                         </View>
                       )}
-                      {/* Voice input bar */}
+
+                      {/* Task-linked inbox threads */}
+                      {(() => {
+                        const taskReplies = getTaskReplies(task.id);
+                        if (taskReplies.length === 0) return null;
+                        return (
+                          <View style={styles.threadContainer}>
+                            <View style={styles.threadHeader}>
+                              <Ionicons name="chatbubbles-outline" size={14} color="#94a3b8" />
+                              <Text style={styles.threadHeaderText}>
+                                {taskReplies.length} message{taskReplies.length > 1 ? 's' : ''}
+                              </Text>
+                            </View>
+                            {taskReplies.map((item) => (
+                              <View key={item.id}>
+                                <View style={styles.threadMessage}>
+                                  <View style={[styles.threadAuthorDot, { backgroundColor: item.author === 'claude' ? '#3b82f6' : '#10b981' }]} />
+                                  <View style={styles.threadMessageContent}>
+                                    <View style={styles.threadMessageHeader}>
+                                      <Text style={[styles.threadAuthorName, { color: item.author === 'claude' ? '#3b82f6' : '#10b981' }]}>
+                                        {item.author === 'claude' ? 'Claude' : 'You'}
+                                      </Text>
+                                      <Text style={styles.threadTimestamp}>
+                                        {formatDate(item.createdAt)}
+                                      </Text>
+                                    </View>
+                                    <Text style={styles.threadMessageText}>{item.text}</Text>
+                                  </View>
+                                </View>
+                                {item.replies.map((reply) => (
+                                  <View key={reply.id} style={[styles.threadMessage, styles.threadReply]}>
+                                    <View style={[styles.threadAuthorDot, { backgroundColor: reply.author === 'claude' ? '#3b82f6' : '#10b981' }]} />
+                                    <View style={styles.threadMessageContent}>
+                                      <View style={styles.threadMessageHeader}>
+                                        <Text style={[styles.threadAuthorName, { color: reply.author === 'claude' ? '#3b82f6' : '#10b981' }]}>
+                                          {reply.author === 'claude' ? 'Claude' : 'You'}
+                                        </Text>
+                                        <Text style={styles.threadTimestamp}>
+                                          {formatDate(reply.createdAt)}
+                                        </Text>
+                                      </View>
+                                      <Text style={styles.threadMessageText}>{reply.text}</Text>
+                                    </View>
+                                  </View>
+                                ))}
+                              </View>
+                            ))}
+                          </View>
+                        );
+                      })()}
+
+                      {/* Voice note input row */}
                       <View style={styles.voiceInputRow}>
                         <TextInput
                           style={styles.voiceInput}
-                          placeholder="Voice note for this task..."
-                          placeholderTextColor={colors.textMuted}
+                          placeholder={
+                            isRecording ? 'Recording... tap mic to stop'
+                            : isTranscribing ? 'Transcribing...'
+                            : 'Voice note for this task...'
+                          }
+                          placeholderTextColor={isRecording ? '#ef4444' : colors.textMuted}
                           value={voiceText}
                           onChangeText={setVoiceText}
                           multiline={false}
-                          editable={!voiceProcessing}
+                          editable={!voiceProcessing && !isRecording && !isTranscribing}
                         />
+                        {/* Mic button — records voice */}
                         <TouchableOpacity
-                          style={[styles.voiceSendButton, !voiceText.trim() && styles.voiceSendDisabled]}
+                          style={[
+                            styles.micRecordButton,
+                            isRecording && styles.micRecordButtonActive,
+                          ]}
+                          onPress={handleInlineRecord}
+                          activeOpacity={0.7}
+                          disabled={isTranscribing || voiceProcessing}
+                        >
+                          {isTranscribing ? (
+                            <ActivityIndicator size="small" color="#f97316" />
+                          ) : (
+                            <Ionicons
+                              name={isRecording ? 'stop' : 'mic'}
+                              size={16}
+                              color={isRecording ? '#ffffff' : '#10b981'}
+                            />
+                          )}
+                        </TouchableOpacity>
+                        {/* Send button */}
+                        <TouchableOpacity
+                          style={[
+                            styles.voiceSendButton,
+                            !voiceText.trim() && styles.voiceSendDisabled,
+                          ]}
                           onPress={() => handleVoiceSubmit(task)}
                           disabled={!voiceText.trim() || voiceProcessing}
                           activeOpacity={0.7}
@@ -566,7 +818,7 @@ export default function ProjectDetailScreen() {
           <View style={styles.quickActionsRow}>
             <TouchableOpacity
               style={styles.quickActionButton}
-              onPress={() => router.push('/voice-capture')}
+              onPress={() => router.push(`/voice-capture?projectId=${project.id}`)}
               activeOpacity={0.7}
             >
               <View style={[styles.quickActionIcon, { backgroundColor: '#10b9811A' }]}>
@@ -580,8 +832,8 @@ export default function ProjectDetailScreen() {
               onPress={() => router.push('/inbox-capture')}
               activeOpacity={0.7}
             >
-              <View style={[styles.quickActionIcon, { backgroundColor: '#0ea5e91A' }]}>
-                <Ionicons name="add-circle" size={22} color="#0ea5e9" />
+              <View style={[styles.quickActionIcon, { backgroundColor: '#10b9811A' }]}>
+                <Ionicons name="add-circle" size={22} color="#10b981" />
               </View>
               <Text style={styles.quickActionLabel}>Add to Inbox</Text>
             </TouchableOpacity>
@@ -644,16 +896,14 @@ function makeStyles(
       color: '#10b981',
       fontWeight: '600',
     },
-    completionRing: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      borderWidth: 3,
-      borderColor: colors.borderLight,
+    completionRingContainer: {
+      width: 44,
+      height: 44,
       alignItems: 'center',
       justifyContent: 'center',
     },
     completionText: {
+      position: 'absolute',
       fontSize: 10,
       fontWeight: '700',
       color: '#10b981',
@@ -709,6 +959,22 @@ function makeStyles(
       fontSize: 12,
       fontWeight: '600',
       color: colors.textSecondary,
+    },
+    githubBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: borderRadius.md,
+      backgroundColor: '#10b9810D',
+      borderWidth: 1,
+      borderColor: '#10b98140',
+    },
+    githubBadgeText: {
+      fontSize: 12,
+      fontWeight: '600',
+      color: '#10b981',
     },
     projectTitle: {
       fontSize: 24,
@@ -768,20 +1034,23 @@ function makeStyles(
     },
     stageConnector: {
       position: 'absolute',
-      top: 13,
+      top: 15,
       right: '50%',
       left: '-50%',
       height: 2,
       zIndex: 0,
     },
     stageCircle: {
-      width: 28,
-      height: 28,
-      borderRadius: 14,
+      width: 32,
+      height: 32,
+      borderRadius: 16,
       alignItems: 'center',
       justifyContent: 'center',
-      zIndex: 1,
-      marginBottom: 6,
+      zIndex: 5,
+      position: 'relative',
+      marginBottom: 4,
+      borderWidth: 3,
+      borderColor: colors.surface,
     },
     stageCircleDone: {
       backgroundColor: '#10b981',
@@ -801,7 +1070,8 @@ function makeStyles(
       }),
     },
     stageCirclePending: {
-      backgroundColor: colors.border,
+      backgroundColor: colors.textMuted + '30',
+      borderColor: colors.textMuted + '60',
     },
     currentDot: {
       width: 10,
@@ -812,7 +1082,7 @@ function makeStyles(
     pendingNumber: {
       fontSize: 9,
       fontWeight: '700',
-      color: colors.textPrimary,
+      color: colors.textMuted,
     },
     stageLabel: {
       fontSize: 10,
@@ -887,7 +1157,9 @@ function makeStyles(
       }),
     },
     subDotPending: {
-      backgroundColor: colors.border,
+      backgroundColor: colors.textMuted + '30',
+      borderWidth: 1,
+      borderColor: colors.textMuted + '50',
     },
     subStageText: {
       flex: 1,
@@ -936,10 +1208,12 @@ function makeStyles(
       marginBottom: 3,
     },
     completedSubDot: {
-      width: 8,
-      height: 8,
-      borderRadius: 4,
+      width: 12,
+      height: 12,
+      borderRadius: 6,
       backgroundColor: '#10b981',
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
     },
     completedSubText: {
       fontSize: 10,
@@ -1107,6 +1381,85 @@ function makeStyles(
     },
     voiceSendDisabled: {
       opacity: 0.4,
+    },
+    micRecordButton: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: '#10b9811A',
+      borderWidth: 1,
+      borderColor: '#10b98140',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    micRecordButtonActive: {
+      backgroundColor: '#ef4444',
+      borderColor: '#ef4444',
+    },
+
+    // Thread styles
+    threadContainer: {
+      marginTop: 12,
+      borderLeftWidth: 2,
+      borderLeftColor: '#64748b40',
+      backgroundColor: '#64748b08',
+      borderRadius: borderRadius.md,
+      paddingLeft: 12,
+      paddingRight: 10,
+      paddingTop: 10,
+      paddingBottom: 4,
+    },
+    threadHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      marginBottom: 10,
+    },
+    threadHeaderText: {
+      fontSize: 11,
+      fontWeight: '600',
+      color: '#94a3b8',
+    },
+    threadMessage: {
+      flexDirection: 'row',
+      gap: 8,
+      marginBottom: 8,
+      backgroundColor: '#64748b0D',
+      borderRadius: borderRadius.sm,
+      paddingHorizontal: 8,
+      paddingVertical: 6,
+    },
+    threadReply: {
+      marginLeft: 16,
+    },
+    threadAuthorDot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      marginTop: 5,
+    },
+    threadMessageContent: {
+      flex: 1,
+    },
+    threadMessageHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      marginBottom: 2,
+    },
+    threadAuthorName: {
+      fontSize: 11,
+      fontWeight: '700',
+      color: colors.textSecondary,
+    },
+    threadTimestamp: {
+      fontSize: 9,
+      color: colors.textMuted,
+    },
+    threadMessageText: {
+      fontSize: 12,
+      color: colors.textSecondary,
+      lineHeight: 18,
     },
 
     // Description

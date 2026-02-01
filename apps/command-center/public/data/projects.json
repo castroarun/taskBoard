@@ -167,18 +167,18 @@
     },
     {
       "id": "taskboard",
-      "name": "Klarity Task Board",
-      "description": "File-based project orchestration system with Command Center desktop app. Features pipeline view, document viewer, inbox, notifications, voice capture, and AI agent integration.",
+      "name": "Klarity",
+      "description": "Desktop command center for AI-assisted development. Pipeline board, inbox, voice capture, notifications, and GitHub-synced task execution.",
       "repoPath": "C:/Users/Castro/Documents/Projects/Taskboard",
       "githubUrl": "https://github.com/castroarun/taskBoard",
 
-      "stage": "development",
+      "stage": "marketing",
       "stageStatus": "in-progress",
-      "currentPhase": "build",
+      "currentPhase": "launch",
 
       "priority": "P0",
       "complexity": "F",
-      "progress": 55,
+      "progress": 80,
 
       "targetDate": "2026-02-15",
       "startedAt": "2026-01-18T00:00:00Z",
@@ -295,30 +295,30 @@
     },
     {
       "id": "launchpad",
-      "name": "Launchpad",
-      "description": "Mobile companion app for Klarity. Quick project status checks, voice capture on the go, and push notifications for task updates.",
+      "name": "Orbit",
+      "description": "Mobile companion app for Klarity. Quick project status, voice capture on the go, and push notifications for task updates.",
       "repoPath": "C:/Users/Castro/Documents/Projects/Taskboard/apps/launchpad",
-      "githubUrl": null,
+      "githubUrl": "https://github.com/castroarun/taskBoard",
 
-      "stage": "engineering",
+      "stage": "ship",
       "stageStatus": "in-progress",
-      "currentPhase": "engineering",
+      "currentPhase": "launch",
 
-      "priority": "P2",
+      "priority": "P1",
       "complexity": "F",
-      "progress": 20,
+      "progress": 85,
 
-      "targetDate": "2026-03-15",
+      "targetDate": "2026-02-15",
       "startedAt": "2026-01-25T00:00:00Z",
       "createdAt": "2026-01-25T00:00:00Z",
-      "lastUpdated": "2026-01-25T00:00:00Z",
+      "lastUpdated": "2026-02-01T00:00:00Z",
       "completedAt": null,
 
       "tags": ["mobile", "react-native", "expo", "companion-app"],
       "techStack": ["Expo", "React Native", "TypeScript", "expo-router"],
 
       "links": {
-        "github": null,
+        "github": "https://github.com/castroarun/taskBoard",
         "docs": null,
         "live": null
       },

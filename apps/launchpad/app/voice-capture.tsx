@@ -12,29 +12,22 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { Audio } from 'expo-av';
 import { useTheme } from '../src/theme/ThemeContext';
 import { useAppStore } from '../src/store';
 import { spacing, fontSize, borderRadius } from '../src/theme/spacing';
-import { structureVoiceText } from '../src/services/groq';
+import { structureVoiceText, transcribeAudio, isGroqConfigured } from '../src/services/groq';
 import { Priority, Complexity, Project } from '../src/store/types';
 
 type CaptureState = 'idle' | 'recording' | 'processing' | 'review';
-
-const PRIORITIES: Priority[] = ['P0', 'P1', 'P2', 'P3'];
-const COMPLEXITIES: Complexity[] = ['XS', 'S', 'M', 'L', 'XL'];
-const PRIORITY_COLORS: Record<Priority, string> = {
-  P0: '#ef4444',
-  P1: '#f97316',
-  P2: '#eab308',
-  P3: '#6b7280',
-};
 
 export default function VoiceCaptureScreen() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { projectId } = useLocalSearchParams<{ projectId?: string }>();
   const projects = useAppStore((s) => s.projects);
   const addInboxItem = useAppStore((s) => s.addInboxItem);
 
@@ -46,7 +39,13 @@ export default function VoiceCaptureScreen() {
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<Priority>('P2');
   const [complexity, setComplexity] = useState<Complexity>('M');
-  const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [selectedProject, setSelectedProject] = useState<string | null>(projectId ?? null);
+
+  // Recording
+  const recordingRef = useRef<Audio.Recording | null>(null);
+  const [isActiveRecording, setIsActiveRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [transcriptionError, setTranscriptionError] = useState<string | null>(null);
 
   // Error handling
   const [processingError, setProcessingError] = useState<string | null>(null);
@@ -55,18 +54,18 @@ export default function VoiceCaptureScreen() {
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    if (state === 'recording') {
+    if (isActiveRecording) {
       const pulse = Animated.loop(
         Animated.sequence([
           Animated.timing(pulseAnim, {
             toValue: 1.15,
             duration: 800,
-            useNativeDriver: true,
+            useNativeDriver: Platform.OS !== 'web',
           }),
           Animated.timing(pulseAnim, {
             toValue: 1,
             duration: 800,
-            useNativeDriver: true,
+            useNativeDriver: Platform.OS !== 'web',
           }),
         ])
       );
@@ -75,12 +74,91 @@ export default function VoiceCaptureScreen() {
     } else {
       pulseAnim.setValue(1);
     }
-  }, [state, pulseAnim]);
+  }, [isActiveRecording, pulseAnim]);
 
-  const handleStartRecording = useCallback(() => {
-    setRawText('');
+  // Cleanup recording on unmount
+  useEffect(() => {
+    return () => {
+      if (recordingRef.current) {
+        recordingRef.current.stopAndUnloadAsync().catch(() => {});
+        recordingRef.current = null;
+      }
+    };
+  }, []);
+
+  const startRecordingSession = useCallback(async (clearText: boolean) => {
+    if (clearText) setRawText('');
     setProcessingError(null);
-    setState('recording');
+    setTranscriptionError(null);
+
+    try {
+      const { granted } = await Audio.requestPermissionsAsync();
+      if (!granted) {
+        setTranscriptionError('Microphone permission denied. Please allow access in Settings.');
+        return;
+      }
+
+      const configured = await isGroqConfigured();
+      if (!configured) {
+        setTranscriptionError('Groq API key not set. Go to Settings to configure voice transcription.');
+        return;
+      }
+
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
+
+      const { recording } = await Audio.Recording.createAsync(
+        Audio.RecordingOptionsPresets.HIGH_QUALITY
+      );
+      recordingRef.current = recording;
+      setIsActiveRecording(true);
+      setState('recording');
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : 'Failed to start recording';
+      setTranscriptionError(msg);
+    }
+  }, []);
+
+  const handleStartRecording = useCallback(async () => {
+    await startRecordingSession(true);
+  }, [startRecordingSession]);
+
+  const handleRecordMore = useCallback(async () => {
+    await startRecordingSession(false);
+  }, [startRecordingSession]);
+
+  const handleStopRecording = useCallback(async () => {
+    if (!recordingRef.current) return;
+
+    // Grab ref and null immediately to prevent double-tap
+    const recording = recordingRef.current;
+    recordingRef.current = null;
+    setIsActiveRecording(false);
+
+    setIsTranscribing(true);
+    setTranscriptionError(null);
+
+    try {
+      await recording.stopAndUnloadAsync();
+      const uri = recording.getURI();
+
+      await Audio.setAudioModeAsync({ allowsRecordingIOS: false });
+
+      if (!uri) {
+        throw new Error('No audio file produced');
+      }
+
+      const transcription = await transcribeAudio(uri);
+      // Append to existing text if any
+      setRawText((prev) => prev.trim() ? (prev.trim() + ' ' + transcription).trim() : transcription);
+      setIsTranscribing(false);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : 'Transcription failed';
+      setTranscriptionError(msg);
+      setIsTranscribing(false);
+    }
   }, []);
 
   const handleDone = useCallback(async () => {
@@ -115,7 +193,13 @@ export default function VoiceCaptureScreen() {
     }
   }, [rawText, selectedProject, projects]);
 
-  const handleReRecord = useCallback(() => {
+  const handleReRecord = useCallback(async () => {
+    // Stop any active recording
+    if (recordingRef.current) {
+      await recordingRef.current.stopAndUnloadAsync().catch(() => {});
+      recordingRef.current = null;
+      await Audio.setAudioModeAsync({ allowsRecordingIOS: false }).catch(() => {});
+    }
     setTitle('');
     setDescription('');
     setPriority('P2');
@@ -123,6 +207,9 @@ export default function VoiceCaptureScreen() {
     setSelectedProject(null);
     setRawText('');
     setProcessingError(null);
+    setTranscriptionError(null);
+    setIsActiveRecording(false);
+    setIsTranscribing(false);
     setState('idle');
   }, []);
 
@@ -142,13 +229,23 @@ export default function VoiceCaptureScreen() {
       author: 'user',
       parentId: null,
       replies: [],
+      taskRef: null,
+      taskTitle: null,
     });
 
-    router.back();
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/(tabs)');
+    }
   }, [title, description, priority, selectedProject, addInboxItem, router]);
 
   const handleClose = useCallback(() => {
-    router.back();
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/(tabs)');
+    }
   }, [router]);
 
   const canSubmit = rawText.trim().length > 0;
@@ -194,26 +291,57 @@ export default function VoiceCaptureScreen() {
           <Text style={styles.hint}>
             Speak naturally about a task, idea, or instruction
           </Text>
+          {transcriptionError && (
+            <View style={styles.errorNotice}>
+              <Ionicons name="warning" size={16} color="#f59e0b" />
+              <Text style={styles.errorNoticeText}>{transcriptionError}</Text>
+            </View>
+          )}
         </View>
       )}
 
-      {/* State: Recording (MVP - text input) */}
+      {/* State: Recording */}
       {state === 'recording' && (
         <View style={styles.recordingContainer}>
-          {/* Waveform-style header area */}
+          {/* Recording header — toggles between record/stop */}
           <View style={styles.recordingHeader}>
             <Animated.View
               style={[
                 styles.micButtonRecording,
+                !isActiveRecording && !isTranscribing && rawText.length > 0 && {
+                  backgroundColor: '#10b98140',
+                },
                 { transform: [{ scale: pulseAnim }] },
               ]}
             >
-              <View style={styles.micButtonRecordingInner}>
-                <Ionicons name="mic" size={36} color="#ffffff" />
-              </View>
+              <TouchableOpacity
+                style={[
+                  styles.micButtonRecordingInner,
+                  !isActiveRecording && !isTranscribing && rawText.length > 0 && {
+                    backgroundColor: '#10b981',
+                  },
+                ]}
+                onPress={
+                  isActiveRecording
+                    ? handleStopRecording
+                    : handleRecordMore
+                }
+                activeOpacity={0.8}
+                disabled={isTranscribing}
+              >
+                <Ionicons
+                  name={
+                    isTranscribing ? 'hourglass'
+                    : isActiveRecording ? 'stop'
+                    : 'mic'
+                  }
+                  size={36}
+                  color="#ffffff"
+                />
+              </TouchableOpacity>
             </Animated.View>
 
-            {/* Simulated waveform bars */}
+            {/* Waveform bars */}
             <View style={styles.waveformRow}>
               {Array.from({ length: 9 }).map((_, i) => {
                 const heights = [12, 20, 28, 16, 32, 24, 18, 26, 14];
@@ -224,10 +352,13 @@ export default function VoiceCaptureScreen() {
                       styles.waveformBar,
                       {
                         height: heights[i],
-                        backgroundColor:
-                          rawText.length > 0
-                            ? colors.primary
-                            : colors.textMuted,
+                        backgroundColor: isTranscribing
+                          ? '#f97316'
+                          : isActiveRecording
+                            ? '#ef4444'
+                            : rawText.length > 0
+                              ? '#10b981'
+                              : colors.textMuted + '40',
                       },
                     ]}
                   />
@@ -236,25 +367,47 @@ export default function VoiceCaptureScreen() {
             </View>
 
             <Text style={styles.recordingLabel}>
-              {rawText.length > 0 ? 'Transcribing...' : 'Listening...'}
+              {isTranscribing
+                ? 'Transcribing with Groq Whisper...'
+                : isActiveRecording
+                  ? 'Recording... Tap stop when done'
+                  : rawText.length > 0
+                    ? 'Tap mic to add more'
+                    : 'Tap mic to start'}
             </Text>
+
+            {isTranscribing && (
+              <ActivityIndicator
+                size="small"
+                color="#f97316"
+                style={{ marginTop: spacing.sm }}
+              />
+            )}
           </View>
 
-          {/* Text input area (MVP for voice) */}
+          {/* Transcription error */}
+          {transcriptionError && (
+            <View style={styles.errorNotice}>
+              <Ionicons name="warning" size={16} color="#f59e0b" />
+              <Text style={styles.errorNoticeText}>{transcriptionError}</Text>
+            </View>
+          )}
+
+          {/* Transcript text area — shows transcription, allows editing */}
           <View style={styles.transcriptInputBox}>
             <TextInput
               style={styles.transcriptInput}
               value={rawText}
               onChangeText={setRawText}
-              placeholder="Type or paste your voice note"
+              placeholder={isTranscribing ? 'Transcribing audio...' : 'Transcription appears here (or type manually)'}
               placeholderTextColor={colors.textMuted}
               multiline
               textAlignVertical="top"
-              autoFocus
+              editable={!isTranscribing}
             />
           </View>
 
-          {/* Live preview info */}
+          {/* Word count */}
           {rawText.length > 0 && (
             <Text style={styles.charCount}>
               {rawText.trim().split(/\s+/).filter(Boolean).length} words
@@ -278,7 +431,7 @@ export default function VoiceCaptureScreen() {
               ]}
               onPress={handleDone}
               activeOpacity={0.8}
-              disabled={!canSubmit}
+              disabled={!canSubmit || isTranscribing}
             >
               <Ionicons name="arrow-forward" size={20} color="#ffffff" />
               <Text style={styles.doneButtonText}>Done</Text>
@@ -341,70 +494,6 @@ export default function VoiceCaptureScreen() {
               multiline
               textAlignVertical="top"
             />
-          </View>
-
-          {/* Priority */}
-          <View style={styles.fieldGroup}>
-            <Text style={styles.fieldLabel}>Priority</Text>
-            <View style={styles.chipRow}>
-              {PRIORITIES.map((p) => {
-                const isActive = priority === p;
-                const chipColor = PRIORITY_COLORS[p];
-                return (
-                  <TouchableOpacity
-                    key={p}
-                    style={[
-                      styles.chip,
-                      isActive && {
-                        backgroundColor: chipColor + '26',
-                        borderColor: chipColor,
-                      },
-                    ]}
-                    onPress={() => setPriority(p)}
-                    activeOpacity={0.7}
-                  >
-                    <Text
-                      style={[
-                        styles.chipText,
-                        isActive && { color: chipColor },
-                      ]}
-                    >
-                      {p}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </View>
-
-          {/* Complexity */}
-          <View style={styles.fieldGroup}>
-            <Text style={styles.fieldLabel}>Complexity</Text>
-            <View style={styles.chipRow}>
-              {COMPLEXITIES.map((c) => {
-                const isActive = complexity === c;
-                return (
-                  <TouchableOpacity
-                    key={c}
-                    style={[
-                      styles.chip,
-                      isActive && styles.chipActive,
-                    ]}
-                    onPress={() => setComplexity(c)}
-                    activeOpacity={0.7}
-                  >
-                    <Text
-                      style={[
-                        styles.chipText,
-                        isActive && styles.chipTextActive,
-                      ]}
-                    >
-                      {c}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
           </View>
 
           {/* Project Selector */}
@@ -562,6 +651,24 @@ function makeStyles(
       textAlign: 'center',
       fontWeight: '400',
     },
+    errorNotice: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+      marginTop: spacing.xl,
+      backgroundColor: '#f59e0b15',
+      borderRadius: borderRadius.md,
+      borderWidth: 1,
+      borderColor: '#f59e0b40',
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+    },
+    errorNoticeText: {
+      fontSize: fontSize.xs,
+      color: '#f59e0b',
+      fontWeight: '500',
+      flex: 1,
+    },
 
     // Recording
     recordingContainer: {
@@ -577,7 +684,7 @@ function makeStyles(
       width: 80,
       height: 80,
       borderRadius: 40,
-      backgroundColor: '#10b98140',
+      backgroundColor: '#ef444440',
       alignItems: 'center',
       justifyContent: 'center',
       marginBottom: spacing.lg,
@@ -586,7 +693,7 @@ function makeStyles(
       width: 64,
       height: 64,
       borderRadius: 32,
-      backgroundColor: '#10b981',
+      backgroundColor: '#ef4444',
       alignItems: 'center',
       justifyContent: 'center',
     },

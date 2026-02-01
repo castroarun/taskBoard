@@ -19,6 +19,7 @@ export interface Project {
   lastUpdated: string;
   tags: string[];
   techStack: string[];
+  githubUrl: string | null;
   metrics: {
     totalTasks: number;
     completedTasks: number;
@@ -59,6 +60,8 @@ export interface InboxItem {
   author: 'user' | 'claude';
   parentId: string | null;
   replies: InboxReply[];
+  taskRef: string | null;
+  taskTitle: string | null;
 }
 
 export interface Activity {

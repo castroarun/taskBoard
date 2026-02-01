@@ -86,13 +86,23 @@ export default function InboxCaptureScreen() {
       author: 'user',
       parentId: null,
       replies: [],
+      taskRef: null,
+      taskTitle: null,
     });
 
-    router.back();
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/(tabs)');
+    }
   }, [text, currentPriority, selectedProject, forClaude, canSave, addInboxItem, router]);
 
   const handleClose = useCallback(() => {
-    router.back();
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/(tabs)');
+    }
   }, [router]);
 
   const handleVoice = useCallback(() => {

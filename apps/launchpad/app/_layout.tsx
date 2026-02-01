@@ -17,9 +17,9 @@ function RootLayoutInner() {
   useSyncScheduler();
 
   useEffect(() => {
-    // Load sample data for the main app if onboarded but no projects loaded yet
-    if (isOnboarded && projects.length === 0) loadSampleData();
-  }, [isOnboarded]);
+    // Projects aren't persisted in AsyncStorage — reload from data files when empty
+    if (projects.length === 0) loadSampleData();
+  }, [isOnboarded, projects.length]);
 
   return (
     <>

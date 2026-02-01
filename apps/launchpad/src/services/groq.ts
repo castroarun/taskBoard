@@ -1,6 +1,11 @@
+import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const GROQ_CHAT_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_TRANSCRIPTION_URL = 'https://api.groq.com/openai/v1/audio/transcriptions';
+
+const GROQ_KEY_STORAGE = 'groq-api-key';
 
 type Priority = 'P0' | 'P1' | 'P2' | 'P3';
 type Complexity = 'XS' | 'S' | 'M' | 'L' | 'XL';
@@ -17,14 +22,21 @@ export interface StructuredTask {
 
 export async function getGroqApiKey(): Promise<string | null> {
   try {
-    return await SecureStore.getItemAsync('groq-api-key');
+    if (Platform.OS === 'web') {
+      return await AsyncStorage.getItem(GROQ_KEY_STORAGE);
+    }
+    return await SecureStore.getItemAsync(GROQ_KEY_STORAGE);
   } catch {
     return null;
   }
 }
 
 export async function setGroqApiKey(key: string): Promise<void> {
-  await SecureStore.setItemAsync('groq-api-key', key);
+  if (Platform.OS === 'web') {
+    await AsyncStorage.setItem(GROQ_KEY_STORAGE, key);
+  } else {
+    await SecureStore.setItemAsync(GROQ_KEY_STORAGE, key);
+  }
 }
 
 export async function isGroqConfigured(): Promise<boolean> {
@@ -129,4 +141,78 @@ If the input is unclear, make reasonable assumptions. Default to P2 priority and
   }
 
   return buildFallbackTask(voiceText);
+}
+
+export async function transcribeAudio(audioUri: string): Promise<string> {
+  const apiKey = await getGroqApiKey();
+
+  if (!apiKey) {
+    throw new Error('Groq API key not configured. Go to Settings to add it.');
+  }
+
+  const formData = new FormData();
+
+  if (Platform.OS === 'web') {
+    // Web: blob URLs have no file extension — read actual blob type instead
+    const blob = await fetch(audioUri).then((r) => r.blob());
+    const blobType = blob.type.split(';')[0]; // e.g. "audio/webm;codecs=opus" → "audio/webm"
+
+    // Map MIME → extension (Groq validates by filename extension)
+    const extFromMime: Record<string, string> = {
+      'audio/webm': 'webm',
+      'audio/ogg': 'ogg',
+      'audio/wav': 'wav',
+      'audio/mp4': 'mp4',
+      'audio/mpeg': 'mp3',
+      'audio/m4a': 'm4a',
+      'audio/flac': 'flac',
+      'audio/opus': 'opus',
+    };
+    const ext = extFromMime[blobType] || 'webm';
+    const file = new File([blob], `recording.${ext}`, { type: blobType || 'audio/webm' });
+    formData.append('file', file);
+  } else {
+    // Native: expo-av saves as .m4a on iOS, .3gp on Android
+    const ext = audioUri.split('.').pop() || 'm4a';
+    const mimeMap: Record<string, string> = {
+      m4a: 'audio/m4a',
+      '3gp': 'audio/3gpp',
+      mp4: 'audio/mp4',
+      wav: 'audio/wav',
+      webm: 'audio/webm',
+    };
+    formData.append('file', {
+      uri: audioUri,
+      type: mimeMap[ext] || 'audio/m4a',
+      name: `recording.${ext}`,
+    } as unknown as Blob);
+  }
+  formData.append('model', 'whisper-large-v3');
+  formData.append('language', 'en');
+
+  const response = await fetch(GROQ_TRANSCRIPTION_URL, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => '');
+    throw new Error(`Transcription failed (${response.status}): ${errorText}`);
+  }
+
+  interface TranscriptionResponse {
+    text?: string;
+  }
+
+  const data: TranscriptionResponse = await response.json();
+  const text = data.text?.trim() || '';
+
+  if (text.length === 0) {
+    throw new Error('No speech detected. Please try again.');
+  }
+
+  return text;
 }

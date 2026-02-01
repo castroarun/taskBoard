@@ -22,9 +22,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: Taskboard ${{ github.ref_name }}
+          release_name: Klarity ${{ github.ref_name }}
           body: |
-            ## Taskboard ${{ github.ref_name }}
+            ## Klarity ${{ github.ref_name }}
 
             See the [CHANGELOG](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
 

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thread Color Theme Mockups — Orbit</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #000;
+    color: #e5e5e5;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', 'Inter', sans-serif;
+    padding: 32px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 40px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .theme-card {
+    background: #1C1C1E;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #2a2a2e;
+  }
+  .theme-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .theme-label .badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 10px;
+  }
+  .theme-label .name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+  .theme-label .current {
+    font-size: 9px;
+    color: #6b7280;
+    margin-left: auto;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Task card mock */
+  .task-mock {
+    background: #111113;
+    border-radius: 12px;
+    padding: 14px;
+    border-left: 3px solid #10b981;
+    margin-bottom: 0;
+  }
+  .task-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e5e5e5;
+    margin-bottom: 4px;
+    text-decoration: line-through;
+    opacity: 0.7;
+  }
+  .task-meta {
+    font-size: 10px;
+    color: #6b7280;
+    margin-bottom: 12px;
+  }
+
+  /* Thread container — themed */
+  .thread {
+    border-left-width: 2px;
+    border-left-style: solid;
+    border-radius: 8px;
+    padding: 10px 10px 4px 12px;
+    margin-top: 10px;
+  }
+  .thread-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .thread-header svg { width: 14px; height: 14px; }
+  .thread-header span {
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .msg {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    padding: 6px 8px;
+  }
+  .msg.reply { margin-left: 16px; }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+  .msg-content { flex: 1; }
+  .msg-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .author {
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .time {
+    font-size: 9px;
+    color: #6b7280;
+  }
+  .msg-text {
+    font-size: 11px;
+    color: #9ca3af;
+    line-height: 1.4;
+  }
+
+  /* Voice input mock */
+  .voice-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    align-items: center;
+  }
+  .voice-input {
+    flex: 1;
+    background: #111113;
+    border: 1px solid #2a2a2e;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 11px;
+    color: #6b7280;
+  }
+  .mic-btn, .send-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+  .mic-btn {
+    background: transparent;
+    border: 1px solid #10b98140;
+  }
+  .send-btn {
+    background: #10b981;
+  }
+
+  /* ===== THEME VARIANTS ===== */
+
+  /* Theme 1: Current Green */
+  .t-green .thread { border-left-color: #10b98140; background: #10b9810D; }
+  .t-green .thread-header span { color: #10b981; }
+  .t-green .thread-header svg { fill: #10b981; }
+  .t-green .msg { background: #10b98110; }
+  .t-green .dot.user { background: #10b981; }
+  .t-green .dot.claude { background: #3b82f6; }
+  .t-green .author.user { color: #d1d5db; }
+  .t-green .author.claude { color: #3b82f6; }
+  .t-green .badge { background: #10b98120; color: #10b981; }
+
+  /* Theme 2: Amber Warm */
+  .t-amber .thread { border-left-color: #f59e0b40; background: #f59e0b0A; }
+  .t-amber .thread-header span { color: #f59e0b; }
+  .t-amber .thread-header svg { fill: #f59e0b; }
+  .t-amber .msg { background: #f59e0b0D; }
+  .t-amber .dot.user { background: #f59e0b; }
+  .t-amber .dot.claude { background: #8b5cf6; }
+  .t-amber .author.user { color: #fbbf24; }
+  .t-amber .author.claude { color: #a78bfa; }
+  .t-amber .badge { background: #f59e0b20; color: #f59e0b; }
+
+  /* Theme 3: Slate Minimal */
+  .t-slate .thread { border-left-color: #64748b40; background: #64748b08; }
+  .t-slate .thread-header span { color: #94a3b8; }
+  .t-slate .thread-header svg { fill: #94a3b8; }
+  .t-slate .msg { background: #64748b0D; }
+  .t-slate .dot.user { background: #10b981; }
+  .t-slate .dot.claude { background: #3b82f6; }
+  .t-slate .author.user { color: #10b981; }
+  .t-slate .author.claude { color: #3b82f6; }
+  .t-slate .badge { background: #64748b20; color: #94a3b8; }
+
+  /* Theme 4: Purple Accent */
+  .t-purple .thread { border-left-color: #8b5cf640; background: #8b5cf60A; }
+  .t-purple .thread-header span { color: #a78bfa; }
+  .t-purple .thread-header svg { fill: #a78bfa; }
+  .t-purple .msg { background: #8b5cf60D; }
+  .t-purple .dot.user { background: #10b981; }
+  .t-purple .dot.claude { background: #a78bfa; }
+  .t-purple .author.user { color: #d1d5db; }
+  .t-purple .author.claude { color: #a78bfa; }
+  .t-purple .badge { background: #8b5cf620; color: #a78bfa; }
+
+  /* Theme 5: Cyan Cool */
+  .t-cyan .thread { border-left-color: #06b6d440; background: #06b6d408; }
+  .t-cyan .thread-header span { color: #22d3ee; }
+  .t-cyan .thread-header svg { fill: #22d3ee; }
+  .t-cyan .msg { background: #06b6d40D; }
+  .t-cyan .dot.user { background: #10b981; }
+  .t-cyan .dot.claude { background: #22d3ee; }
+  .t-cyan .author.user { color: #d1d5db; }
+  .t-cyan .author.claude { color: #22d3ee; }
+  .t-cyan .badge { background: #06b6d420; color: #22d3ee; }
+
+  /* Theme 6: Rose/Pink */
+  .t-rose .thread { border-left-color: #f4366640; background: #f4366608; }
+  .t-rose .thread-header span { color: #fb7185; }
+  .t-rose .thread-header svg { fill: #fb7185; }
+  .t-rose .msg { background: #f436660D; }
+  .t-rose .dot.user { background: #10b981; }
+  .t-rose .dot.claude { background: #fb7185; }
+  .t-rose .author.user { color: #d1d5db; }
+  .t-rose .author.claude { color: #fb7185; }
+  .t-rose .badge { background: #f4366620; color: #fb7185; }
+</style>
+</head>
+<body>
+
+<h1>Thread Color Themes</h1>
+<p class="subtitle">Pick a theme for the message thread section in task cards</p>
+
+<div class="grid">
+
+  <!-- Theme 1: Current Green -->
+  <div class="theme-card t-green">
+    <div class="theme-label">
+      <span class="badge">A</span>
+      <span class="name">Green + Blue</span>
+      <span class="current">CURRENT</span>
+    </div>
+    <div class="task-mock">
+      <div class="task-title">Design pipeline card component</div>
+      <div class="task-meta">Completed Jan 21 &middot; P1</div>
+      <div class="thread">
+        <div class="thread-header">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          <span>1 message</span>
+        </div>
+        <div class="msg">
+          <div class="dot user"></div>
+          <div class="msg-content">
+            <div class="msg-header">
+              <span class="author user">You</span>
+              <span class="time">Jan 31</span>
+            </div>
+            <div class="msg-text">Can we add a subtle gradient on the progress bar? Also make the priority badge bigger.</div>
+          </div>
+        </div>
+        <div class="msg reply">
+          <div class="dot claude"></div>
+          <div class="msg-content">
+            <div class="msg-header">
+              <span class="author claude">Claude</span>
+              <span class="time">Jan 31</span>
+            </div>
+            <div class="msg-text">Done — gradient added and badge size bumped up. Check it out.</div>
+          </div>
+        </div>
+      </div>
+      <div class="voice-row">
+        <div class="voice-input">Voice note for this task...</div>
+        <div class="mic-btn">🎤</div>
+        <div class="send-btn">▶</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme 2: Amber -->
+  <div class="theme-card t-amber">
+    <div class="theme-label">
+      <span class="badge">B</span>
+      <span class="name">Amber + Violet</span>
+    </div>
+    <div class="task-mock">
+      <div class="task-title">Design pipeline card component</div>
+      <div class="task-meta">Completed Jan 21 &middot; P1</div>
+      <div class="thread">
+        <div class="thread-header">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          <span>1 message</span>
+        </div>
+        <div class="msg">
+          <div class="dot user"></div>
+          <div class="msg-content">
+            <div class="msg-header">
+              <span class="author user">You</span>
+              <span class="time">Jan 31</span>
+            </div>
+            <div class="msg-text">Can we add a subtle gradient on the progress bar? Also make the priority badge bigger.</div>
+          </div>
+        </div>
+        <div class="msg reply">
+          <div class="dot claude"></div>
+          <div class="msg-content">
+            <div class="msg-header">
+              <span class="author claude">Claude</span>
+              <span class="time">Jan 31</span>
+            </div>
+            <div class="msg-text">Done — gradient added and badge size bumped up. Check it out.</div>
+          </div>
+        </div>
+      </div>
+      <div class="voice-row">
+        <div class="voice-input">Voice note for this task...</div>
+        <div class="mic-btn">🎤</div>
+        <div class="send-btn">▶</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme 3: Slate Minimal -->
+  <div class="theme-card t-slate">
+    <div class="theme-label">
+      <span class="badge">C</span>
+      <span class="name">Slate Minimal</span>
+    </div>
+    <div class="task-mock">
+      <div class="task-title">Design pipeline card component</div>
+      <div class="task-meta">Completed Jan 21 &middot; P1</div>
+      <div class="thread">
+        <div class="thread-header">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          <span>1 message</span>
+        </div>
+        <div class="msg">
+          <div class="dot user"></div>
+          <div class="msg-content">
+            <div class="msg-header">
+              <span class="author user">You</span>
+              <span class="time">Jan 31</span>
+            </div>
+            <div class="msg-text">Can we add a subtle gradient on the progress bar? Also make the priority badge bigger.</div>
+          </div>
+        </div>
+        <div class="msg reply">
+          <div class="dot claude"></div>
+          <div class="msg-content">
+            <div class="msg-header">
+              <span class="author claude">Claude</span>
+              <span class="time">Jan 31</span>
+            </div>
+            <div class="msg-text">Done — gradient added and badge size bumped up. Check it out.</div>
+          </div>
+        </div>
+      </div>
+      <div class="voice-row">
+        <div class="voice-input">Voice note for this task...</div>
+        <div class="mic-btn">🎤</div>
+        <div class="send-btn">▶</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme 4: Purple -->
+  <div class="theme-card t-purple">
+    <div class="theme-label">
+      <span class="badge">D</span>
+      <span class="name">Purple Accent</span>
+    </div>
+    <div class="task-mock">
+      <div class="task-title">Design pipeline card component</div>
+      <div class="task-meta">Completed Jan 21 &middot; P1</div>
+      <div class="thread">
+        <div class="thread-header">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          <span>1 message</span>
+        </div>
+        <div class="msg">
+          <div class="dot user"></div>
+          <div class="msg-content">
+            <div class="msg-header">
+              <span class="author user">You</span>
+              <span class="time">Jan 31</span>
+            </div>
+            <div class="msg-text">Can we add a subtle gradient on the progress bar? Also make the priority badge bigger.</div>
+          </div>
+        </div>
+        <div class="msg reply">
+          <div class="dot claude"></div>
+          <div class="msg-content">
+            <div class="msg-header">
+              <span class="author claude">Claude</span>
+              <span class="time">Jan 31</span>
+            </div>
+            <div class="msg-text">Done — gradient added and badge size bumped up. Check it out.</div>
+          </div>
+        </div>
+      </div>
+      <div class="voice-row">
+        <div class="voice-input">Voice note for this task...</div>
+        <div class="mic-btn">🎤</div>
+        <div class="send-btn">▶</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme 5: Cyan -->
+  <div class="theme-card t-cyan">
+    <div class="theme-label">
+      <span class="badge">E</span>
+      <span class="name">Cyan Cool</span>
+    </div>
+    <div class="task-mock">
+      <div class="task-title">Design pipeline card component</div>
+      <div class="task-meta">Completed Jan 21 &middot; P1</div>
+      <div class="thread">
+        <div class="thread-header">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          <span>1 message</span>
+        </div>
+        <div class="msg">
+          <div class="dot user"></div>
+          <div class="msg-content">
+            <div class="msg-header">
+              <span class="author user">You</span>
+              <span class="time">Jan 31</span>
+            </div>
+            <div class="msg-text">Can we add a subtle gradient on the progress bar? Also make the priority badge bigger.</div>
+          </div>
+        </div>
+        <div class="msg reply">
+          <div class="dot claude"></div>
+          <div class="msg-content">
+            <div class="msg-header">
+              <span class="author claude">Claude</span>
+              <span class="time">Jan 31</span>
+            </div>
+            <div class="msg-text">Done — gradient added and badge size bumped up. Check it out.</div>
+          </div>
+        </div>
+      </div>
+      <div class="voice-row">
+        <div class="voice-input">Voice note for this task...</div>
+        <div class="mic-btn">🎤</div>
+        <div class="send-btn">▶</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme 6: Rose -->
+  <div class="theme-card t-rose">
+    <div class="theme-label">
+      <span class="badge">F</span>
+      <span class="name">Rose / Pink</span>
+    </div>
+    <div class="task-mock">
+      <div class="task-title">Design pipeline card component</div>
+      <div class="task-meta">Completed Jan 21 &middot; P1</div>
+      <div class="thread">
+        <div class="thread-header">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          <span>1 message</span>
+        </div>
+        <div class="msg">
+          <div class="dot user"></div>
+          <div class="msg-content">
+            <div class="msg-header">
+              <span class="author user">You</span>
+              <span class="time">Jan 31</span>
+            </div>
+            <div class="msg-text">Can we add a subtle gradient on the progress bar? Also make the priority badge bigger.</div>
+          </div>
+        </div>
+        <div class="msg reply">
+          <div class="dot claude"></div>
+          <div class="msg-content">
+            <div class="msg-header">
+              <span class="author claude">Claude</span>
+              <span class="time">Jan 31</span>
+            </div>
+            <div class="msg-text">Done — gradient added and badge size bumped up. Check it out.</div>
+          </div>
+        </div>
+      </div>
+      <div class="voice-row">
+        <div class="voice-input">Voice note for this task...</div>
+        <div class="mic-btn">🎤</div>
+        <div class="send-btn">▶</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p style="text-align:center; margin-top: 32px; font-size: 11px; color: #4b5563;">
+  Current = A (Green + Blue) &middot; No code changes until you pick one
+</p>
+
+</body>
+</html>
