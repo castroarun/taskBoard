@@ -100,7 +100,7 @@ SPECIALIST AGENTS
 │     PORTFOLIO WEBSITE       │     │         CLAUDE AGENTS               │
 │   (fetches from GitHub)     │     │   (invoked by Command Center)       │
 │                             │     │                                     │
-│  • Reads LAUNCHPAD block    │     │  • Design Agent                     │
+│  • Reads ORBIT block        │     │  • Design Agent                     │
 │  • Auto-updates on push     │     │  • Architect Agent                  │
 └─────────────────────────────┘     │  • Dev Agent                        │
                                     │  • Git Agent                        │
@@ -429,14 +429,14 @@ function selectAgent(context: TaskContext): AgentType {
 
 **IMPORTANT:** Project status is ONLY stored in `projects.json`. 
 
-The README LAUNCHPAD block is a **mirror** that gets updated on git push for portfolio consumption.
+The README ORBIT block is a **mirror** that gets updated on git push for portfolio consumption.
 
 ```
 projects.json (TRUTH)
        │
        ├──► Command Center (reads)
        ├──► Agents (read/write)
-       └──► README LAUNCHPAD (mirror on push)
+       └──► README ORBIT (mirror on push)
                     │
                     └──► Portfolio (fetches from GitHub)
 ```
@@ -477,12 +477,12 @@ The `where` command (aliases: `wherearewe`, `waw`) shows formatted status of all
   └────────────────────────────────────────────────────────────┘
 ```
 
-### 6.3 README LAUNCHPAD Block
+### 6.3 README ORBIT Block
 
 Updated automatically on `git push` or manually via `agent git`:
 
 ```markdown
-<!-- LAUNCHPAD:START
+<!-- ORBIT:START
 {
   "stage": "build",
   "stageStatus": "in-progress",
@@ -492,7 +492,7 @@ Updated automatically on `git push` or manually via `agent git`:
   "tasksTotal": 24,
   "tasksCompleted": 15
 }
-LAUNCHPAD:END -->
+ORBIT:END -->
 ```
 
 ---
@@ -583,7 +583,7 @@ LAUNCHPAD:END -->
 │       └── 5-closure/
 │           ├── portfolio-entry.md
 │           └── retro.md
-├── README.md          # Contains LAUNCHPAD block
+├── README.md          # Contains ORBIT block
 ├── src/               # Source code
 └── ...
 ```
@@ -669,7 +669,7 @@ Week 3-4: Core Features
 Week 5-6: Polish
 ├── All agent types
 ├── Git integration
-├── README LAUNCHPAD sync
+├── README ORBIT sync
 ├── Keyboard shortcuts
 └── Dark/light theme
 ```

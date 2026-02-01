@@ -59,7 +59,7 @@ You are an AI development agent working on Arun's projects. Follow these instruc
 │       └── 5-closure/
 │           ├── portfolio-entry.md
 │           └── retro.md
-├── README.md              # Contains LAUNCHPAD block
+├── README.md              # Contains ORBIT block
 └── src/                   # Source code
 ```
 

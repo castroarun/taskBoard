@@ -1,17 +1,17 @@
 /**
  * Inbox Sync Service
  *
- * Syncs structured instructions between Launchpad (mobile) and Command Center (desktop).
+ * Syncs structured instructions between Orbit (mobile) and Command Center (desktop).
  *
  * Flow:
- * 1. Launchpad (mobile) captures voice → structures via Groq
+ * 1. Orbit (mobile) captures voice → structures via Groq
  * 2. Saves to shared inbox (GitHub Gist or Vercel KV)
  * 3. Command Center pulls inbox on startup / file watch
  * 4. Claude agent processes instructions
  *
  * Storage options:
  * - GitHub Gist (free, simple, works offline with caching)
- * - Vercel KV (already in Launchpad backend)
+ * - Vercel KV (already in Orbit backend)
  * - Local file + Git sync
  */
 
@@ -20,7 +20,7 @@ import type { StructuredInstruction } from '../llm';
 interface InboxItem {
   id: string;
   createdAt: string;
-  source: 'launchpad' | 'command-center';
+  source: 'orbit' | 'command-center';
   status: 'pending' | 'processing' | 'done' | 'skipped';
   instruction: StructuredInstruction;
   rawText?: string;
@@ -42,7 +42,7 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN || null;
  */
 export async function addToInbox(
   instruction: StructuredInstruction,
-  source: 'launchpad' | 'command-center',
+  source: 'orbit' | 'command-center',
   rawText?: string
 ): Promise<InboxItem> {
   const item: InboxItem = {
@@ -206,7 +206,7 @@ export function inboxToMarkdown(inbox: InboxState): string {
       const status = item.status === 'done' ? '[DONE] ' : item.status === 'skipped' ? '[SKIPPED] ' : '';
       const priority = item.instruction.priority ? ` (${item.instruction.priority})` : '';
       const project = item.instruction.project ? ` @${item.instruction.project}` : '';
-      const source = item.source === 'launchpad' ? ' 📱' : '';
+      const source = item.source === 'orbit' ? ' 📱' : '';
 
       md += `- ${status}${item.instruction.title}${priority}${project}${source}\n`;
 

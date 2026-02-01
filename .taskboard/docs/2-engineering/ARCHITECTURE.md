@@ -358,7 +358,7 @@ export interface Config {
   };
   agents: Record<string, string>;
   settings: {
-    autoUpdateLaunchpad: boolean;
+    autoUpdateOrbit: boolean;
     logActions: boolean;
     fileWatchDebounce: number;
   };
@@ -794,7 +794,7 @@ Taskboard uses a **unified agent system** with **hybrid execution modes**. Agent
 │                                                                     │
 │  Commands (/invocation):                                           │
 │  ├── /readme - README quality scoring                             │
-│  ├── /git    - Git ops, LAUNCHPAD sync                           │
+│  ├── /git    - Git ops, ORBIT sync                               │
 │  ├── /docs   - Documentation generation                          │
 │  └── /deploy - Deployment workflows                               │
 │                                                                     │

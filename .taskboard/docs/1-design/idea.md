@@ -76,7 +76,7 @@ A **file-based project orchestration system** with a lightweight desktop app:
 - Dark/light theme
 
 ### Future Ideas
-- README LAUNCHPAD sync on push
+- README ORBIT sync on push
 - GitHub integration (create repos)
 - Time tracking from git commits
 - Portfolio auto-update

@@ -35,7 +35,7 @@
     "walkthrough": "_claude-shared/agents/walkthrough.md"
   },
   "settings": {
-    "autoUpdateLaunchpad": true,
+    "autoUpdateOrbit": true,
     "logActions": true,
     "fileWatchDebounce": 500
   }

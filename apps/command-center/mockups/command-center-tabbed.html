@@ -460,7 +460,7 @@
           <p>Task Board is built with a <strong>local-first architecture</strong> that keeps all data in JSON files, syncing to GitHub for cross-device access. The system consists of two apps:</p>
           <ul>
             <li><strong>Command Center</strong> (Desktop) - Tauri 2.0 + React for deep work sessions</li>
-            <li><strong>Launchpad</strong> (Mobile) - React Native for check-ins and voice instructions</li>
+            <li><strong>Orbit</strong> (Mobile) - React Native for check-ins and voice instructions</li>
           </ul>
 
           <h2>Data Flow</h2>
@@ -471,7 +471,7 @@
                     │                    ▲
                     ▼                    │
 ┌──────────────────────┐    ┌──────────────────────┐
-│   Command Center     │    │   Launchpad          │
+│   Command Center     │    │   Orbit              │
 │   (writes directly)  │    │   (reads via GitHub) │
 └──────────────────────┘    └──────────────────────┘</code></pre>
 
@@ -537,7 +537,7 @@
 Task Board is built with a **local-first architecture** that keeps all data in JSON files, syncing to GitHub for cross-device access. The system consists of two apps:
 
 - **Command Center** (Desktop) - Tauri 2.0 + React for deep work sessions
-- **Launchpad** (Mobile) - React Native for check-ins and voice instructions
+- **Orbit** (Mobile) - React Native for check-ins and voice instructions
 
 ## Data Flow
 
@@ -549,7 +549,7 @@ Task Board is built with a **local-first architecture** that keeps all data in J
                     │                    ▲
                     ▼                    │
 ┌──────────────────────┐    ┌──────────────────────┐
-│   Command Center     │    │   Launchpad          │
+│   Command Center     │    │   Orbit              │
 │   (writes directly)  │    │   (reads via GitHub) │
 └──────────────────────┘    └──────────────────────┘
 ```
@@ -646,7 +646,7 @@ See `QA_PLAN.md` for testing strategy and quality gates.</textarea>
                 <svg class="w-3.5 h-3.5 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
-                <span class="text-xs text-zinc-400">launchpad-spec.md</span>
+                <span class="text-xs text-zinc-400">orbit-spec.md</span>
               </div>
             </div>
           </div>
@@ -689,7 +689,7 @@ See `QA_PLAN.md` for testing strategy and quality gates.</textarea>
             <p>Task Board is built with a <strong>local-first architecture</strong> that keeps all data in JSON files, syncing to GitHub for cross-device access. The system consists of two apps:</p>
             <ul>
               <li><strong>Command Center</strong> (Desktop) - Tauri 2.0 + React for deep work sessions</li>
-              <li><strong>Launchpad</strong> (Mobile) - React Native for check-ins and voice instructions</li>
+              <li><strong>Orbit</strong> (Mobile) - React Native for check-ins and voice instructions</li>
             </ul>
 
             <h2>Data Flow</h2>
@@ -700,7 +700,7 @@ See `QA_PLAN.md` for testing strategy and quality gates.</textarea>
                     │                    ▲
                     ▼                    │
 ┌──────────────────────┐    ┌──────────────────────┐
-│   Command Center     │    │   Launchpad          │
+│   Command Center     │    │   Orbit              │
 │   (writes directly)  │    │   (reads via GitHub) │
 └──────────────────────┘    └──────────────────────┘</code></pre>
 
@@ -767,7 +767,7 @@ See `QA_PLAN.md` for testing strategy and quality gates.</textarea>
     <div class="flex items-center justify-between mb-6">
       <div>
         <h2 class="text-xl font-semibold text-white">Inbox</h2>
-        <p class="text-sm text-zinc-500">Voice instructions from Launchpad</p>
+        <p class="text-sm text-zinc-500">Voice instructions from Orbit</p>
       </div>
       <div class="flex items-center gap-3">
         <button class="px-4 py-2 bg-surface-elevated hover:bg-zinc-700 border border-border rounded-xl text-sm font-medium text-zinc-300 transition-smooth flex items-center gap-2">
@@ -882,7 +882,7 @@ See `QA_PLAN.md` for testing strategy and quality gates.</textarea>
         </svg>
       </div>
       <h3 class="text-lg font-semibold text-zinc-300 mb-2">Inbox Empty</h3>
-      <p class="text-sm text-zinc-500 text-center max-w-sm">Voice instructions from Launchpad will appear here. Use the mobile app to record quick thoughts on the go.</p>
+      <p class="text-sm text-zinc-500 text-center max-w-sm">Voice instructions from Orbit will appear here. Use the mobile app to record quick thoughts on the go.</p>
     </div>
   </main>
 

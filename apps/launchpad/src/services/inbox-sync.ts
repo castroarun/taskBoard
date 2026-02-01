@@ -61,7 +61,7 @@ interface GistResponse {
 interface InboxSyncPayload {
   version: string;
   lastUpdated: string;
-  source: 'launchpad' | 'command-center';
+  source: 'orbit' | 'command-center';
   items: InboxItem[];
 }
 
@@ -72,7 +72,7 @@ export async function createSyncGist(): Promise<string> {
   const payload: InboxSyncPayload = {
     version: '1.0.0',
     lastUpdated: new Date().toISOString(),
-    source: 'launchpad',
+    source: 'orbit',
     items: [],
   };
 
@@ -112,7 +112,7 @@ export async function pushToGist(items: InboxItem[]): Promise<void> {
   const payload: InboxSyncPayload = {
     version: '1.0.0',
     lastUpdated: new Date().toISOString(),
-    source: 'launchpad',
+    source: 'orbit',
     items,
   };
 

@@ -35,9 +35,9 @@
   ![License](https://img.shields.io/badge/license-MIT-green)
 </div>
 
-<!-- LAUNCHPAD:START
+<!-- ORBIT:START
 {...}
-LAUNCHPAD:END -->
+ORBIT:END -->
 
 ## Features
 
@@ -309,7 +309,7 @@ Key features:
 - [ ] Clear project description
 - [ ] Working quick start
 - [ ] Accurate tech stack
-- [ ] LAUNCHPAD block present
+- [ ] ORBIT block present
 - [ ] Badges display correctly
 
 ### Documentation Requirements

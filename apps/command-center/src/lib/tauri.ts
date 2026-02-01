@@ -261,9 +261,9 @@ Want me to create a detailed comparison doc with pricing and code examples?`,
   },
   {
     id: 'inbox-9',
-    text: 'Explore Supabase Edge Functions for real-time sync between Launchpad and Command Center',
+    text: 'Explore Supabase Edge Functions for real-time sync between Orbit and Command Center',
     type: 'idea',
-    project: 'launchpad',
+    project: 'orbit',
     priority: null,
     status: 'pending',
     createdAt: new Date(Date.now() - 5 * 86400000).toISOString(),
@@ -313,9 +313,9 @@ Want me to create a detailed comparison doc with pricing and code examples?`,
   },
   {
     id: 'inbox-13',
-    text: 'Research React Native Expo push notifications for Launchpad mobile companion app',
+    text: 'Research React Native Expo push notifications for Orbit mobile companion app',
     type: 'idea',
-    project: 'launchpad',
+    project: 'orbit',
     priority: null,
     status: 'pending',
     createdAt: new Date(Date.now() - 14 * 86400000).toISOString(),
@@ -599,7 +599,7 @@ Weekly timeline showing project activity across Morning / Afternoon / Evening / 
 ## Out of Scope (v1)
 - Cloud sync
 - Multi-user collaboration
-- Mobile companion (planned as Launchpad)
+- Mobile companion (planned as Orbit)
 `;
   }
 

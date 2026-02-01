@@ -1,4 +1,4 @@
-# Launchpad - Project Orchestrator
+# Orbit - Mobile Companion
 
 > Android app to orchestrate all your GitHub projects with smart notifications, health tracking, and shipping workflows.
 
@@ -32,7 +32,7 @@
 
 ### Solution
 
-Launchpad is a personal project orchestration hub that:
+Orbit is a personal project orchestration hub that:
 
 1. **Monitors all public GitHub repos** automatically
 2. **Parses README status blocks** for project metadata
@@ -54,7 +54,7 @@ You shouldn't need to open the app to know what's happening. It nudges you at th
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    LAUNCHPAD ARCHITECTURE                       │
+│                    ORBIT ARCHITECTURE                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  ┌───────────────────────────────────────────────────────────┐  │
@@ -201,10 +201,10 @@ There are **two sync mechanisms**:
     • 18:00 UTC
 ```
 
-**GitHub Action File**: `.github/workflows/launchpad-sync.yml`
+**GitHub Action File**: `.github/workflows/orbit-sync.yml`
 
 ```yaml
-name: Launchpad Scheduled Sync
+name: Orbit Scheduled Sync
 
 on:
   schedule:
@@ -223,7 +223,7 @@ jobs:
         run: |
           response=$(curl -s -w "\n%{http_code}" -X POST \
             "${{ secrets.VERCEL_SYNC_URL }}/api/sync" \
-            -H "Authorization: Bearer ${{ secrets.LAUNCHPAD_API_TOKEN }}" \
+            -H "Authorization: Bearer ${{ secrets.ORBIT_API_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d '{"trigger": "scheduled", "full": true}')
           
@@ -244,8 +244,8 @@ jobs:
 ```
 
 **Secrets Required**:
-- `VERCEL_SYNC_URL`: Your Vercel deployment URL (e.g., `https://launchpad-api.vercel.app`)
-- `LAUNCHPAD_API_TOKEN`: Secret token to authenticate requests
+- `VERCEL_SYNC_URL`: Your Vercel deployment URL (e.g., `https://orbit-api.vercel.app`)
+- `ORBIT_API_TOKEN`: Secret token to authenticate requests
 
 ---
 
@@ -272,10 +272,10 @@ Without this, if you update a README at 1 PM, the app won't reflect it until the
 
 **GitHub Action File**: Add to EACH project repo
 
-`.github/workflows/notify-launchpad.yml`
+`.github/workflows/notify-orbit.yml`
 
 ```yaml
-name: Notify Launchpad
+name: Notify Orbit
 
 on:
   push:
@@ -288,11 +288,11 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Trigger Launchpad Update
+      - name: Trigger Orbit Update
         run: |
           curl -X POST \
-            "${{ secrets.LAUNCHPAD_SYNC_URL }}/api/sync" \
-            -H "Authorization: Bearer ${{ secrets.LAUNCHPAD_API_TOKEN }}" \
+            "${{ secrets.ORBIT_SYNC_URL }}/api/sync" \
+            -H "Authorization: Bearer ${{ secrets.ORBIT_API_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d '{
               "trigger": "push",
@@ -300,7 +300,7 @@ jobs:
               "full": false
             }'
           
-          echo "✅ Notified Launchpad about README change in ${{ github.repository }}"
+          echo "✅ Notified Orbit about README change in ${{ github.repository }}"
 ```
 
 **Alternative: Organization-wide Webhook**
@@ -308,7 +308,7 @@ jobs:
 Instead of adding workflow to each repo, you can set up a GitHub webhook at org level:
 
 1. Go to GitHub → Settings → Webhooks
-2. Add webhook URL: `https://launchpad-api.vercel.app/api/webhook`
+2. Add webhook URL: `https://orbit-api.vercel.app/api/webhook`
 3. Select events: `push`
 4. Vercel endpoint filters for README changes
 
@@ -362,8 +362,8 @@ The app automatically considers every public repo as a project. No manual regist
 │         ▼                   ▼                   ▼               │
 │   ┌───────────┐      ┌─────────────┐     ┌─────────────┐       │
 │   │ Has       │      │ Has README  │     │ No README   │       │
-│   │ LAUNCHPAD │      │ but no      │     │ at all      │       │
-│   │ block ✓   │      │ LAUNCHPAD   │     │             │       │
+│   │ ORBIT     │      │ but no      │     │ at all      │       │
+│   │ block ✓   │      │ ORBIT       │     │             │       │
 │   └─────┬─────┘      └──────┬──────┘     └──────┬──────┘       │
 │         │                   │                   │               │
 │         ▼                   ▼                   ▼               │
@@ -376,7 +376,7 @@ The app automatically considers every public repo as a project. No manual regist
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### README LAUNCHPAD Block Format
+### README ORBIT Block Format
 
 Each repo should have this block in its README.md:
 
@@ -385,7 +385,7 @@ Each repo should have this block in its README.md:
 
 Description of the project.
 
-<!-- LAUNCHPAD:START -->
+<!-- ORBIT:START -->
 ```json
 {
   "stage": "building",
@@ -401,7 +401,7 @@ Description of the project.
   "linkedinPosted": false
 }
 ```
-<!-- LAUNCHPAD:END -->
+<!-- ORBIT:END -->
 
 ## Features
 ...rest of README...
@@ -430,7 +430,7 @@ Each repo gets a health score based on completeness:
 | Check | Points | Action Item if Missing |
 |-------|--------|------------------------|
 | README exists | 10 | "Add README.md" |
-| LAUNCHPAD block present | 20 | "Add LAUNCHPAD status block to README" |
+| ORBIT block present | 20 | "Add ORBIT status block to README" |
 | `stage` defined | 10 | "Set project stage" |
 | `nextAction` defined | 15 | "Define next action" |
 | `targetDate` set (if not live) | 10 | "Set target date" |
@@ -464,7 +464,7 @@ Each repo gets a health score based on completeness:
 ### FCM Notification Structure
 
 ```typescript
-interface LaunchpadNotification {
+interface OrbitNotification {
   type: 'stale' | 'deadline' | 'health' | 'ship_ready' | 'linkedin' | 'digest';
   title: string;
   body: string;
@@ -524,7 +524,7 @@ interface NotificationPreferences {
 
 ```
 ┌─────────────────────────────────────────┐
-│ ≡  LAUNCHPAD                        🔔  │
+│ ≡  ORBIT                            🔔  │
 ├─────────────────────────────────────────┤
 │                                         │
 │  Good evening, Arun                     │
@@ -558,7 +558,7 @@ interface NotificationPreferences {
 │  🔴 ACTION ITEMS (7)                    │
 │  ┌─────────────────────────────────────┐│
 │  │ 📝 medical-reports                  ││
-│  │    "Add LAUNCHPAD block to README"  ││
+│  │    "Add ORBIT block to README"      ││
 │  │                                     ││
 │  │ 📝 primno                           ││
 │  │    "Add README.md"                  ││
@@ -598,7 +598,7 @@ interface NotificationPreferences {
 │  ┌─────────────────────────────────────┐│
 │  │ 🏥 Medical Reports      🔴  -  💡  ││
 │  │ ░░░░░░░░░░░░░░░░░░░░ --            ││
-│  │ ⚠️ Add LAUNCHPAD block              ││
+│  │ ⚠️ Add ORBIT block                  ││
 │  └─────────────────────────────────────┘│
 │                                         │
 │  ┌─────────────────────────────────────┐│
@@ -646,7 +646,7 @@ interface NotificationPreferences {
 │                                         │
 │  📋 HEALTH CHECKLIST                    │
 │  ☑️ README exists                       │
-│  ☑️ LAUNCHPAD block                     │
+│  ☑️ ORBIT block                         │
 │  ☑️ Stage defined                       │
 │  ☑️ Next action set                     │
 │  ☑️ Target date set                     │
@@ -673,7 +673,7 @@ interface NotificationPreferences {
 │  Pre-flight                             │
 │  ┌─────────────────────────────────────┐│
 │  │ ☑️ Code complete                    ││
-│  │ ☑️ README with LAUNCHPAD block      ││
+│  │ ☑️ README with ORBIT block          ││
 │  │ ☑️ Demo URL working                 ││
 │  │ ☐ Screenshots in repo               ││
 │  │ ☐ GitHub repo public                ││
@@ -787,8 +787,8 @@ interface Project {
   lastCommit: string;        // ISO date
   stars: number;
   
-  // From LAUNCHPAD block (if present)
-  launchpad: {
+  // From ORBIT block (if present)
+  orbit: {
     stage: 'idea' | 'building' | 'testing' | 'live' | 'paused';
     progress: number;
     complexity: 'E' | 'F' | null;
@@ -856,7 +856,7 @@ interface UserPreferences {
 
 ### Base URL
 ```
-https://launchpad-api.vercel.app
+https://orbit-api.vercel.app
 ```
 
 ### Endpoints
@@ -911,7 +911,7 @@ Get action items across all repos.
   "actionItems": [
     {
       "repo": "medical-reports",
-      "items": ["Add LAUNCHPAD block to README"]
+      "items": ["Add ORBIT block to README"]
     },
     {
       "repo": "primno",
@@ -950,7 +950,7 @@ Send FCM notification (internal use).
 
 ### Phase 2: Core Features (Weekend 2)
 
-- [ ] Implement README parsing (LAUNCHPAD block extraction)
+- [ ] Implement README parsing (ORBIT block extraction)
 - [ ] Add health score calculation
 - [ ] Build project list with filters
 - [ ] Build project detail screen
@@ -1001,7 +1001,7 @@ Send FCM notification (internal use).
 ### Backend (Vercel)
 
 ```
-launchpad-api/
+orbit-api/
 ├── api/
 │   ├── sync.ts
 │   ├── projects.ts
@@ -1022,7 +1022,7 @@ launchpad-api/
 ### Mobile App (React Native)
 
 ```
-launchpad-app/
+orbit-app/
 ├── src/
 │   ├── screens/
 │   │   ├── Dashboard.tsx
@@ -1051,7 +1051,7 @@ launchpad-app/
 ### GitHub Actions (in a central repo)
 
 ```
-launchpad-scheduler/
+orbit-scheduler/
 ├── .github/
 │   └── workflows/
 │       └── sync.yml
@@ -1063,7 +1063,7 @@ launchpad-scheduler/
 ```
 .github/
 └── workflows/
-    └── notify-launchpad.yml
+    └── notify-orbit.yml
 ```
 
 ---
@@ -1087,5 +1087,5 @@ launchpad-scheduler/
 ---
 
 *Document created: January 17, 2026*
-*Project: Launchpad (#12)*
+*Project: Orbit (#12)*
 *Status: Idea → Building*

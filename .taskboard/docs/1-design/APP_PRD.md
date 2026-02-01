@@ -163,7 +163,7 @@ A lightweight desktop application (Command Center) that:
 - Reorder within column
 - Move between columns
 
-#### F11: README LAUNCHPAD Sync
+#### F11: README ORBIT Sync
 - Update README on stage change
 - Push to GitHub
 

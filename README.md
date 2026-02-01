@@ -20,7 +20,7 @@
   <img src="https://img.shields.io/badge/Claude-AI_Agent-CC785C?style=for-the-badge&logo=anthropic&logoColor=white" />
 </p>
 
-<!-- LAUNCHPAD:START
+<!-- ORBIT:START
 {
   "stage": "launch",
   "stageStatus": "in-progress",
@@ -32,7 +32,7 @@
   "nextAction": "Walkthrough and marketing",
   "blocker": null
 }
-LAUNCHPAD:END -->
+ORBIT:END -->
 
 <details>
   <summary>Table of Contents</summary>
@@ -48,7 +48,7 @@ LAUNCHPAD:END -->
     </li>
     <li><a href="#quick-start">Quick Start</a></li>
     <li><a href="#project-structure">Project Structure</a></li>
-    <li><a href="#the-launchpad-block">The LAUNCHPAD Block</a></li>
+    <li><a href="#the-orbit-status-block">The Orbit Status Block</a></li>
     <li><a href="#specs">Specs</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
   </ol>
@@ -73,7 +73,7 @@ Klarity solves this by:
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
 │                         YOUR GITHUB REPOS                            │
-│         Each README contains a LAUNCHPAD status block                │
+│         Each README contains an Orbit status block                   │
 └──────────────────────────────────────────────────────────────────────┘
                     ▲                              ▲
                     │ writes                       │ reads
@@ -144,7 +144,7 @@ Taskboard/
 │   ├── command-center/     # Klarity — Desktop (Tauri 2.0 + React + Zustand)
 │   └── launchpad/          # Orbit — Mobile (React Native + Expo)
 ├── packages/
-│   └── shared/             # Types + LAUNCHPAD block parser
+│   └── shared/             # Types + Orbit status block parser
 ├── specs/                  # Feature specifications
 ├── data/                   # Local JSON (projects, tasks, inbox)
 └── assets/                 # Logo and images
@@ -152,12 +152,12 @@ Taskboard/
 
 ---
 
-## The LAUNCHPAD Block
+## The Orbit Status Block
 
 Each project README contains a machine-readable status block:
 
 ```json
-<!-- LAUNCHPAD:START -->
+<!-- ORBIT:START -->
 {
   "stage": "building",
   "progress": 65,
@@ -165,7 +165,7 @@ Each project README contains a machine-readable status block:
   "targetDate": "2026-01-30",
   "blocker": null
 }
-<!-- LAUNCHPAD:END -->
+<!-- ORBIT:END -->
 ```
 
 This enables automatic health scoring, notifications, and cross-device sync without a backend.

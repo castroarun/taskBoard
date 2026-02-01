@@ -320,7 +320,7 @@ export function useDataLoader() {
             useAppStore.getState().setInboxItems(merged);
             const preview = remoteItems[0]?.text;
             notifyNewInboxItems(newCount, preview);
-            console.log(`[DataLoader] Synced ${newCount} new item(s) from Launchpad`);
+            console.log(`[DataLoader] Synced ${newCount} new item(s) from Orbit`);
           }
         }
       );

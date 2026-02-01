@@ -31,8 +31,8 @@ Use these by typing `/command` in Claude Code:
 
 | Command | Invocation | Purpose |
 |---------|------------|---------|
-| **README** | `/readme` | Quality scoring (0-100), badge generation, LAUNCHPAD validation |
-| **Git** | `/git` | Git operations, commit standards, LAUNCHPAD sync on push |
+| **README** | `/readme` | Quality scoring (0-100), badge generation, ORBIT validation |
+| **Git** | `/git` | Git operations, commit standards, ORBIT sync on push |
 | **Docs** | `/docs` | Documentation generation - README, CHANGELOG, portfolio, LinkedIn |
 | **Deploy** | `/deploy` | Deployment workflows |
 | **New Project** | `/newproject` | Initialize new project with 9-step workflow |
@@ -186,7 +186,7 @@ The `agents/orchestrator.md` file in the Taskboard project handles routing:
 ### /readme
 - Quality score report
 - Badge suggestions
-- LAUNCHPAD block updates
+- ORBIT block updates
 
 ### /docs
 - `README.md` updates

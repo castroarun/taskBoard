@@ -605,7 +605,7 @@ const unifiedCommands = [
     invocation: '/readme',
     file: 'commands/readme.md',
     desc: 'README quality scoring',
-    capabilities: ['Quality score 0-100', 'Badge generation', 'LAUNCHPAD validation', 'Roadmap sync', 'Auto-fix suggestions'],
+    capabilities: ['Quality score 0-100', 'Badge generation', 'ORBIT validation', 'Roadmap sync', 'Auto-fix suggestions'],
   },
   {
     id: 'git',
@@ -613,7 +613,7 @@ const unifiedCommands = [
     invocation: '/git',
     file: 'commands/git.md',
     desc: 'Git operations',
-    capabilities: ['Commit standards', 'LAUNCHPAD sync on push', 'Branch management', 'README check before push'],
+    capabilities: ['Commit standards', 'ORBIT sync on push', 'Branch management', 'README check before push'],
   },
   {
     id: 'docs',

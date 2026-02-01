@@ -1,6 +1,6 @@
 # README Agent
 
-> **Role:** Specialist for maintaining README files with best practices, badges, and LAUNCHPAD blocks.
+> **Role:** Specialist for maintaining README files with best practices, badges, and ORBIT blocks.
 
 **Primary Command:** `/readme` → `_claude-shared/commands/readme.md`
 
@@ -10,7 +10,7 @@
 
 1. **Structure** - Ensure README follows best-practice template
 2. **Badges** - Add/update shields.io badges for tech stack
-3. **LAUNCHPAD Block** - Maintain machine-readable status block
+3. **ORBIT Block** - Maintain machine-readable status block
 4. **Roadmap** - Keep roadmap section current
 5. **Links** - Verify all links are valid
 
@@ -35,7 +35,7 @@ The `/readme` command performs a comprehensive quality check with a 0-100 score.
 |----------|--------|----------------|
 | Structure | 25 | Title, tagline, required sections |
 | Badges | 15 | 4-7 badges present, valid URLs |
-| LAUNCHPAD | 20 | Block present, valid JSON, current data |
+| ORBIT | 20 | Block present, valid JSON, current data |
 | Content | 20 | Descriptions filled, no placeholders |
 | Links | 10 | All URLs valid, no 404s |
 | Freshness | 10 | Updated within 7 days |
@@ -74,9 +74,9 @@ The `/readme` command performs a comprehensive quality check with a 0-100 score.
   <!-- Badges -->
 </p>
 
-<!-- LAUNCHPAD:START -->
+<!-- ORBIT:START -->
 {...}
-<!-- LAUNCHPAD:END -->
+<!-- ORBIT:END -->
 
 ## Why This Project
 ## How It Works
@@ -125,12 +125,12 @@ The `/readme` command performs a comprehensive quality check with a 0-100 score.
 
 ---
 
-## LAUNCHPAD Block
+## ORBIT Block
 
 ### Format
 
 ```markdown
-<!-- LAUNCHPAD:START
+<!-- ORBIT:START
 {
   "stage": "development",
   "stageStatus": "in-progress",
@@ -142,7 +142,7 @@ The `/readme` command performs a comprehensive quality check with a 0-100 score.
   "nextAction": "Implement drag-drop",
   "blocker": null
 }
-LAUNCHPAD:END -->
+ORBIT:END -->
 ```
 
 ### Field Definitions
@@ -175,11 +175,11 @@ interface Project {
   };
 }
 
-function updateReadmeLaunchpad(project: Project, repoPath: string): void {
+function updateReadmeOrbit(project: Project, repoPath: string): void {
   const readmePath = `${repoPath}/README.md`;
   const readme = fs.readFileSync(readmePath, 'utf-8');
 
-  const launchpadData = {
+  const orbitData = {
     stage: project.stage,
     stageStatus: project.stageStatus,
     progress: project.progress,
@@ -191,13 +191,13 @@ function updateReadmeLaunchpad(project: Project, repoPath: string): void {
     blocker: getBlocker(project)
   };
 
-  const newBlock = `<!-- LAUNCHPAD:START\n${JSON.stringify(launchpadData, null, 2)}\nLAUNCHPAD:END -->`;
+  const newBlock = `<!-- ORBIT:START\n${JSON.stringify(orbitData, null, 2)}\nORBIT:END -->`;
 
-  // Check if LAUNCHPAD block exists
-  if (readme.includes('LAUNCHPAD:START')) {
+  // Check if ORBIT block exists
+  if (readme.includes('ORBIT:START')) {
     // Update existing block
     const updatedReadme = readme.replace(
-      /<!-- LAUNCHPAD:START[\s\S]*?LAUNCHPAD:END -->/,
+      /<!-- ORBIT:START[\s\S]*?ORBIT:END -->/,
       newBlock
     );
     fs.writeFileSync(readmePath, updatedReadme);
@@ -249,7 +249,7 @@ Before committing README changes:
 
 - [ ] Title and tagline present
 - [ ] 4-7 badges with correct links
-- [ ] LAUNCHPAD block with valid JSON
+- [ ] ORBIT block with valid JSON
 - [ ] All sections have content
 - [ ] No broken links
 - [ ] Roadmap reflects current state
@@ -268,7 +268,7 @@ git-agent push flow:
 3. If score < 50: BLOCK push, suggest /readme fix
 4. If score 50-69: Warn user, continue
 5. If score >= 70: Proceed normally
-6. Update LAUNCHPAD block
+6. Update ORBIT block
 7. Stage README.md if modified
 8. Create commit
 9. Push to remote
@@ -287,7 +287,7 @@ push <proj> --skip-readme  # Bypass README check (logs warning)
 | Action | AI Involvement | Purpose |
 |--------|---------------|---------|
 | Badge generation | 🤖 Auto | Detect tech stack, generate badges |
-| LAUNCHPAD update | 🤖 Auto | Sync from project data |
+| ORBIT update | 🤖 Auto | Sync from project data |
 | Roadmap sync | 🤖 Auto | Match tasks to roadmap items |
 | Link validation | 🤖 Auto | Check all URLs are valid |
 | Content suggestions | 🤖 AI | Suggest improvements to sections |
@@ -297,7 +297,7 @@ push <proj> --skip-readme  # Bypass README check (logs warning)
 ## Logging Format
 
 ```
-2026-01-22T12:00:00Z | readme-agent | update | taskboard: Updated LAUNCHPAD block
+2026-01-22T12:00:00Z | readme-agent | update | taskboard: Updated ORBIT block
 2026-01-22T12:00:00Z | readme-agent | badges | taskboard: Added 2 new badges
 2026-01-22T12:00:00Z | readme-agent | roadmap | taskboard: Checked off "Command Center MVP"
 ```

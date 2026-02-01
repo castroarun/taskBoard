@@ -1,12 +1,12 @@
 /**
- * LAUNCHPAD Block Schema
+ * ORBIT Block Schema
  *
- * This is the shared data contract between Command Center (desktop) and Launchpad (mobile).
+ * This is the shared data contract between Command Center (desktop) and Orbit (mobile).
  * - Command Center writes this block to README.md on git push
- * - Launchpad reads this block from GitHub READMEs
+ * - Orbit reads this block from GitHub READMEs
  */
 
-export interface LaunchpadBlock {
+export interface OrbitBlock {
   /** Project stage: idea → building → testing → live → paused */
   stage: 'idea' | 'building' | 'testing' | 'live' | 'paused';
 

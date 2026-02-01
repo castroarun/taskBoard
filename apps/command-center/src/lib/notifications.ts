@@ -281,12 +281,12 @@ export function notifySystem(title: string, body: string): void {
 }
 
 /**
- * Notify new inbox items synced from Launchpad mobile
+ * Notify new inbox items synced from Orbit mobile
  */
 export function notifyNewInboxItems(count: number, preview?: string): void {
   showNotification({
     type: 'system',
-    title: `${count} new item${count > 1 ? 's' : ''} from Launchpad`,
+    title: `${count} new item${count > 1 ? 's' : ''} from Orbit`,
     body: preview || 'Open Inbox to view',
     tag: 'inbox-sync',
   });

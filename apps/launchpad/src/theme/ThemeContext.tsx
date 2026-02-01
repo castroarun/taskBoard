@@ -20,14 +20,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<ThemeMode>('light');
 
   useEffect(() => {
-    AsyncStorage.getItem('launchpad-theme').then((saved) => {
+    AsyncStorage.getItem('orbit-theme').then((saved) => {
       if (saved === 'light' || saved === 'dark') setMode(saved);
     });
   }, []);
 
   const setTheme = (newMode: ThemeMode) => {
     setMode(newMode);
-    AsyncStorage.setItem('launchpad-theme', newMode);
+    AsyncStorage.setItem('orbit-theme', newMode);
   };
 
   const toggleTheme = () => {

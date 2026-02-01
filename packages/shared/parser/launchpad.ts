@@ -1,24 +1,24 @@
-import type { LaunchpadBlock } from '../types/launchpad-block';
+import type { OrbitBlock } from '../types/launchpad-block';
 
-const LAUNCHPAD_START = '<!-- LAUNCHPAD:START -->';
-const LAUNCHPAD_END = '<!-- LAUNCHPAD:END -->';
+const ORBIT_START = '<!-- ORBIT:START -->';
+const ORBIT_END = '<!-- ORBIT:END -->';
 
 /**
- * Parse LAUNCHPAD block from README content
+ * Parse ORBIT block from README content
  *
  * @param readme - Raw README.md content
- * @returns Parsed LaunchpadBlock or null if not found
+ * @returns Parsed OrbitBlock or null if not found
  */
-export function parseLaunchpadBlock(readme: string): LaunchpadBlock | null {
-  const startIndex = readme.indexOf(LAUNCHPAD_START);
-  const endIndex = readme.indexOf(LAUNCHPAD_END);
+export function parseOrbitBlock(readme: string): OrbitBlock | null {
+  const startIndex = readme.indexOf(ORBIT_START);
+  const endIndex = readme.indexOf(ORBIT_END);
 
   if (startIndex === -1 || endIndex === -1 || endIndex <= startIndex) {
     return null;
   }
 
   const blockContent = readme.slice(
-    startIndex + LAUNCHPAD_START.length,
+    startIndex + ORBIT_START.length,
     endIndex
   );
 
@@ -29,7 +29,7 @@ export function parseLaunchpadBlock(readme: string): LaunchpadBlock | null {
     const trimmed = blockContent.trim();
     if (trimmed.startsWith('{')) {
       try {
-        return JSON.parse(trimmed) as LaunchpadBlock;
+        return JSON.parse(trimmed) as OrbitBlock;
       } catch {
         return null;
       }
@@ -38,42 +38,42 @@ export function parseLaunchpadBlock(readme: string): LaunchpadBlock | null {
   }
 
   try {
-    return JSON.parse(jsonMatch[1].trim()) as LaunchpadBlock;
+    return JSON.parse(jsonMatch[1].trim()) as OrbitBlock;
   } catch {
     return null;
   }
 }
 
 /**
- * Convert LaunchpadBlock to markdown string for README
+ * Convert OrbitBlock to markdown string for README
  *
- * @param block - LaunchpadBlock to stringify
- * @returns Markdown string with LAUNCHPAD block
+ * @param block - OrbitBlock to stringify
+ * @returns Markdown string with ORBIT block
  */
-export function stringifyLaunchpadBlock(block: LaunchpadBlock): string {
+export function stringifyOrbitBlock(block: OrbitBlock): string {
   const json = JSON.stringify(block, null, 2);
-  return `${LAUNCHPAD_START}
+  return `${ORBIT_START}
 \`\`\`json
 ${json}
 \`\`\`
-${LAUNCHPAD_END}`;
+${ORBIT_END}`;
 }
 
 /**
- * Update LAUNCHPAD block in README content
+ * Update ORBIT block in README content
  *
  * @param readme - Original README content
- * @param block - New LaunchpadBlock data
+ * @param block - New OrbitBlock data
  * @returns Updated README content
  */
-export function updateLaunchpadBlock(
+export function updateOrbitBlock(
   readme: string,
-  block: LaunchpadBlock
+  block: OrbitBlock
 ): string {
-  const startIndex = readme.indexOf(LAUNCHPAD_START);
-  const endIndex = readme.indexOf(LAUNCHPAD_END);
+  const startIndex = readme.indexOf(ORBIT_START);
+  const endIndex = readme.indexOf(ORBIT_END);
 
-  const newBlock = stringifyLaunchpadBlock(block);
+  const newBlock = stringifyOrbitBlock(block);
 
   if (startIndex === -1 || endIndex === -1) {
     // No existing block, append after first heading
@@ -94,6 +94,6 @@ export function updateLaunchpadBlock(
 
   // Replace existing block
   return (
-    readme.slice(0, startIndex) + newBlock + readme.slice(endIndex + LAUNCHPAD_END.length)
+    readme.slice(0, startIndex) + newBlock + readme.slice(endIndex + ORBIT_END.length)
   );
 }

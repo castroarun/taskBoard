@@ -1,4 +1,4 @@
-# Launchpad - Product Requirements Document
+# Orbit - Product Requirements Document
 
 **Version:** 1.0
 **Created:** 2026-01-28
@@ -9,7 +9,7 @@
 
 ## Overview
 
-**Launchpad** is the mobile companion app for Klarity (desktop). It provides quick project status checks, voice capture on the go, and push notifications — designed for moments when you're away from your desk but want to capture ideas or check progress.
+**Orbit** is the mobile companion app for Klarity (desktop). It provides quick project status checks, voice capture on the go, and push notifications — designed for moments when you're away from your desk but want to capture ideas or check progress.
 
 ### Tagline
 > "Your pocket dashboard for AI-assisted development"
@@ -32,7 +32,7 @@ When working on projects with AI coding assistants (Claude Code, Cursor, etc.):
 
 ### Solution
 
-Launchpad fills the gap:
+Orbit fills the gap:
 - **Quick capture** — Voice-to-structured-task in seconds (Groq AI)
 - **Status glance** — See project health, streaks, blockers instantly
 - **Notifications** — Get alerted about deadlines and stale projects
@@ -40,9 +40,9 @@ Launchpad fills the gap:
 
 ---
 
-## Separation of Concerns: Launchpad vs Klarity
+## Separation of Concerns: Orbit vs Klarity
 
-| Feature | Klarity (Desktop) | Launchpad (Mobile) |
+| Feature | Klarity (Desktop) | Orbit (Mobile) |
 |---------|:-----------------:|:------------------:|
 | **Project Pipeline Board** | Full CRUD, drag-drop | Read-only view |
 | **Task Management** | Full editing, bulk ops | View + quick add |
@@ -57,7 +57,7 @@ Launchpad fills the gap:
 | **Theme Toggle** | Yes | Yes |
 
 ### Golden Rule
-> Launchpad is for **capture and glance**. Klarity is for **edit and work**.
+> Orbit is for **capture and glance**. Klarity is for **edit and work**.
 
 ---
 
@@ -81,7 +81,7 @@ Launchpad fills the gap:
 
 ```
 ┌─────────────────┐         ┌─────────────────┐
-│   Klarity       │         │   Launchpad     │
+│   Klarity       │         │   Orbit         │
 │   (Desktop)     │         │   (Mobile)      │
 ├─────────────────┤         ├─────────────────┤
 │ • Full CRUD     │         │ • Read + Add    │
@@ -105,8 +105,8 @@ Launchpad fills the gap:
 
 1. **Klarity** writes directly to local JSON files
 2. Changes commit to git (manual or auto-commit)
-3. **Launchpad** pulls from git periodically or on-demand
-4. Launchpad writes go to a "pending" queue → synced back via:
+3. **Orbit** pulls from git periodically or on-demand
+4. Orbit writes go to a "pending" queue → synced back via:
    - Git commit from mobile (if repo access)
    - Cloud API (if configured)
    - Local queue processed when Klarity opens

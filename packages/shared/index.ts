@@ -1,13 +1,13 @@
 // Types
 export type {
-  LaunchpadBlock,
+  OrbitBlock,
   Project,
   Task,
 } from './types/launchpad-block';
 
 // Parser utilities
 export {
-  parseLaunchpadBlock,
-  stringifyLaunchpadBlock,
-  updateLaunchpadBlock,
+  parseOrbitBlock,
+  stringifyOrbitBlock,
+  updateOrbitBlock,
 } from './parser/launchpad';

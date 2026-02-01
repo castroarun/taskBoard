@@ -1,7 +1,7 @@
 /**
  * GitHub Gist Sync Service for Klarity Command Center
  *
- * Polls a private GitHub Gist for inbox items pushed from the Launchpad mobile app.
+ * Polls a private GitHub Gist for inbox items pushed from the Orbit mobile app.
  * Merges remote items into the local ~/.taskboard/inbox.json.
  */
 
@@ -22,7 +22,7 @@ interface GistResponse {
 interface InboxSyncPayload {
   version: string;
   lastUpdated: string;
-  source: 'launchpad' | 'command-center';
+  source: 'orbit' | 'command-center';
   items: InboxItem[];
 }
 

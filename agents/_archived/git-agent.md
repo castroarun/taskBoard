@@ -1,6 +1,6 @@
 # Git Agent
 
-> **Role:** Specialist for all Git operations - commits, pushes, branches, and README LAUNCHPAD updates.
+> **Role:** Specialist for all Git operations - commits, pushes, branches, and README ORBIT updates.
 
 ---
 
@@ -9,7 +9,7 @@
 1. **Commits** - Create well-formatted commits
 2. **Pushes** - Push to remote repositories
 3. **Branches** - Manage branch creation and merging
-4. **LAUNCHPAD Sync** - Update README LAUNCHPAD block on push
+4. **ORBIT Sync** - Update README ORBIT block on push
 
 ---
 
@@ -63,18 +63,18 @@ Fixed by adding explicit save after status change.
 
 ---
 
-## LAUNCHPAD Block Sync
+## ORBIT Block Sync
 
 ### On Every Push
 
 1. Read project data from projects.json
-2. Update README.md LAUNCHPAD block
+2. Update README.md ORBIT block
 3. Stage README.md
 4. Include in commit
 
-### LAUNCHPAD Block Format
+### ORBIT Block Format
 ```markdown
-<!-- LAUNCHPAD:START
+<!-- ORBIT:START
 {
   "stage": "build",
   "stageStatus": "in-progress",
@@ -84,16 +84,16 @@ Fixed by adding explicit save after status change.
   "tasksTotal": 24,
   "tasksCompleted": 15
 }
-LAUNCHPAD:END -->
+ORBIT:END -->
 ```
 
 ### Update Script
 ```typescript
-function updateLaunchpad(project: Project): void {
+function updateOrbit(project: Project): void {
   const readmePath = `${project.repoPath}/README.md`;
   const readme = readFile(readmePath);
 
-  const launchpadData = {
+  const orbitData = {
     stage: project.stage,
     stageStatus: project.stageStatus,
     progress: project.progress,
@@ -103,10 +103,10 @@ function updateLaunchpad(project: Project): void {
     tasksCompleted: project.metrics.completedTasks
   };
 
-  const newBlock = `<!-- LAUNCHPAD:START\n${JSON.stringify(launchpadData, null, 2)}\nLAUNCHPAD:END -->`;
+  const newBlock = `<!-- ORBIT:START\n${JSON.stringify(orbitData, null, 2)}\nORBIT:END -->`;
 
   const updatedReadme = readme.replace(
-    /<!-- LAUNCHPAD:START[\s\S]*?LAUNCHPAD:END -->/,
+    /<!-- ORBIT:START[\s\S]*?ORBIT:END -->/,
     newBlock
   );
 
@@ -163,7 +163,7 @@ function updateLaunchpad(project: Project): void {
 ```
 2026-01-18T10:30:00Z | git-agent | commit | taskboard: feat(pipeline): add kanban view
 2026-01-18T10:31:00Z | git-agent | push | taskboard: pushed to origin/main
-2026-01-18T10:31:00Z | git-agent | launchpad | taskboard: updated README LAUNCHPAD block
+2026-01-18T10:31:00Z | git-agent | orbit | taskboard: updated README ORBIT block
 ```
 
 ---
@@ -172,7 +172,7 @@ function updateLaunchpad(project: Project): void {
 
 - [ ] All changes staged
 - [ ] Commit message follows format
-- [ ] LAUNCHPAD block updated
+- [ ] ORBIT block updated
 - [ ] **README quality check passed** (see below)
 - [ ] No sensitive data in commit
 - [ ] Tests pass (if applicable)
@@ -213,12 +213,12 @@ Before every push, the git-agent calls `/readme check` to verify README quality.
    - Proceed with push
 ```
 
-### Integration with LAUNCHPAD
+### Integration with ORBIT
 
 The `/readme` command also validates:
-- LAUNCHPAD block presence
-- LAUNCHPAD data accuracy (matches project state)
-- LAUNCHPAD format compliance
+- ORBIT block presence
+- ORBIT data accuracy (matches project state)
+- ORBIT format compliance
 
 ### Override Option
 
